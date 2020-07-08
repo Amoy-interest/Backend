@@ -13,10 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@ApiModel(value = "BlogContentDto", description = "博文信息")
+@ApiModel(value = "BlogContentDto", description = "博文内容")
 public class BlogContentDTO {
-    @ApiModelProperty(value = "博文内容", required = true)
+    @ApiModelProperty(value = "博文文字", required = true)
     private String text;
     @ApiModelProperty(value = "博文图片", required = false)
     private List<String> images;
 }
+
+

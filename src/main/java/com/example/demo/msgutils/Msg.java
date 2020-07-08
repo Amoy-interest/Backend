@@ -9,44 +9,44 @@ public class Msg {
     @ApiModelProperty(value = "返回码",dataType = "int")
     private int status;
     @ApiModelProperty(value = "错误/正确信息",dataType = "String")
-    private String msg;
+    private String msgContent;
 
-    private JSONObject data;
+//    private JSONObject data;
 
-    Msg(MsgCode msg, JSONObject data){
-        this.status = msg.getStatus();
-        this.msg = msg.getMsg();
-        this.data = data;
-    }
+//    Msg(MsgCode msg, JSONObject data){
+//        this.status = msg.getStatus();
+//        this.msg = msg.getMsg();
+////        this.data = data;
+//    }
 
-    Msg(MsgCode msg, String extra, JSONObject data){
-        this.status = msg.getStatus();
-        this.msg = extra;
-        this.data = data;
-    }
+//    Msg(MsgCode msg, String extra, JSONObject data){
+//        this.status = msg.getStatus();
+//        this.msg = extra;
+////        this.data = data;
+//    }
 
     Msg(MsgCode msg){
         this.status = msg.getStatus();
-        this.msg = msg.getMsg();
-        this.data = null;
+        this.msgContent = msg.getMsg();
+//        this.data = null;
     }
 
     Msg(MsgCode msg, String extra){
         this.status = msg.getStatus();
-        this.msg = extra;
-        this.data = null;
+        this.msgContent = extra;
+//        this.data = null;
     }
 
-    Msg(int status, String extra, JSONObject data){
-        this.status = status;
-        this.msg = extra;
-        this.data = data;
-    }
+//    Msg(int status, String extra, JSONObject data){
+//        this.status = status;
+//        this.msg = extra;
+////        this.data = data;
+//    }
 
     Msg(int status, String extra){
         this.status = status;
-        this.msg = extra;
-        this.data = null;
+        this.msgContent = extra;
+//        this.data = null;
     }
 
     public int getStatus() {
@@ -58,20 +58,20 @@ public class Msg {
     }
 
     public String getMsg() {
-        return msg;
+        return msgContent;
     }
 
     public void setMsg(String msg) {
-        this.msg = msg;
+        this.msgContent = msg;
     }
 
-    public JSONObject getData() {
-        return data;
-    }
+//    public JSONObject getData() {
+//        return data;
+//    }
 
-    public void setData(JSONObject data) {
-        this.data = data;
-    }
+//    public void setData(JSONObject data) {
+//        this.data = data;
+//    }
 
 
 

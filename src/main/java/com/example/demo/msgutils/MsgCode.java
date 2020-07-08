@@ -12,18 +12,18 @@ public enum MsgCode {
     USER_EXIST(MsgUtil.ERROR,MsgUtil.USER_EXIST_MSG);
 
     private int status;
-    private String msg;
+    private String msgContent;
 
     public int getStatus() {
         return status;
     }
 
     public String getMsg() {
-        return msg;
+        return msgContent;
     }
 
     private MsgCode(int status, String msg) {
         this.status = status;
-        this.msg = msg;
+        this.msgContent = msg;
     }
 }

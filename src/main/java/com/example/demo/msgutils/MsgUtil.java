@@ -30,13 +30,13 @@ public class MsgUtil {
     public static final String IS_ADMIN2_MSG = "该用户号为管理员,解禁失败";
     public static final String USER_EXIST_MSG = "该用户名已被使用";
 
-    public static Msg makeMsg(MsgCode code, JSONObject data){
-        return new Msg(code, data);
-    }
+//    public static Msg makeMsg(MsgCode code, JSONObject data){
+//        return new Msg(code, data);
+//    }
 
-    public static Msg makeMsg(MsgCode code, String msg, JSONObject data){
-        return new Msg(code, msg, data);
-    }
+//    public static Msg makeMsg(MsgCode code, String msg, JSONObject data){
+//        return new Msg(code, msg, data);
+//    }
 
     public static Msg makeMsg(MsgCode code){
         return new Msg(code);
@@ -46,9 +46,9 @@ public class MsgUtil {
         return new Msg(code, msg);
     }
 
-    public static Msg makeMsg(int status, String msg, JSONObject data){
-        return new Msg(status, msg, data);
-    }
+//    public static Msg makeMsg(int status, String msg, JSONObject data){
+//        return new Msg(status, msg, data);
+//    }
 
     public static Msg makeMsg(int status, String msg){
         return new Msg(status, msg);

@@ -1,7 +1,6 @@
 package com.example.demo.dto;
 
 import com.example.demo.msgutils.Msg;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -13,8 +12,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@ApiModel(value = "RegisterDto", description = "注册信息")
-public class RegisterDTO {
+@ApiModel(value = "UserDto", description = "登录/注册返回信息")
+public class UserDTO {
+    private User user;
+    private Msg msg;
+}
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ApiModel(value = "User", description = "用户信息")
+class User{
     @ApiModelProperty(value = "用户名", required = true)
     private String username;
     @ApiModelProperty(value = "密码", required = true)
