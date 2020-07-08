@@ -1,0 +1,22 @@
+package com.example.demo.dto;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ApiModel(value = "BlogContentDto", description = "博文信息")
+public class BlogContentDTO {
+    @ApiModelProperty(value = "博文内容", required = true)
+    private String text;
+    @ApiModelProperty(value = "博文图片", required = false)
+    private List<String> images;
+}
