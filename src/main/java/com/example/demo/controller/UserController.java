@@ -34,17 +34,6 @@ public class UserController {
     }
     @ApiOperation(value = "注册",notes = "注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "query", name = "username", value = "用户名", required = true, dataType = "String"),
-//            @ApiImplicitParam(paramType = "query", name = "password", value = "密码", required = true, dataType = "String"),
-//            @ApiImplicitParam(paramType = "query", name = "email", value = "邮箱", required = true, dataType = "String"),
-//            @ApiImplicitParam(paramType = "query", name = "sex", value = "性别", required = true, dataType = "String"),
-//            @ApiImplicitParam(paramType = "query", name = "address", value = "地址", required = true, dataType = "String")
-//    })
-//    public Msg Register(String username,String password,String email,String sex,String address) {
-//    public Msg Register(@ModelAttribute @Valid RegisterDTO registerDTO){
-//        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.REGISTER_SUCCESS_MSG);
-//    }
     public UserDTO Register(@ModelAttribute @Valid RegisterDTO registerDTO){
         return new UserDTO();
     }

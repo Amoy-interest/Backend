@@ -31,4 +31,10 @@ class User{
     private String sex;
     @ApiModelProperty(value = "地址", required = true)
     private String address;
+    @ApiModelProperty(value = "信用值", required = true)
+    private int credits;
+    @ApiModelProperty(value = "个人简介", required = true)
+    private String introduction;
+    @ApiModelProperty(value = "个人头像", required = true)
+    private String avatar;
 }
