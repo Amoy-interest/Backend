@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.BlogDTO;
+import com.example.demo.dto.TopicDTO;
 import com.example.demo.msgutils.Msg;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,7 +16,7 @@ import java.util.List;
 public class TopicController {
     @ApiOperation(value = "查看话题")
     @RequestMapping(value = "/topic",method = RequestMethod.GET)
-    public Msg GetTopic(String topic_name) {
+    public TopicDTO GetTopic(String topic_name) {
         return null;
     }
 

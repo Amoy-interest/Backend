@@ -20,7 +20,7 @@ public class BlogDTO {
     private BlogContentDTO blogContent;
     private BlogChild blogChild;
     private BlogCountDTO blogCount;
-
+    private List<BlogCommentDTO> blogComments;
 }
 
 @NoArgsConstructor

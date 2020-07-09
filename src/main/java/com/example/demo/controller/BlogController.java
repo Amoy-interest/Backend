@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.swing.text.BadLocationException;
 import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping("/blog")
 @Api(tags="博文模块")
@@ -41,8 +42,8 @@ public class BlogController {
 
     @ApiOperation(value = "删除博文")
     @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public void DeleteBlog(Integer blog_id) {
-
+    public Msg DeleteBlog(Integer blog_id) {
+        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.LOGIN_SUCCESS_MSG);
     }
 
     @ApiOperation(value = "进行评论")
@@ -59,7 +60,7 @@ public class BlogController {
 
     @ApiOperation(value = "搜索")
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public void Search(String keyword){
-
+    public List<BlogDTO> Search(String keyword){
+        return null;
     }
 }
