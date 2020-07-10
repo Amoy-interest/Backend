@@ -1,4 +1,4 @@
-package com.example.demo.Entity;
+package com.example.demo.entity;
 
 
 import lombok.Data;
@@ -13,7 +13,6 @@ public class Blog {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int blog_id;
-
     private int user_id;
     private int topic_id;
     private int blog_type;
@@ -21,5 +20,4 @@ public class Blog {
     private String blog_text;
     private boolean is_deleted;
     private String blog_image;
-
 }
