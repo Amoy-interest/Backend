@@ -1,7 +1,6 @@
-package com.example.demo.Entity;
+package com.example.demo.entity;
 
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;

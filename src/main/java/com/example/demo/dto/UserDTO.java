@@ -16,6 +16,7 @@ import lombok.Setter;
 public class UserDTO {
     private User user;
     private Msg msg;
+//    public
 }
 @NoArgsConstructor
 @AllArgsConstructor
