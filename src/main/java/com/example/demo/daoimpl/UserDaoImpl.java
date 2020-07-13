@@ -1,6 +1,7 @@
 package com.example.demo.daoimpl;
 
 import com.example.demo.dao.UserDao;
+import com.example.demo.dto.RegisterDTO;
 import com.example.demo.entity.User;
 import com.example.demo.entity.UserFollow;
 import com.example.demo.repository.UserCountRepository;
@@ -28,5 +29,11 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findUserById(Integer user_id) {
         return userRepository.findUserById(user_id);
+    }
+
+    @Override
+    public User register(RegisterDTO registerDTO) {
+//        User
+        return null;
     }
 }

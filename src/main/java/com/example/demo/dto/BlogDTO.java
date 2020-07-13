@@ -18,17 +18,8 @@ public class BlogDTO {
     private Integer blog_type;
     private Date blog_time;
     private BlogContentDTO blogContent;
-    private BlogChild blogChild;
+    private BlogChildDTO blogChild;
     private BlogCountDTO blogCount;
     private List<BlogCommentDTO> blogComments;
 }
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@ApiModel(value = "BlogChild", description = "转发的博文信息")
-class BlogChild {
-    private String text;
-    private List<String> images;
-}

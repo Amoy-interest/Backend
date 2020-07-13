@@ -14,28 +14,7 @@ import lombok.Setter;
 @Setter
 @ApiModel(value = "UserDto", description = "登录/注册返回信息")
 public class UserDTO {
-    private User user;
+    private UserInfoDTO user;
     private Msg msg;
 //    public
-}
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@ApiModel(value = "User", description = "用户信息")
-class User{
-    @ApiModelProperty(value = "用户名", required = true)
-    private String username;
-    @ApiModelProperty(value = "密码", required = true)
-    private String password;
-    @ApiModelProperty(value = "性别", required = true,example = "0代表女性，1代表男性")
-    private String sex;
-    @ApiModelProperty(value = "地址", required = true)
-    private String address;
-    @ApiModelProperty(value = "信用值", required = true)
-    private int credits;
-    @ApiModelProperty(value = "个人简介", required = true)
-    private String introduction;
-    @ApiModelProperty(value = "个人头像", required = true)
-    private String avatar;
 }

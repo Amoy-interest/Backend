@@ -1,19 +1,19 @@
 package com.example.demo.controller;
 
+import com.auth0.jwt.JWT;
 import com.example.demo.dto.BlogContentDTO;
 import com.example.demo.dto.BlogDTO;
 import com.example.demo.msgutils.Msg;
 import com.example.demo.msgutils.MsgCode;
 import com.example.demo.msgutils.MsgUtil;
+import com.example.demo.service.BlogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import net.sf.json.JSONObject;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.BadLocationException;
 import javax.validation.Valid;
@@ -23,9 +23,14 @@ import java.util.List;
 @Api(tags="博文模块")
 @RestController
 public class BlogController {
+    @Autowired
+    BlogService blogService;
     @ApiOperation(value = "写博文")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Msg AddBlog(@ModelAttribute @Valid BlogContentDTO blogContentDTO) {
+    public Msg AddBlog(@ModelAttribute @Valid BlogContentDTO blogContentDTO, @RequestHeader(value = "token") String token) {
+        Integer userId = JWT.decode(token).getClaim("user_id").asInt();
+        System.out.println(userId);
+        System.out.println(blogContentDTO.getText());
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.LOGIN_SUCCESS_MSG);
     }
 
