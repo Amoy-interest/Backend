@@ -14,13 +14,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserDaoImpl implements UserDao {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    UserCountRepository userCountRepository;
+    private UserCountRepository userCountRepository;
     @Autowired
-    UserFollowRepository userFollowRepository;
+    private UserFollowRepository userFollowRepository;
     @Autowired
-    UserInfoRepository userInfoRepository;
+    private UserInfoRepository userInfoRepository;
     @Override
     public User findUserByUsername(String username) {
         return userRepository.findUserByUsername(username);

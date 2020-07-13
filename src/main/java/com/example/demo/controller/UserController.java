@@ -25,9 +25,9 @@ import javax.validation.Valid;
 @RestController
 public class UserController {
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
-    TokenService tokenService;
+    private TokenService tokenService;
     @ApiOperation(value = "登录", notes = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiImplicitParams({

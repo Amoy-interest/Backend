@@ -51,13 +51,13 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 if (token == null) {
                     throw new RuntimeException("无token，请重新登录");
                 }
-                DecodedJWT jwt = null;
+//                DecodedJWT jwt = null;
                 try {
                     // 使用了HMAC256加密算法。
                     JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET))
                             .withIssuer("auth0")
                             .build(); //Reusable verifier instance
-                    jwt = verifier.verify(token);
+                    verifier.verify(token);
                 } catch (JWTVerificationException exception){
                     //Invalid signature/claims
                     throw new RuntimeException("Token失效，请重新登陆");
@@ -66,12 +66,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     throw new RuntimeException("401");
                 }
                 // 验证 token
-                JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
-                try {
-                    jwtVerifier.verify(token);
-                } catch (JWTVerificationException e) {
-                    throw new RuntimeException("401");
-                }
+//                JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
+//                try {
+//                    jwtVerifier.verify(token);
+//                } catch (JWTVerificationException e) {
+//                    throw new RuntimeException("401");
+//                }
                 return true;
             }
         }

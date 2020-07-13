@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class SensitiveWordDaoImpl implements SensitiveWordDao {
     @Autowired
-    SensitiveWordRepository sensitiveWordRepository;
+    private SensitiveWordRepository sensitiveWordRepository;
 }

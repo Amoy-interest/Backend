@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class TopicDaoImpl implements TopicDao {
     @Autowired
-    TopicRepository topicRepository;
+    private TopicRepository topicRepository;
 }
