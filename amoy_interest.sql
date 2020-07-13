@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-07-09 11:30:26
+Date: 2020-07-13 18:21:38
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -21,12 +21,13 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `blog`;
 CREATE TABLE `blog` (
   `blog_id` int NOT NULL,
-  `user_id` int DEFAULT NULL,
+  `user_id` int NOT NULL,
   `blog_type` smallint DEFAULT NULL,
   `blog_time` datetime DEFAULT NULL,
   `blog_text` varchar(140) DEFAULT NULL,
   `is_deleted` smallint DEFAULT NULL,
-  `blog_image` varchar(1024) DEFAULT NULL,
+  `topic_id` int DEFAULT NULL,
+  `check_status` smallint DEFAULT NULL,
   PRIMARY KEY (`blog_id`),
   KEY `FK_Reference_4` (`user_id`),
   CONSTRAINT `FK_Reference_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
@@ -46,7 +47,7 @@ CREATE TABLE `blog_comment` (
   `comment_time` datetime DEFAULT NULL,
   `vote_count` int DEFAULT NULL,
   `is_deleted` smallint DEFAULT NULL,
-  `parent_comment_id` int DEFAULT NULL,
+  `root_comment_id` int DEFAULT NULL,
   PRIMARY KEY (`comment_id`),
   KEY `FK_Reference_5` (`blog_id`),
   KEY `FK_Reference_10` (`username`),
@@ -63,8 +64,20 @@ CREATE TABLE `blog_count` (
   `forward_count` int DEFAULT NULL,
   `comment_count` int DEFAULT NULL,
   `vote_count` int DEFAULT NULL,
+  `report_count` int DEFAULT NULL,
   PRIMARY KEY (`blog_id`),
   CONSTRAINT `FK_Reference_9` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for blog_image
+-- ----------------------------
+DROP TABLE IF EXISTS `blog_image`;
+CREATE TABLE `blog_image` (
+  `blog_id` int NOT NULL,
+  `blog_image` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`blog_id`),
+  CONSTRAINT `FK_Reference_11` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -72,7 +85,8 @@ CREATE TABLE `blog_count` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sensitive_words`;
 CREATE TABLE `sensitive_words` (
-  `keyword` varchar(15) DEFAULT NULL
+  `keyword` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`keyword`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -107,7 +121,8 @@ CREATE TABLE `user` (
   `user_id` int NOT NULL,
   `username` varchar(15) NOT NULL,
   `password` varchar(15) NOT NULL,
-  `user_type` int NOT NULL,
+  `user_type` smallint NOT NULL,
+  `user_status` smallint DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
