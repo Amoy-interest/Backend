@@ -65,7 +65,8 @@ public class UserController {
     @UserLoginToken
     @GetMapping("/getMessage")
     public String getMessage(@RequestHeader(value="token") String token){
-        Integer userId = Integer.parseInt(JWT.decode(token).getAudience().get(0));
+        Integer userId = JWT.decode(token).getClaim("user_id").asInt();
+//        Integer userId = Integer.parseInt(JWT.decode(token).getAudience().get(0));
 
         return "你的用户id为"+Integer.toString(userId);
     }

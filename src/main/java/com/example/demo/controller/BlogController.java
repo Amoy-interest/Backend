@@ -5,11 +5,13 @@ import com.example.demo.dto.BlogDTO;
 import com.example.demo.msgutils.Msg;
 import com.example.demo.msgutils.MsgCode;
 import com.example.demo.msgutils.MsgUtil;
+import com.example.demo.service.BlogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +25,8 @@ import java.util.List;
 @Api(tags="博文模块")
 @RestController
 public class BlogController {
+    @Autowired
+    BlogService blogService;
     @ApiOperation(value = "写博文")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Msg AddBlog(@ModelAttribute @Valid BlogContentDTO blogContentDTO) {
