@@ -25,9 +25,9 @@ import javax.validation.Valid;
 @RestController
 public class UserController {
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
-    TokenService tokenService;
+    private TokenService tokenService;
     @ApiOperation(value = "登录", notes = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiImplicitParams({
@@ -65,13 +65,14 @@ public class UserController {
     @UserLoginToken
     @GetMapping("/getMessage")
     public String getMessage(@RequestHeader(value="token") String token){
-        Integer userId = Integer.parseInt(JWT.decode(token).getAudience().get(0));
+        Integer userId = JWT.decode(token).getClaim("user_id").asInt();
+//        Integer userId = Integer.parseInt(JWT.decode(token).getAudience().get(0));
 
         return "你的用户id为"+Integer.toString(userId);
     }
 
 
-
+    //登出后台不需要做什么，直接前台把token删掉就好了
     @ApiOperation(value = "登出",notes = "登出")
     @GetMapping(value = "/logout")
     public Msg Logout() {
@@ -81,6 +82,12 @@ public class UserController {
     @ApiOperation(value = "注册",notes = "注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public UserDTO Register(@ModelAttribute @Valid RegisterDTO registerDTO){
+        User user = userService.findUserByUsername(registerDTO.getUsername());
+        if(user != null) {
+            return new UserDTO(null,MsgUtil.makeMsg(MsgCode.USER_EXIST,MsgUtil.USER_EXIST_MSG));
+        }
+        //后台验证密码和邮箱格式？
+        userService.register(registerDTO);
         return new UserDTO();
     }
 

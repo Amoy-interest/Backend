@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.auth0.jwt.JWT;
 import com.example.demo.dto.BlogContentDTO;
 import com.example.demo.dto.BlogDTO;
 import com.example.demo.entity.Blog;
@@ -14,10 +15,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.BadLocationException;
 import javax.validation.Valid;
@@ -33,9 +31,9 @@ public class BlogController {
 
     @ApiOperation(value = "写博文")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Msg AddBlog(@ModelAttribute @Valid BlogContentDTO blogContentDTO) {
+    public Msg AddBlog(@ModelAttribute @Valid BlogContentDTO blogContentDTO, @RequestHeader(value = "token") String token) {
         Blog blog = new Blog();
-        blog.setUser_id(0);  //暂时不知道怎么获取user_id
+        blog.setUser_id(JWT.decode(token).getClaim("user_id").asInt());  //暂时不知道怎么获取user_id
         blog.setBlog_type(0);  //原创
         blog.setBlog_time(new Date());
         blog.setBlog_text(blogContentDTO.getText());
@@ -83,7 +81,7 @@ public class BlogController {
         blogComment.setComment_time(new Date());
         blogComment.setVote_count(0);
         blogComment.set_deleted(false);
-        blogComment.setParent_comment_id(comment_id);
+        blogComment.setRoot_comment_id(comment_id);
     }
 
     @ApiOperation(value = "点赞")
