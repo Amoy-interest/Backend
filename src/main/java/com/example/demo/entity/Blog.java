@@ -19,5 +19,5 @@ public class Blog {
     private Date blog_time;
     private String blog_text;
     private boolean is_deleted;
-    private String blog_image;
+    private Integer check_status;
 }

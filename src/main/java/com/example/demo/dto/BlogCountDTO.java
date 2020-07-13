@@ -1,6 +1,7 @@
 package com.example.demo.dto;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,4 +16,5 @@ public class BlogCountDTO {
     private Integer forward_count;
     private Integer comment_count;
     private Integer vote_count;
+    private Integer report_count;
 }

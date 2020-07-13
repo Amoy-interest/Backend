@@ -38,7 +38,7 @@ public class BlogController {
         blog.setBlog_time(new Date());
         blog.setBlog_text(blogContentDTO.getText());
         blog.set_deleted(false);
-        blog.setBlog_image(blogContentDTO.getImages().get(0)); //是否应该调整数据库结构
+//        blog.setBlog_image(blogContentDTO.getImages().get(0)); //是否应该调整数据库结构
         blogService.addBlog(blog);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.ADD_BLOG_SUCCESS_MSG);
     }

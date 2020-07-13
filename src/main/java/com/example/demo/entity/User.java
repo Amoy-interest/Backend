@@ -21,4 +21,5 @@ public class User {
     private String username;
     private String password;
     private int user_type;
+    private int user_status; //用户禁言或者封号状态
 }
