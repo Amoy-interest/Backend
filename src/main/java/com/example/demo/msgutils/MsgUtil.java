@@ -30,6 +30,10 @@ public class MsgUtil {
     public static final String IS_ADMIN2_MSG = "该用户号为管理员,解禁失败";
     public static final String USER_EXIST_MSG = "该用户名已被使用";
 
+    public static final String ADD_BLOG_SUCCESS_MSG = "添加博文成功";
+    public static final String PUT_BLOG_SUCCESS_MSG = "更新博文成功";
+    public static final String DELETE_BLOG_SUCCESS_MSG = "删除博文成功";
+
 //    public static Msg makeMsg(MsgCode code, JSONObject data){
 //        return new Msg(code, data);
 //    }
