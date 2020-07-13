@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.auth0.jwt.JWT;
 import com.example.demo.annotation.UserLoginToken;
 import com.example.demo.dto.RegisterDTO;
 import com.example.demo.dto.UserDTO;
@@ -63,20 +64,27 @@ public class UserController {
     //用于测试
     @UserLoginToken
     @GetMapping("/getMessage")
-    public String getMessage(){
-        return "你已通过验证";
+    public String getMessage(@RequestHeader(value="token") String token){
+        Integer userId = Integer.parseInt(JWT.decode(token).getAudience().get(0));
+
+        return "你的用户id为"+Integer.toString(userId);
     }
+
+
+
     @ApiOperation(value = "登出",notes = "登出")
     @GetMapping(value = "/logout")
     public Msg Logout() {
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.LOGOUT_SUCCESS_MSG);
     }
+
     @ApiOperation(value = "注册",notes = "注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public UserDTO Register(@ModelAttribute @Valid RegisterDTO registerDTO){
         return new UserDTO();
     }
 
+    //是否还需要check？
     @ApiOperation(value = "用户检查",notes = "用户检查")
     @GetMapping(value = "/check")
     public Msg Check() {
@@ -85,8 +93,8 @@ public class UserController {
 
     @ApiOperation(value = "关注用户",notes = "关注")
     @PostMapping(value = "/follow")
-    public void Follow(String follow_id) {
-
+    public Msg Follow(String follow_id) {
+        return null;
     }
 
 }
