@@ -20,5 +20,5 @@ public class BlogComment {
     private Date comment_time;
     private int vote_count;
     private boolean is_deleted;
-    private int parent_comment_id;
+    private int root_comment_id;
 }
