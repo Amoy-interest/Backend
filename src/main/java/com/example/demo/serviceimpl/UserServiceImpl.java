@@ -3,6 +3,7 @@ package com.example.demo.serviceimpl;
 import com.example.demo.dao.UserDao;
 import com.example.demo.dto.RegisterDTO;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.dto.UserInfoDTO;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(RegisterDTO registerDTO) {
-        return null;
+    public UserInfoDTO register(RegisterDTO registerDTO) {
+        return userDao.register(registerDTO);
     }
 }

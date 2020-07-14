@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-07-13 18:21:38
+Date: 2020-07-14 08:30:35
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,7 +20,7 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `blog`;
 CREATE TABLE `blog` (
-  `blog_id` int NOT NULL,
+  `blog_id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `blog_type` smallint DEFAULT NULL,
   `blog_time` datetime DEFAULT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE `blog` (
   `check_status` smallint DEFAULT NULL,
   PRIMARY KEY (`blog_id`),
   KEY `FK_Reference_4` (`user_id`),
-  CONSTRAINT `FK_Reference_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `FK_Reference_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -94,7 +94,7 @@ CREATE TABLE `sensitive_words` (
 -- ----------------------------
 DROP TABLE IF EXISTS `topic`;
 CREATE TABLE `topic` (
-  `topic_id` int NOT NULL,
+  `topic_id` int NOT NULL AUTO_INCREMENT,
   `topic_name` varchar(50) DEFAULT NULL,
   `topic_time` datetime DEFAULT NULL,
   PRIMARY KEY (`topic_id`)
@@ -118,14 +118,14 @@ CREATE TABLE `topic_blog` (
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `user_id` int NOT NULL,
+  `user_id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(15) NOT NULL,
   `password` varchar(15) NOT NULL,
   `user_type` smallint NOT NULL,
   `user_status` smallint DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for user_count
@@ -137,7 +137,7 @@ CREATE TABLE `user_count` (
   `fan_count` int DEFAULT NULL,
   `blog_count` int DEFAULT NULL,
   PRIMARY KEY (`user_id`),
-  CONSTRAINT `FK_Reference_8` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `FK_Reference_8` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -149,8 +149,8 @@ CREATE TABLE `user_follow` (
   `follow_id` int NOT NULL,
   PRIMARY KEY (`user_id`,`follow_id`),
   KEY `FK_Reference_3` (`follow_id`),
-  CONSTRAINT `FK_Reference_3` FOREIGN KEY (`follow_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `FK_Relationship_3` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `FK_Reference_3` FOREIGN KEY (`follow_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_Relationship_3` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -166,5 +166,5 @@ CREATE TABLE `user_info` (
   `introduction` varchar(50) DEFAULT NULL,
   `avatar_path` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
-  CONSTRAINT `FK_Relationship_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `FK_Relationship_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
