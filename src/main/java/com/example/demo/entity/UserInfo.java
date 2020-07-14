@@ -29,6 +29,6 @@ public class UserInfo {
         this.avatar_path = avatar_path;
     }
 
-    @OneToOne(mappedBy = "userInfo",cascade= CascadeType.ALL,fetch=FetchType.LAZY)
-    private User user;
+//    @OneToOne(mappedBy = "userInfo",cascade= CascadeType.ALL,fetch=FetchType.LAZY)
+//    private User user;
 }

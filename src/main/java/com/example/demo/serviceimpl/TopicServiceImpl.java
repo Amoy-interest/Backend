@@ -15,6 +15,6 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public TopicDTO getTopicById(int topic_id) {
         Topic topic = topicDao.getTopicById(topic_id);
-
+        return null;
     }
 }

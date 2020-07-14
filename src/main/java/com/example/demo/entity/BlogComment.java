@@ -21,4 +21,9 @@ public class BlogComment {
     private int vote_count;
     private boolean is_deleted;
     private int root_comment_id;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name="blog_id",insertable = false, updatable = false)
+//    private Blog blog;
+
 }

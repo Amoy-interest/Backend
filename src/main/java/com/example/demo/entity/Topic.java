@@ -16,6 +16,7 @@ public class Topic {
     private String topic_name;
     private Date topic_time;
 
-    @OneToMany(mappedBy = "topic",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    @OneToMany(fetch=FetchType.LAZY)
+    @JoinColumn(name = "topic_id",referencedColumnName = "topic_id")
     private List<Blog> blogs;
 }

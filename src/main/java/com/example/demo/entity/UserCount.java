@@ -24,6 +24,4 @@ public class UserCount {
         this.blog_count = blog_count;
     }
 
-    @OneToOne(mappedBy = "userCount",cascade= CascadeType.ALL,fetch=FetchType.LAZY)
-    private User user;
 }

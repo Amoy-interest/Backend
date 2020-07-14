@@ -3,9 +3,7 @@ package com.example.demo.entity;
 import lombok.Data;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @Entity
@@ -15,4 +13,8 @@ public class BlogImage {
     private int blog_id;
 
     private String blog_image;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name="blog_id",insertable = false, updatable = false)
+//    private Blog blog;
 }
