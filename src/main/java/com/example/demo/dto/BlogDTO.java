@@ -20,7 +20,8 @@ import java.util.List;
 @Setter
 @ApiModel(value = "BlogDto", description = "博文信息")
 public class BlogDTO {
-    private Integer user_id;  //
+    private String username;
+    private String reply_username;
     private Integer blog_type;
     private Date blog_time;
     private BlogContentDTO blog_content;
@@ -29,7 +30,8 @@ public class BlogDTO {
     private List<BlogComment> blog_comments;
 
     public BlogDTO(Blog blog, List<BlogComment> blogComments, BlogCount blogCount, List<BlogImage> blogImages , Blog blogChild, List<BlogImage> blogChildImages) {
-        this.setUser_id(user_id);
+        this.setUsername(blog.getUser().getUsername());
+        this.setReply_username(blogChild.getUser().getUsername());
         this.setBlog_type(blog.getBlog_type());
         this.setBlog_time(blog.getBlog_time());
 
