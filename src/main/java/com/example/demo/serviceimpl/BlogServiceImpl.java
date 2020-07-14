@@ -49,21 +49,6 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public List<BlogComment> findLevel1CommentByBlog_id(Integer blog_id) {
-        return blogCommentDao.findLevel1CommentByBlog_id(blog_id);
-    }
-
-    @Override
-    public BlogCount findBlogCountByBlog_id(Integer blog_id) {
-        return blogCountDao.findBlogCountByBlog_id(blog_id);
-    }
-
-    @Override
-    public List<BlogImage> findBlogImageByBlog_id(Integer blog_id) {
-        return blogImageDao.findBlogImageByBlog_id(blog_id);
-    }
-
-    @Override
     public  void incrVoteCount(Integer blog_id) {
         blogCountDao.incrVoteCount(blog_id);
     }
