@@ -38,7 +38,7 @@ public class BlogController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Msg AddBlog(@ModelAttribute @Valid BlogContentDTO blogContentDTO, @RequestHeader(value = "token") String token) {
         Blog blog = new Blog();
-        blog.setUser_id(JWT.decode(token).getClaim("user_id").asInt());  //暂时不知道怎么获取user_id
+        blog.setUser_id(JWT.decode(token).getClaim("user_id").asInt());  
         blog.setBlog_type(0);  //原创
         blog.setBlog_time(new Date());
         blog.setBlog_text(blogContentDTO.getText());
