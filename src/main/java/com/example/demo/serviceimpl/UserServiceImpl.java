@@ -4,6 +4,7 @@ import com.example.demo.dao.UserDao;
 import com.example.demo.dto.RegisterDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.dto.UserInfoDTO;
+import com.example.demo.entity.Blog;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +27,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfoDTO register(RegisterDTO registerDTO) {
         return userDao.register(registerDTO);
+    }
+
+    @Override
+    public UserInfoDTO getUserInfoById(Integer id) {
+        Blog blog = new Blog();
+        blog.getUser().getUsername();
+        return null;
     }
 }

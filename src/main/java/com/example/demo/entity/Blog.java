@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -20,4 +21,15 @@ public class Blog {
     private String blog_text;
     private boolean is_deleted;
     private Integer check_status;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id",insertable = false, updatable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="topic_id",insertable = false, updatable = false)
+    private Topic topic;
+//    @OneToMany(fetch = FetchType.LAZY)
+//
 }

@@ -44,7 +44,9 @@ public class UserController {
             if(!user.getPassword().equals(password)) {
                 return new UserDTO(null,null,MsgUtil.makeMsg(MsgCode.ERROR,MsgUtil.LOGIN_USER_ERROR_MSG));
             }else {
-                return null;//还未处理完成
+                String token = tokenService.getToken(user);
+                UserInfoDTO userInfoDTO = new UserInfoDTO(user,user.getUserInfo());
+                return new UserDTO(userInfoDTO,token,MsgUtil.makeMsg(MsgCode.SUCCESS,MsgUtil.LOGIN_SUCCESS_MSG));
             }
         }
     }
