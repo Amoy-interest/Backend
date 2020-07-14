@@ -7,6 +7,8 @@ import com.example.demo.entity.Blog;
 import com.example.demo.entity.BlogComment;
 import com.example.demo.entity.BlogCount;
 import com.example.demo.entity.BlogImage;
+import com.example.demo.entity.BlogCount;
+import com.example.demo.entity.BlogImage;
 import com.example.demo.msgutils.Msg;
 import com.example.demo.msgutils.MsgCode;
 import com.example.demo.msgutils.MsgUtil;
@@ -36,7 +38,7 @@ public class BlogController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Msg AddBlog(@ModelAttribute @Valid BlogContentDTO blogContentDTO, @RequestHeader(value = "token") String token) {
         Blog blog = new Blog();
-        blog.setUser_id(JWT.decode(token).getClaim("user_id").asInt());
+        blog.setUser_id(JWT.decode(token).getClaim("user_id").asInt());  
         blog.setBlog_type(0);  //原创
         blog.setBlog_time(new Date());
         blog.setBlog_text(blogContentDTO.getText());

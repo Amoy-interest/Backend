@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -32,4 +33,12 @@ public class User {
         this.username = username;
         this.password = password;
     }
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
+    private UserInfo userInfo;
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
+    private UserCount userCount;
+    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    private List<Blog> blogs;
 }

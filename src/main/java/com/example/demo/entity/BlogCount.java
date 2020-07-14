@@ -2,9 +2,7 @@ package com.example.demo.entity;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @Entity
@@ -16,4 +14,8 @@ public class BlogCount {
     private int comment_count;
     private int vote_count;
     private int report_count;
+
+//    @OneToOne(fetch= FetchType.LAZY)
+//    @JoinColumn(name = "blog_id",referencedColumnName = "blog_id")
+//    private Blog blog;
 }
