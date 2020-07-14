@@ -15,6 +15,6 @@ import lombok.Setter;
 @ApiModel(value = "UserDto", description = "登录/注册返回信息")
 public class UserDTO {
     private UserInfoDTO user;
+    private String token;
     private Msg msg;
-//    public
 }

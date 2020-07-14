@@ -4,7 +4,9 @@ import com.auth0.jwt.JWT;
 import com.example.demo.annotation.UserLoginToken;
 import com.example.demo.dto.RegisterDTO;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.dto.UserInfoDTO;
 import com.example.demo.entity.User;
+import com.example.demo.entity.UserInfo;
 import com.example.demo.msgutils.Msg;
 import com.example.demo.msgutils.MsgCode;
 import com.example.demo.msgutils.MsgUtil;
@@ -34,33 +36,19 @@ public class UserController {
             @ApiImplicitParam(paramType = "query", name = "username", value = "用户名", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "password", value = "密码", required = true, dataType = "String")
     })
-//    public UserDTO Login(String username, String password) {
-//        User user = userService.findUserByUsername(username);
-//        if(user == null) {
-//            UserDTO userDTO = new UserDTO();
-//            userDTO.;
-//        }
-//        return new UserDTO();
-//    }
-    //测试版
-    public Object login(String username,String password){
-        JSONObject jsonObject=new JSONObject();
-        User userForBase=userService.findUserByUsername(username);
-        if(userForBase==null){
-            jsonObject.put("message","登录失败,用户不存在");
-            return jsonObject;
+    public UserDTO Login(String username, String password) {
+        User user = userService.findUserByUsername(username);
+        if(user == null) {
+            return new UserDTO(null,null,MsgUtil.makeMsg(MsgCode.USER_NOT_EXIST,MsgUtil.LOGIN_USER_ERROR_MSG));
         }else {
-            if (!userForBase.getPassword().equals(password)){
-                jsonObject.put("message","登录失败,密码错误");
-                return jsonObject;
+            if(!user.getPassword().equals(password)) {
+                return new UserDTO(null,null,MsgUtil.makeMsg(MsgCode.ERROR,MsgUtil.LOGIN_USER_ERROR_MSG));
             }else {
-                String token = tokenService.getToken(userForBase);
-                jsonObject.put("token", token);
-                jsonObject.put("user", userForBase);
-                return jsonObject;
+                return null;//还未处理完成
             }
         }
     }
+
     //用于测试
     @UserLoginToken
     @GetMapping("/getMessage")
@@ -84,11 +72,14 @@ public class UserController {
     public UserDTO Register(@ModelAttribute @Valid RegisterDTO registerDTO){
         User user = userService.findUserByUsername(registerDTO.getUsername());
         if(user != null) {
-            return new UserDTO(null,MsgUtil.makeMsg(MsgCode.USER_EXIST,MsgUtil.USER_EXIST_MSG));
+            return new UserDTO(null,null,MsgUtil.makeMsg(MsgCode.USER_EXIST,MsgUtil.USER_EXIST_MSG));
         }
-        //后台验证密码和邮箱格式？
-        userService.register(registerDTO);
-        return new UserDTO();
+        //服务层验证密码和邮箱格式？
+        UserInfoDTO userInfoDTO = userService.register(registerDTO);
+        user = userService.findUserByUsername(registerDTO.getUsername());
+        if(userInfoDTO == null)
+            return new UserDTO(null,null,MsgUtil.makeMsg(MsgCode.ERROR,MsgUtil.SIGNIN_ERR_MSG));
+        return new UserDTO(userInfoDTO,tokenService.getToken(user),MsgUtil.makeMsg(MsgCode.SUCCESS,MsgUtil.REGISTER_SUCCESS_MSG));
     }
 
     //是否还需要check？
