@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -14,4 +15,8 @@ public class Topic {
     private int topic_id;
     private String topic_name;
     private Date topic_time;
+
+    @OneToMany(fetch=FetchType.LAZY)
+    @JoinColumn(name = "topic_id",referencedColumnName = "topic_id")
+    private List<Blog> blogs;
 }
