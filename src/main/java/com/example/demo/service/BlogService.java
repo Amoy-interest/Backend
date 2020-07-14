@@ -25,6 +25,7 @@ public interface BlogService {
     BlogComment addBlogComment(BlogComment blogComment);
 
     BlogDTO getSimpleBlogDetail(Integer blog_id);
+    BlogDTO getAllBlogDetail(Integer blog_id);
 
     List<Blog> getAllBlogs();
 }

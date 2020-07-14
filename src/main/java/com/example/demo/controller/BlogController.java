@@ -48,17 +48,7 @@ public class BlogController {
     @ApiOperation(value = "GET博文")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public BlogDTO GetBlog(Integer blog_id) {
-        Blog blog = blogService.findBlogByBlog_id(blog_id);
-        List<BlogComment> blogComments = blogService.findLevel1CommentByBlog_id(blog_id);
-        BlogCount blogCount = blogService.findBlogCountByBlog_id(blog_id);
-        List<BlogImage> blogImages = blogService.findBlogImageByBlog_id(blog_id);
-        Blog blogChild = new Blog();
-        List<BlogImage> blogChildImages = null;
-        if (blog.getBlog_type() > 0) {
-            blogChild = blogService.findBlogByBlog_id(blog.getReply_blog_id());
-            blogChildImages = blogService.findBlogImageByBlog_id(blog.getReply_blog_id());
-        }
-        return new BlogDTO(blog, blogComments, blogCount, blogImages, blogChild, blogChildImages);
+        return blogService.getAllBlogDetail(blog_id);
     }
 
     @ApiOperation(value = "编辑博文")
