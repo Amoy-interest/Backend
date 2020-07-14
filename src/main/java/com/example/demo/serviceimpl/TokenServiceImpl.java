@@ -2,6 +2,7 @@ package com.example.demo.serviceimpl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.demo.dto.UserInfoDTO;
 import com.example.demo.entity.User;
 import com.example.demo.service.TokenService;
 import org.springframework.stereotype.Service;
@@ -24,4 +25,5 @@ public class TokenServiceImpl implements TokenService {
                 .sign(Algorithm.HMAC256(SECRET));
         return token;
     }
+
 }

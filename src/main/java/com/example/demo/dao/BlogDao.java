@@ -1,9 +1,6 @@
 package com.example.demo.dao;
 
 import com.example.demo.entity.Blog;
-import com.example.demo.entity.BlogComment;
-import com.example.demo.entity.BlogCount;
-import com.example.demo.entity.BlogImage;
 
 import java.util.List;
 
