@@ -31,8 +31,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserInfoDTO getUserInfoById(Integer id) {
-        Blog blog = new Blog();
-        blog.getUser().getUsername();
         return null;
     }
 }
