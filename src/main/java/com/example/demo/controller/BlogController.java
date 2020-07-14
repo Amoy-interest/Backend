@@ -5,6 +5,8 @@ import com.example.demo.dto.BlogContentDTO;
 import com.example.demo.dto.BlogDTO;
 import com.example.demo.entity.Blog;
 import com.example.demo.entity.BlogComment;
+import com.example.demo.entity.BlogCount;
+import com.example.demo.entity.BlogImage;
 import com.example.demo.msgutils.Msg;
 import com.example.demo.msgutils.MsgCode;
 import com.example.demo.msgutils.MsgUtil;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.BadLocationException;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,12 +36,11 @@ public class BlogController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Msg AddBlog(@ModelAttribute @Valid BlogContentDTO blogContentDTO, @RequestHeader(value = "token") String token) {
         Blog blog = new Blog();
-        blog.setUser_id(JWT.decode(token).getClaim("user_id").asInt());  //暂时不知道怎么获取user_id
+        blog.setUser_id(JWT.decode(token).getClaim("user_id").asInt());
         blog.setBlog_type(0);  //原创
         blog.setBlog_time(new Date());
         blog.setBlog_text(blogContentDTO.getText());
         blog.set_deleted(false);
-//        blog.setBlog_image(blogContentDTO.getImages().get(0)); //是否应该调整数据库结构
         blogService.addBlog(blog);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.ADD_BLOG_SUCCESS_MSG);
     }
@@ -46,7 +48,17 @@ public class BlogController {
     @ApiOperation(value = "GET博文")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public BlogDTO GetBlog(Integer blog_id) {
-        return new BlogDTO();
+        Blog blog = blogService.findBlogByBlog_id(blog_id);
+        List<BlogComment> blogComments = blogService.findLevel1CommentByBlog_id(blog_id);
+        BlogCount blogCount = blogService.findBlogCountByBlog_id(blog_id);
+        List<BlogImage> blogImages = blogService.findBlogImageByBlog_id(blog_id);
+        Blog blogChild = new Blog();
+        List<BlogImage> blogChildImages = null;
+        if (blog.getBlog_type() > 0) {
+            blogChild = blogService.findBlogByBlog_id(blog.getReply_blog_id());
+            blogChildImages = blogService.findBlogImageByBlog_id(blog.getReply_blog_id());
+        }
+        return new BlogDTO(blog, blogComments, blogCount, blogImages, blogChild, blogChildImages);
     }
 
     @ApiOperation(value = "编辑博文")
@@ -67,32 +79,45 @@ public class BlogController {
 
     @ApiOperation(value = "进行评论")
     @RequestMapping(value = "/comment",method = RequestMethod.POST)
-    public void Comment(Integer blog_id, Integer comment_id, String text) {
+    public Msg Comment(Integer blog_id, Integer root_comment_id, String reply_comment_username, String text) {
         BlogComment blogComment = new BlogComment();
         blogComment.setBlog_id(blog_id);
-        //username
-        blogComment.setUsername("0"); // 暂时不知道怎么获取user_id
-        if (comment_id == -1) blogComment.setComment_level(1); //一级评论
+        blogComment.setUsername("0"); //是否要添加UserService?感觉不是很行？
+        if (root_comment_id == -1) blogComment.setComment_level(1); //一级评论
         else {
             blogComment.setComment_level(2); //二级评论
-            // reply_comment_username 是否应该增加参数
+            blogComment.setReply_comment_username(reply_comment_username);
         }
         blogComment.setComment_text(text);
         blogComment.setComment_time(new Date());
         blogComment.setVote_count(0);
         blogComment.set_deleted(false);
-        blogComment.setRoot_comment_id(comment_id);
+        blogComment.setRoot_comment_id(root_comment_id);
+        blogService.addBlogComment(blogComment);
+        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.COMMENT_SUCCESS_MSG);
     }
 
     @ApiOperation(value = "点赞")
     @RequestMapping(value = "/vote", method = RequestMethod.POST)
-    public void Vote(Integer blog_id,Integer comment_id) {
-
+    public Msg Vote(Integer blog_id,Integer comment_id) {
+        if (comment_id == -1) {
+            blogService.incrVoteCount(blog_id);
+        } else {
+            blogService.incrCommentVoteCount(comment_id);
+        }
+        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.VOTE_SUCCESS_MSG);
     }
 
     @ApiOperation(value = "搜索")
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public List<BlogDTO> Search(String keyword){
-        return null;
+        List<BlogDTO> blogDTOS = new ArrayList<>();
+        List<Blog> blogs = blogService.getAllBlogs();
+        for (Blog blog : blogs) {
+            if (blog.getBlog_text().contains(keyword)) {
+                blogDTOS.add(blogService.getSimpleBlogDetail(blog.getBlog_id()));
+            }
+        }
+        return blogDTOS;
     }
 }

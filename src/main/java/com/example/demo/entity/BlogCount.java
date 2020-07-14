@@ -15,4 +15,5 @@ public class BlogCount {
     private int forward_count;
     private int comment_count;
     private int vote_count;
+    private int report_count;
 }

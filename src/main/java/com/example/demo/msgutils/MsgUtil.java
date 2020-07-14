@@ -34,6 +34,10 @@ public class MsgUtil {
     public static final String PUT_BLOG_SUCCESS_MSG = "更新博文成功";
     public static final String DELETE_BLOG_SUCCESS_MSG = "删除博文成功";
 
+    public static final String VOTE_SUCCESS_MSG = "点赞成功";
+    public static final String COMMENT_SUCCESS_MSG = "评论成功";
+    public static final String FORWARD_SUCCESS_MSG = "转发成功";
+
 //    public static Msg makeMsg(MsgCode code, JSONObject data){
 //        return new Msg(code, data);
 //    }
