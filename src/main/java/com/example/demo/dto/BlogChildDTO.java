@@ -14,6 +14,8 @@ import java.util.List;
 @Setter
 @ApiModel(value = "BlogChild", description = "转发的博文信息")
 public class BlogChildDTO {
+    private int user_id;
+    private String nickname;
     private String text;
     private List<String> images;
 }
