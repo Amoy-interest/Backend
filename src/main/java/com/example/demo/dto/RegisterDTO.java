@@ -17,8 +17,8 @@ public class RegisterDTO {
     private String nickname;
     @ApiModelProperty(value = "密码", required = true)
     private String password;
-    @ApiModelProperty(value = "性别", required = true,example = "0代表女性，1代表男性")
-    private int sex;
+    @ApiModelProperty(value = "性别(0表示女性，1表示男性)", example = "0",required = true)
+    private Integer sex;
     @ApiModelProperty(value = "地址", required = true)
     private String address;
     @ApiModelProperty(value = "邮箱",required = true)

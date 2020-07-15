@@ -1,8 +1,7 @@
 package com.example.demo.controller;
 
 import com.auth0.jwt.JWT;
-import com.example.demo.dto.BlogContentDTO;
-import com.example.demo.dto.BlogDTO;
+import com.example.demo.dto.*;
 import com.example.demo.entity.Blog;
 import com.example.demo.entity.BlogComment;
 import com.example.demo.entity.BlogCount;
@@ -17,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@RequestMapping("/blog")
+@RequestMapping("/blogs")
 @Api(tags="博文模块")
 @RestController
 public class BlogController {
@@ -36,7 +36,7 @@ public class BlogController {
 
     @ApiOperation(value = "写博文")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Msg AddBlog(@ModelAttribute @Valid BlogContentDTO blogContentDTO, @RequestHeader(value = "token") String token) {
+    public Msg AddBlog(@ModelAttribute @Valid @RequestBody BlogContentDTO blogContentDTO, @RequestHeader(value = "token") String token) {
         Blog blog = new Blog();
         blog.setUser_id(JWT.decode(token).getClaim("user_id").asInt());
         blog.setBlog_type(0);  //原创
@@ -55,7 +55,9 @@ public class BlogController {
 
     @ApiOperation(value = "编辑博文")
     @RequestMapping(value = "",method = RequestMethod.PUT)
-    public Msg PutBlog(Integer blog_id,String text) {
+    public Msg PutBlog(@RequestBody BlogPutDTO blogPutDTO) {
+        Integer blog_id = blogPutDTO.getBlog_id();
+        String text = blogPutDTO.getText();
         Blog blog = blogService.findBlogByBlog_id(blog_id);
         blog.setBlog_text(text);
         blogService.updateBlog(blog);
@@ -70,8 +72,13 @@ public class BlogController {
     }
 
     @ApiOperation(value = "进行评论")
-    @RequestMapping(value = "/comment",method = RequestMethod.POST)
-    public Msg Comment(Integer blog_id, Integer root_comment_id, String reply_comment_nickname, String text) {
+    @RequestMapping(value = "/comments",method = RequestMethod.POST)
+    public Msg Comment(@RequestBody CommentPostDTO commentPostDTO) {
+        Integer blog_id = commentPostDTO.getBlog_id();
+        Integer root_comment_id = commentPostDTO.getRoot_comment_id();
+        String reply_comment_nickname = commentPostDTO.getReply_comment_nickname();
+        String text = commentPostDTO.getText();
+
         BlogComment blogComment = new BlogComment();
         blogComment.setBlog_id(blog_id);
         blogComment.setNickname("0"); //是否要添加UserService?感觉不是很行？
@@ -88,16 +95,30 @@ public class BlogController {
         blogService.addBlogComment(blogComment);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.COMMENT_SUCCESS_MSG);
     }
+    @ApiOperation(value = "删除评论")
+    @DeleteMapping(value = "/comments")
+    public Msg DeleteComment(Integer comment_id) {
+        return null;
+    }
+    //不支持修改评论
 
     @ApiOperation(value = "点赞")
     @RequestMapping(value = "/vote", method = RequestMethod.POST)
-    public Msg Vote(Integer blog_id,Integer comment_id) {
+    public Msg Vote(@RequestBody VoteDTO voteDTO) {
+        Integer comment_id = voteDTO.getComment_id();
+        Integer blog_id = voteDTO.getBlog_id();
         if (comment_id == -1) {
             blogService.incrVoteCount(blog_id);
         } else {
             blogService.incrCommentVoteCount(comment_id);
         }
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.VOTE_SUCCESS_MSG);
+    }
+
+    @ApiOperation(value = "取消点赞")
+    @DeleteMapping(value = "/vote")
+    public Msg CancelVote(Integer blog_id,Integer comment_id) {
+        return null;
     }
 
     @ApiOperation(value = "搜索")
@@ -112,4 +133,19 @@ public class BlogController {
         }
         return new Msg(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, blogDTOS);
     }
+
+    @ApiOperation(value = "获取被举报的blog")
+    @GetMapping(value = "/reported")
+    public Msg<List<BlogDTO>> GetReportedBlogs() {
+        return null;
+    }
+
+    //一次审核一堆还是一次审核一个blog？效率？
+    @ApiOperation(value = "审核blog")
+    @PutMapping(value = "/reported")
+    public Msg CheckReportedBlog(@RequestBody BlogCheckDTO blogCheckDTO) {
+
+        return null;
+    }
+
 }

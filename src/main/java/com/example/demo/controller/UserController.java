@@ -2,9 +2,7 @@ package com.example.demo.controller;
 
 import com.auth0.jwt.JWT;
 import com.example.demo.annotation.UserLoginToken;
-import com.example.demo.dto.RegisterDTO;
-import com.example.demo.dto.UserDTO;
-import com.example.demo.dto.UserInfoDTO;
+import com.example.demo.dto.*;
 import com.example.demo.entity.UserAuth;
 import com.example.demo.msgutils.Msg;
 import com.example.demo.msgutils.MsgCode;
@@ -19,8 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Api(tags="用户模块")
 @RestController
 public class UserController {
@@ -30,11 +29,13 @@ public class UserController {
     private TokenService tokenService;
     @ApiOperation(value = "登录", notes = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "username", value = "用户名", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType = "query", name = "password", value = "密码", required = true, dataType = "String")
-    })
-    public Msg<UserDTO> Login(String username, String password) {
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "body", name = "username", value = "用户名", required = true, dataType = "String"),
+//            @ApiImplicitParam(paramType = "body", name = "password", value = "密码", required = true, dataType = "String")
+//    })
+    public Msg<UserDTO> Login(@RequestBody LoginDTO data) {
+        String username = data.getUsername();
+        String password = data.getPassword();
         UserAuth userAuth = userService.findUserAuthByUsername(username);
         if(userAuth == null) {
             return new Msg<UserDTO>(MsgCode.USER_NOT_EXIST,MsgUtil.LOGIN_USER_ERROR_MSG,null);
@@ -62,11 +63,11 @@ public class UserController {
 
 
     //登出后台不需要做什么，直接前台把token删掉就好了
-//    @ApiOperation(value = "登出",notes = "登出")
-//    @GetMapping(value = "/logout")
-//    public Msg Logout() {
-//        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.LOGOUT_SUCCESS_MSG);
-//    }
+    @ApiOperation(value = "登出",notes = "登出")
+    @GetMapping(value = "/logout")
+    public Msg Logout() {
+        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.LOGOUT_SUCCESS_MSG);
+    }
 
     @ApiOperation(value = "注册",notes = "注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -85,6 +86,36 @@ public class UserController {
         String token = tokenService.getToken(userAuth);
         UserDTO userDTO = new UserDTO(userInfoDTO,token);
         return new Msg<UserDTO>(MsgCode.SUCCESS,MsgUtil.REGISTER_SUCCESS_MSG,userDTO);
+    }
+
+    @ApiOperation(value = "获取被举报用户",notes = "获取被举报用户")
+    @RequestMapping(value = "/reported", method = RequestMethod.GET)
+    public Msg<List<UserReportDTO>> GetReportedUser() {
+        return null;
+    }
+
+    @ApiOperation(value = "用户禁言",notes = "对用户禁言")
+    @RequestMapping(value = "/ban", method = RequestMethod.PUT)
+    public Msg Ban(@RequestBody UserCheckDTO userCheckDTO) {
+        return null;
+    }
+
+    @ApiOperation(value = "用户解禁",notes = "对用户解除禁言")
+    @RequestMapping(value = "/unban", method = RequestMethod.PUT)
+    public Msg Unban(@RequestBody Integer user_id) {
+        return null;
+    }
+
+    @ApiOperation(value = "用户封号",notes = "对用户解除封号")
+    @RequestMapping(value = "/forbid", method = RequestMethod.PUT)
+    public Msg Forbid(@RequestBody UserCheckDTO userCheckDTO) {
+        return null;
+    }
+
+    @ApiOperation(value = "用户禁言",notes = "对用户禁言")
+    @RequestMapping(value = "/permit", method = RequestMethod.PUT)
+    public Msg Permit(@RequestBody Integer user_id) {
+        return null;
     }
 
     //是否还需要check？
