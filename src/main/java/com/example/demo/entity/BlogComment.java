@@ -22,6 +22,21 @@ public class BlogComment {
     private boolean is_deleted;
     private int root_comment_id;
 
+    public BlogComment() {}
+    public BlogComment(int comment_id, int blog_id, String username, String reply_comment_username, int comment_level, String comment_text, Date comment_time,
+                       int vote_count, boolean is_deleted, int root_comment_id) {
+        this.comment_id = comment_id;
+        this.blog_id = blog_id;
+        this.username = username;
+        this.reply_comment_username = reply_comment_username;
+        this.comment_level = comment_level;
+        this.comment_text = comment_text;
+        this.comment_time = comment_time;
+        this.vote_count = vote_count;
+        this.is_deleted = is_deleted;
+        this.root_comment_id = root_comment_id;
+    }
+
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="blog_id",insertable = false, updatable = false)
 //    private Blog blog;
