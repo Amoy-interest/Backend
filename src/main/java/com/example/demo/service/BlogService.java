@@ -15,16 +15,13 @@ public interface BlogService {
     Blog findBlogByBlog_id(Integer blog_id);
     void deleteByBlog_id(Integer blog_id);
 
-    List<BlogComment> findLevel1CommentByBlog_id(Integer blog_id);
-    BlogCount findBlogCountByBlog_id(Integer blog_id);
-    List<BlogImage> findBlogImageByBlog_id(Integer blog_id);
-
     void incrVoteCount(Integer blog_id);
     void incrCommentVoteCount(Integer comment_id);
 
     BlogComment addBlogComment(BlogComment blogComment);
 
     BlogDTO getSimpleBlogDetail(Integer blog_id);
+    BlogDTO getAllBlogDetail(Integer blog_id);
 
     List<Blog> getAllBlogs();
 }

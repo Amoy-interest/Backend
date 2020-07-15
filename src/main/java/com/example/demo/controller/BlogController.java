@@ -38,7 +38,7 @@ public class BlogController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Msg AddBlog(@ModelAttribute @Valid BlogContentDTO blogContentDTO, @RequestHeader(value = "token") String token) {
         Blog blog = new Blog();
-        blog.setUser_id(JWT.decode(token).getClaim("user_id").asInt());  
+        blog.setUser_id(JWT.decode(token).getClaim("user_id").asInt());
         blog.setBlog_type(0);  //原创
         blog.setBlog_time(new Date());
         blog.setBlog_text(blogContentDTO.getText());
@@ -49,18 +49,8 @@ public class BlogController {
 
     @ApiOperation(value = "GET博文")
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public BlogDTO GetBlog(Integer blog_id) {
-        Blog blog = blogService.findBlogByBlog_id(blog_id);
-        List<BlogComment> blogComments = blogService.findLevel1CommentByBlog_id(blog_id);
-        BlogCount blogCount = blogService.findBlogCountByBlog_id(blog_id);
-        List<BlogImage> blogImages = blogService.findBlogImageByBlog_id(blog_id);
-        Blog blogChild = new Blog();
-        List<BlogImage> blogChildImages = null;
-        if (blog.getBlog_type() > 0) {
-            blogChild = blogService.findBlogByBlog_id(blog.getReply_blog_id());
-            blogChildImages = blogService.findBlogImageByBlog_id(blog.getReply_blog_id());
-        }
-        return new BlogDTO(blog, blogComments, blogCount, blogImages, blogChild, blogChildImages);
+    public Msg<BlogDTO> GetBlog(Integer blog_id) {
+        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getAllBlogDetail(blog_id));
     }
 
     @ApiOperation(value = "编辑博文")
@@ -112,7 +102,7 @@ public class BlogController {
 
     @ApiOperation(value = "搜索")
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public List<BlogDTO> Search(String keyword){
+    public Msg<List<BlogDTO>> Search(String keyword){
         List<BlogDTO> blogDTOS = new ArrayList<>();
         List<Blog> blogs = blogService.getAllBlogs();
         for (Blog blog : blogs) {
@@ -120,6 +110,6 @@ public class BlogController {
                 blogDTOS.add(blogService.getSimpleBlogDetail(blog.getBlog_id()));
             }
         }
-        return blogDTOS;
+        return new Msg(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, blogDTOS);
     }
 }
