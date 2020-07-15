@@ -2,9 +2,11 @@ package com.example.demo.msgutils;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.NoArgsConstructor;
 import net.sf.json.JSONObject;
 
 @ApiModel("返回信息对象")
+@NoArgsConstructor
 public class Msg<T> {
     @ApiModelProperty(value = "返回码",dataType = "int")
     private int status;

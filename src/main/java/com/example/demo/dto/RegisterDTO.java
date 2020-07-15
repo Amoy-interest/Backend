@@ -4,19 +4,17 @@ import com.example.demo.msgutils.Msg;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @ApiModel(value = "RegisterDto", description = "注册信息")
 public class RegisterDTO {
     @ApiModelProperty(value = "用户名", required = true)
     private String username;
+    @ApiModelProperty(value = "昵称", required = true)
+    private String nickname;
     @ApiModelProperty(value = "密码", required = true)
     private String password;
     @ApiModelProperty(value = "性别", required = true,example = "0代表女性，1代表男性")

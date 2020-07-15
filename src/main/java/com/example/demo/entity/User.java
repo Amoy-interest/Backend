@@ -1,8 +1,5 @@
 package com.example.demo.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,32 +10,38 @@ import java.util.List;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "user")
-@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "user_id")
+@Table(name = "user_info")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int user_id;
-    private String username;
-    private String password;
-    private int user_type;
-    private int user_status; //用户禁言或者封号状态
-
-    public User (String username,String password,int user_type,int user_status) {
-        this.user_type = user_type;
-        this.user_status = user_status;
-        this.username = username;
-        this.password = password;
+    private String nickname;
+    private String email;
+    private int sex;
+    private String address;
+    private int credits;
+    private String introduction;
+    private String avatar_path;
+    public User(int user_id,String nickname,String email, int sex, String address, int credits, String introduction, String avatar_path) {
+        this.user_id = user_id;
+        this.nickname = nickname;
+        this.email = email;
+        this.sex = sex;
+        this.address = address;
+        this.credits = credits;
+        this.introduction = introduction;
+        this.avatar_path = avatar_path;
     }
+
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id",referencedColumnName = "user_id")
-    private UserInfo userInfo;
+    private UserAuth userAuth;
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id",referencedColumnName = "user_id")
     private UserCount userCount;
     @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
     private List<Blog> blogs;
+//    @OneToOne(fetch=FetchType.LAZY)
+//    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
+//    private UserFollow userFollow;
+
 }

@@ -17,4 +17,19 @@ public class TopicDaoImpl implements TopicDao {
     public Topic getTopicById(int topic_id) {
         return topicRepository.getOne(topic_id);
     }
+
+    @Override
+    public Topic insert(Topic topic) {
+        return topicRepository.saveAndFlush(topic);
+    }
+
+    @Override
+    public void update(Topic topic) {
+        topicRepository.save(topic);
+    }
+
+    @Override
+    public Topic getTopicByName(String topic_name) {
+        return topicRepository.getTopicByName(topic_name);
+    }
 }

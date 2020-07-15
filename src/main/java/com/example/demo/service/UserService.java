@@ -1,15 +1,12 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.RegisterDTO;
-import com.example.demo.dto.UserDTO;
 import com.example.demo.dto.UserInfoDTO;
-import com.example.demo.entity.User;
-import com.example.demo.entity.UserInfo;
-import io.swagger.models.auth.In;
+import com.example.demo.entity.UserAuth;
 
 public interface UserService {
-    User findUserById(Integer id);
-    User findUserByUsername(String username);
+    UserAuth findUserAuthById(Integer id);
+    UserAuth findUserAuthByUsername(String username);
     UserInfoDTO register(RegisterDTO registerDTO);
-    UserInfoDTO getUserInfoById(Integer id);
+    void follow(Integer user_id,Integer follow_id);
 }
