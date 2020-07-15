@@ -29,7 +29,7 @@ public class BlogDTO {
     private List<BlogComment> blog_comments;
 
     public BlogDTO(Blog blog, List<BlogComment> blogComments, BlogCount blogCount, List<BlogImage> blogImages , Blog blogChild, List<BlogImage> blogChildImages) {
-        this.setNickname(blog.getUser().getNickname());
+        if (blog.getUser() != null) this.setNickname(blog.getUser().getNickname());
         this.setBlog_type(blog.getBlog_type());
         this.setBlog_time(blog.getBlog_time());
 
@@ -50,7 +50,10 @@ public class BlogDTO {
                     tmp_blog_child_images.add(blogImage.getBlog_image());
                 }
             }
-            this.blog_child = new BlogChildDTO(blogChild.getUser_id(),blogChild.getUser().getNickname(),blogChild.getBlog_text(), tmp_blog_child_images);
+            if (blogChild.getUser() != null)
+                this.blog_child = new BlogChildDTO(blogChild.getUser_id(),blogChild.getUser().getNickname(),blogChild.getBlog_text(), tmp_blog_child_images);
+            else
+                this.blog_child = new BlogChildDTO(blogChild.getUser_id(), null, blogChild.getBlog_text(), tmp_blog_child_images);
         }
 
         this.blog_count = new BlogCountDTO(blogCount);
