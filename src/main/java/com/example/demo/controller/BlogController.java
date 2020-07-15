@@ -71,14 +71,14 @@ public class BlogController {
 
     @ApiOperation(value = "进行评论")
     @RequestMapping(value = "/comment",method = RequestMethod.POST)
-    public Msg Comment(Integer blog_id, Integer root_comment_id, String reply_comment_username, String text) {
+    public Msg Comment(Integer blog_id, Integer root_comment_id, String reply_comment_nickname, String text) {
         BlogComment blogComment = new BlogComment();
         blogComment.setBlog_id(blog_id);
-        blogComment.setUsername("0"); //是否要添加UserService?感觉不是很行？
+        blogComment.setNickname("0"); //是否要添加UserService?感觉不是很行？
         if (root_comment_id == -1) blogComment.setComment_level(1); //一级评论
         else {
             blogComment.setComment_level(2); //二级评论
-            blogComment.setReply_comment_username(reply_comment_username);
+            blogComment.setReply_comment_nickname(reply_comment_nickname);
         }
         blogComment.setComment_text(text);
         blogComment.setComment_time(new Date());
