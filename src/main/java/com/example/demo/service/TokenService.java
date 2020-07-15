@@ -1,8 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.UserInfoDTO;
-import com.example.demo.entity.User;
+import com.example.demo.entity.UserAuth;
 
 public interface TokenService {
-    String getToken(User user);
+    String getToken(UserAuth userAuth);
 }

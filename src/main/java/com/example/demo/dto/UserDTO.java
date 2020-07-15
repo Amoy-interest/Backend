@@ -3,18 +3,13 @@ package com.example.demo.dto;
 import com.example.demo.msgutils.Msg;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @ApiModel(value = "UserDto", description = "登录/注册返回信息")
 public class UserDTO {
     private UserInfoDTO user;
     private String token;
-    private Msg msg;
 }

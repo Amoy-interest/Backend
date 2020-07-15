@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-07-14 08:30:35
+Date: 2020-07-15 14:56:59
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -26,8 +26,9 @@ CREATE TABLE `blog` (
   `blog_time` datetime DEFAULT NULL,
   `blog_text` varchar(140) DEFAULT NULL,
   `is_deleted` smallint DEFAULT NULL,
-  `topic_id` int DEFAULT NULL,
   `check_status` smallint DEFAULT NULL,
+  `topic_id` int DEFAULT NULL,
+  `reply_blog_id` int DEFAULT NULL,
   PRIMARY KEY (`blog_id`),
   KEY `FK_Reference_4` (`user_id`),
   CONSTRAINT `FK_Reference_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -125,7 +126,7 @@ CREATE TABLE `user` (
   `user_status` smallint DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for user_count
@@ -165,6 +166,7 @@ CREATE TABLE `user_info` (
   `credits` int DEFAULT NULL,
   `introduction` varchar(50) DEFAULT NULL,
   `avatar_path` varchar(1024) DEFAULT NULL,
+  `nickname` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   CONSTRAINT `FK_Relationship_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
