@@ -13,8 +13,8 @@ public class TopicServiceImpl implements TopicService {
     private TopicDao topicDao;
 
     @Override
-    public TopicDTO getTopicById(int topic_id) {
-        Topic topic = topicDao.getTopicById(topic_id);
-        return null;
+    public TopicDTO getTopicByName(String topic_name) {
+        Topic topic = topicDao.getTopicByName(topic_name);
+        return new TopicDTO(topic);
     }
 }
