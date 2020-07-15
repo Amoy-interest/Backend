@@ -56,7 +56,7 @@ public class BlogControllerTest extends DemoApplicationTests {
     @Test
     public void testGetBlog() throws Exception {
         Mockito.when(blogService.getAllBlogDetail(1)).thenReturn(null);
-        MvcResult result = mockMvc.perform(get("/blog?blog_id=1").header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
+        mockMvc.perform(get("/blog?blog_id=1").header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
                 .andExpect(status().isOk()).andReturn();
     }
     //直接null可以吗。。。又没对返回的东西做加工啥的。。

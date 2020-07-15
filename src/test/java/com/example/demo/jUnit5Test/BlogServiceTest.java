@@ -7,10 +7,7 @@ import com.example.demo.dao.BlogDao;
 import com.example.demo.dao.BlogImageDao;
 import com.example.demo.dto.BlogCountDTO;
 import com.example.demo.dto.BlogDTO;
-import com.example.demo.entity.Blog;
-import com.example.demo.entity.BlogComment;
-import com.example.demo.entity.BlogCount;
-import com.example.demo.entity.BlogImage;
+import com.example.demo.entity.*;
 import com.example.demo.serviceimpl.BlogServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,7 +19,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 public class BlogServiceTest extends DemoApplicationTests {
     @InjectMocks
@@ -36,6 +34,48 @@ public class BlogServiceTest extends DemoApplicationTests {
     private BlogImageDao blogImageDao;
     @Mock
     private BlogCommentDao blogCommentDao;
+
+    @Test
+    public void testAddBlog() {
+        when(blogDao.saveBlog(any())).thenReturn(null);
+        blogService.addBlog(new Blog(1, 1, 0, 0,null, "666",  false, 1, -1));
+        verify(blogDao, times(1)).saveBlog(any());
+    }
+
+    @Test
+    public void testUpdateBlog() {
+        when(blogDao.saveBlog(any())).thenReturn(null);
+        blogService.updateBlog(new Blog(1, 1, 0, 0,null, "666",  false, 1, -1));
+        verify(blogDao, times(1)).saveBlog(any());
+    }
+
+    @Test
+    public void testDeleteByBlog_id() {
+        doNothing().when(blogDao).deleteByBlog_id(1);
+        blogService.deleteByBlog_id(1);
+        verify(blogDao, times(1)).deleteByBlog_id(any());
+    }
+
+    @Test
+    public void testIncrVoteCount() {
+        doNothing().when(blogCountDao).incrVoteCount(1);
+        blogService.incrVoteCount(1);
+        verify(blogCountDao, times(1)).incrVoteCount(any());
+    }
+
+    @Test
+    public void testIncrCommentVoteCount() {
+        doNothing().when(blogCommentDao).incrCommentVoteCount(1);
+        blogService.incrCommentVoteCount(1);
+        verify(blogCommentDao, times(1)).incrCommentVoteCount(any());
+    }
+
+    @Test
+    public void testAddBlogComment() {
+        when(blogCommentDao.saveBlogComment(any())).thenReturn(null);
+        blogService.addBlogComment(new BlogComment(1, 1, "explodingnerk", null, 1, "求求你练下力量吧", null, 5, false, -1));
+        verify(blogCommentDao, times(1)).saveBlogComment(any());
+    }
 
     @Test
     public void testFindBlogByBlog_id() {
