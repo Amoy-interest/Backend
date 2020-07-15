@@ -30,25 +30,30 @@ public class BlogDTO {
     private List<BlogComment> blog_comments;
 
     public BlogDTO(Blog blog, List<BlogComment> blogComments, BlogCount blogCount, List<BlogImage> blogImages , Blog blogChild, List<BlogImage> blogChildImages) {
-        this.setUsername(blog.getUser().getUsername());
-        this.setReply_username(blogChild.getUser().getUsername());
+        //this.setUsername(blog.getUser().getUsername());
+        //this.setReply_username(blogChild.getUser().getUsername());
         this.setBlog_type(blog.getBlog_type());
         this.setBlog_time(blog.getBlog_time());
 
-        this.blog_content.setText(blog.getBlog_text());
-        List<String> tmp_blog_images = new ArrayList<>();
-        for (BlogImage blogImage : blogImages) {
-            tmp_blog_images.add(blogImage.getBlog_image());
+        List<String> tmp_blog_images = null;
+        if (blogImages != null) {
+            tmp_blog_images = new ArrayList<>();
+            for (BlogImage blogImage : blogImages) {
+                tmp_blog_images.add(blogImage.getBlog_image());
+            }
         }
-        this.blog_content.setImages(tmp_blog_images);
+        this.blog_content = new BlogContentDTO(blog.getBlog_text(), tmp_blog_images);
 
         if (blog.getBlog_type() > 0) {
-            this.blog_child.setText(blogChild.getBlog_text());
-            List<String> tmp_blog_child_images = new ArrayList<>();
-            for (BlogImage blogImage : blogChildImages) {
-                tmp_blog_child_images.add(blogImage.getBlog_image());
+            List<String> tmp_blog_child_images = null;
+            if (blogChildImages != null ){
+                tmp_blog_child_images = new ArrayList<>();
+                for (BlogImage blogImage : blogChildImages) {
+                    tmp_blog_child_images.add(blogImage.getBlog_image());
+                }
             }
-            this.blog_child.setImages(tmp_blog_child_images);
+            this.blog_child = new BlogChildDTO(blogChild.getBlog_text(), tmp_blog_child_images);
+
         }
 
         this.blog_count = new BlogCountDTO(blogCount);
