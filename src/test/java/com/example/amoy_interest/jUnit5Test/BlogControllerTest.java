@@ -92,21 +92,6 @@ public class BlogControllerTest extends DemoApplicationTests {
     }
 
     @Test
-    public void testCheckReportedBlog() throws Exception {
-        Mockito.when(blogService.findBlogByBlog_id(1)).thenReturn(new Blog(1, 1, 0, 0,null, "666",  false, 1, -1));
-        Mockito.when(blogService.updateBlog(Mockito.any())).thenReturn(null);
-        BlogCheckDTO blogCheckDTO = new BlogCheckDTO(1, 1);
-        String requestJson = JSONObject.toJSONString(blogCheckDTO);
-        mockMvc.perform(put("/blogs/admin/reported")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson)
-                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
-                .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).findBlogByBlog_id(any());
-        verify(blogService, times(1)).updateBlog(Mockito.any());
-    }
-
-    @Test
     public void testDeleteBlog() throws Exception {
         doNothing().when(blogService).deleteByBlog_id(Mockito.any());
         mockMvc.perform(delete("/blogs?blog_id=1")
@@ -192,19 +177,5 @@ public class BlogControllerTest extends DemoApplicationTests {
                 .andExpect(status().isOk()).andReturn();
         verify(blogService, times(1)).getAllBlogs();
         verify(blogService, times(1)).getSimpleBlogDetail(Mockito.any());
-    }
-
-    @Test
-    public void testGetReportedBlogs() throws Exception{
-        List<BlogCount> blogCounts = new ArrayList<>();
-        blogCounts.add(new BlogCount(1, 1, 1, 1, 1));
-        blogCounts.add(new BlogCount(1, 1, 1, 1, 1));
-        Mockito.when(blogService.getAllReportedBlogs()).thenReturn(blogCounts);
-        Mockito.when(blogService.getSimpleBlogDetail(any())).thenReturn(null);
-        mockMvc.perform(get("/blogs/admin/reported"))
-                .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).getAllReportedBlogs();
-        verify(blogService, times(2)).getSimpleBlogDetail(Mockito.any());
-
     }
 }

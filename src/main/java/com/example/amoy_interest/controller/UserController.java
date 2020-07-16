@@ -26,10 +26,6 @@ public class UserController {
     private TokenService tokenService;
     @ApiOperation(value = "登录", notes = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "body", name = "username", value = "用户名", required = true, dataType = "String"),
-//            @ApiImplicitParam(paramType = "body", name = "password", value = "密码", required = true, dataType = "String")
-//    })
     public Msg<UserDTO> Login(@RequestBody LoginDTO data) {
         String username = data.getUsername();
         String password = data.getPassword();
@@ -48,15 +44,6 @@ public class UserController {
         }
     }
 
-    //用于测试
-//    @UserLoginToken
-//    @GetMapping("/getMessage")
-//    public String getMessage(@RequestHeader(value="token") String token){
-//        Integer userId = JWT.decode(token).getClaim("user_id").asInt();
-////        Integer userId = Integer.parseInt(JWT.decode(token).getAudience().get(0));
-//
-//        return "你的用户id为"+Integer.toString(userId);
-//    }
 
 
     //登出后台不需要做什么，直接前台把token删掉就好了
@@ -83,13 +70,6 @@ public class UserController {
         String token = tokenService.getToken(userAuth);
         UserDTO userDTO = new UserDTO(userInfoDTO,token);
         return new Msg<UserDTO>(MsgCode.SUCCESS,MsgUtil.REGISTER_SUCCESS_MSG,userDTO);
-    }
-
-    @ApiOperation(value = "获取被举报用户",notes = "获取被举报用户")
-    @RequestMapping(value = "/admin/reported", method = RequestMethod.GET)
-    public Msg<List<UserReportDTO>> GetReportedUser() {
-
-        return null;
     }
 
     //是否还需要check？

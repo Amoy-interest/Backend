@@ -38,20 +38,4 @@ public class TopicController {
         return new Msg<>(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG,list);
     }
 
-    @ApiOperation(value = "获取被举报的话题")
-    @GetMapping(value = "/admin/reported")
-    public Msg<List<TopicReportDTO>> GetReportedTopics() {
-        return new Msg<>(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG,topicService.getReportedTopics());
-    }
-    @ApiOperation(value = "审核话题")
-    @PutMapping(value = "/admin/reported")
-    @ResponseBody
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", name = "topic_name", value = "话题名", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType = "body", name = "check_status", value = "审核状态（1为审核通过，2为审核关闭）", required = true, dataType = "int")
-    })
-    public Msg CheckReportedBlog(@RequestBody TopicCheckDTO topicCheckDTO) {
-        topicService.CheckReportedTopic(topicCheckDTO);
-        return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
-    }
 }

@@ -1,10 +1,14 @@
 package com.example.amoy_interest.jUnit5Test;
 
+import com.example.amoy_interest.dao.TopicDao;
+import com.example.amoy_interest.dto.TopicDTO;
+import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.service.BlogService;
 import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,25 +19,67 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TopicServiceTest {
-    private MockMvc mockMvc;
-
     @Autowired
-    private WebApplicationContext context;
-
-    @MockBean
     private TopicService topicService;
+    @MockBean
+    private TopicDao topicDao;
 
-    private ObjectMapper om = new ObjectMapper();
-    @Before
-    public void setUp() {mockMvc = MockMvcBuilders.webAppContextSetup(context).build();}
-
-    @AfterEach
-    void tearDown() {
-
+    @Test
+    public void testGetTopicByName() {
+        List<Blog> blogList = new ArrayList<>();
+        Date time = new Date();
+        for(int i = 1;i <= 10;i++) {
+            Blog blog = new Blog(i,1,1,0,time,"test",false,0,-1);
+            User user = new User(1,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"这个人很懒，什么都没留下",null);
+            BlogCount blogCount = new BlogCount(i,0,0,0,0);
+            blog.setBlogCount(blogCount);
+            blog.setBlogImages(null);
+            blog.setUser(user);
+            blogList.add(blog);
+        }
+        for(int i = 11;i <= 18;i++) {
+            Blog blog = new Blog(i,1,1,0,time,"test",true,0,-1);
+            User user = new User(1,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"这个人很懒，什么都没留下",null);
+//            BlogImage blogImage = new BlogImage(i,null);
+            BlogCount blogCount = new BlogCount(i,0,0,0,0);
+            blog.setBlogCount(blogCount);
+            blog.setUser(user);
+            blogList.add(blog);
+        }
+        for(int i = 19;i <= 25;i++) {
+            Blog blog = new Blog(i,1,1,0,time,"test",false,2,-1);
+            User user = new User(1,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"这个人很懒，什么都没留下",null);
+//            BlogImage blogImage = new BlogImage(i,null);
+            BlogCount blogCount = new BlogCount(i,0,0,0,0);
+            blog.setBlogCount(blogCount);
+            blog.setUser(user);
+            blogList.add(blog);
+        }
+        for(int i = 26;i <= 27;i++) {
+            Blog blog = new Blog(i,1,1,0,time,"test",false,1,-1);
+            User user = new User(1,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"这个人很懒，什么都没留下",null);
+//            BlogImage blogImage = new BlogImage(i,null);
+            BlogCount blogCount = new BlogCount(i,0,0,0,0);
+            blog.setBlogCount(blogCount);
+            blog.setUser(user);
+            blogList.add(blog);
+        }
+        Topic topic = new Topic(1,"高考加油",time,0,0);
+        topic.setBlogs(blogList);
+        when(topicDao.getTopicByName("高考加油")).thenReturn(topic);
+        TopicDTO topicDTO = topicService.getTopicByName("高考加油");
+        assertEquals(12, topicDTO.getBlogs().size());
+        assertEquals("高考加油",topicDTO.getName());
+        assertEquals(time,topicDTO.getTime());
     }
-
-
 }
