@@ -42,8 +42,8 @@ public class User {
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id",referencedColumnName = "user_id")
     private UserBan userBan;
-//    @OneToOne(fetch=FetchType.LAZY)
-//    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
-//    private UserFollow userFollow;
+    @ManyToMany(fetch=FetchType.LAZY)
+    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
+    private List<UserFollow> userFollow;
 
 }

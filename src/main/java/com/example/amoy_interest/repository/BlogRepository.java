@@ -11,6 +11,9 @@ public interface BlogRepository extends JpaRepository<Blog,Integer> {
     @Query(value = "from Blog where blog_id = :blog_id")
     Blog findBlogByBlog_id(Integer blog_id);
 
+    @Query(value = "from Blog where user_id = :user_id")
+    List<Blog> findBlogsByUser_id(Integer user_id);
+
     @Query(value = "from Blog")
     List<Blog> getAllBlogs();
 }

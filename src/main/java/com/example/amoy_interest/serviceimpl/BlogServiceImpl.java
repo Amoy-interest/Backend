@@ -1,14 +1,8 @@
 package com.example.amoy_interest.serviceimpl;
 
-import com.example.amoy_interest.dao.BlogCommentDao;
-import com.example.amoy_interest.dao.BlogCountDao;
-import com.example.amoy_interest.dao.BlogDao;
-import com.example.amoy_interest.dao.BlogImageDao;
+import com.example.amoy_interest.dao.*;
 import com.example.amoy_interest.dto.BlogDTO;
-import com.example.amoy_interest.entity.Blog;
-import com.example.amoy_interest.entity.BlogComment;
-import com.example.amoy_interest.entity.BlogCount;
-import com.example.amoy_interest.entity.BlogImage;
+import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +21,8 @@ public class BlogServiceImpl implements BlogService {
     private BlogCountDao blogCountDao;
     @Autowired
     private BlogImageDao blogImageDao;
+    @Autowired
+    private UserDao userDao;
 
     @Override
     public Blog addBlog(Blog blog) {
@@ -116,5 +112,63 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public List<BlogCount> getAllReportedBlogs() {
         return blogCountDao.findReportedBlogs();
+    }
+
+    @Override
+    public List<BlogDTO> getBlogsByUser_id(Integer user_id) {
+        List<Blog> blogs = blogDao.getBlogsByUser_id(user_id);
+        List<BlogDTO> blogDTOS = new ArrayList<>();
+        for (Blog blog : blogs) {
+            Blog blogChild = new Blog();
+            List<BlogImage> blogChildImages = null;
+            if (blog.getBlog_type() > 0) {
+                blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
+                blogChildImages = blogChild.getBlogImages();
+            }
+            blogDTOS.add(
+                    new BlogDTO(blog, null, blog.getBlogCount(), blog.getBlogImages(), blogChild, blogChildImages)
+            );
+        }
+        return blogDTOS;
+    }
+
+    @Override
+    public List<BlogDTO> getRecommendBlogsByUser_id(Integer user_id) {
+        List<Blog> blogs = blogDao.getAllBlogs();
+        List<BlogDTO> blogDTOS = new ArrayList<>();
+        for (Blog blog : blogs) {
+            Blog blogChild = new Blog();
+            List<BlogImage> blogChildImages = null;
+            if (blog.getBlog_type() > 0) {
+                blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
+                blogChildImages = blogChild.getBlogImages();
+            }
+            blogDTOS.add(
+                    new BlogDTO(blog, null, blog.getBlogCount(), blog.getBlogImages(), blogChild, blogChildImages)
+            );
+        }
+        return blogDTOS;
+    }
+
+    @Override
+    public List<BlogDTO> getFollowBlogsByUser_id(Integer user_id) {
+        User user = userDao.getById(user_id);
+        List<UserFollow> userFollows= user.getUserFollow();
+        List<BlogDTO> blogDTOS = new ArrayList<>();
+        for (UserFollow userFollow : userFollows) {
+            List<Blog> blogs = blogDao.getBlogsByUser_id(userFollow.getFollow_id());
+            for (Blog blog : blogs) {
+                Blog blogChild = new Blog();
+                List<BlogImage> blogChildImages = null;
+                if (blog.getBlog_type() > 0) {
+                    blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
+                    blogChildImages = blogChild.getBlogImages();
+                }
+                blogDTOS.add(
+                        new BlogDTO(blog, null, blog.getBlogCount(), blog.getBlogImages(), blogChild, blogChildImages)
+                );
+            }
+        }
+        return blogDTOS;
     }
 }
