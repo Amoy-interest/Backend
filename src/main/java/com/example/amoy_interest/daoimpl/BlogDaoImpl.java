@@ -35,4 +35,9 @@ public class BlogDaoImpl implements BlogDao {
     public List<Blog> getAllBlogs() {
         return blogRepository.getAllBlogs();
     }
+
+    @Override
+    public List<Blog> getBlogsByUser_id(Integer user_id) {
+        return blogRepository.findBlogsByUser_id(user_id);
+    }
 }

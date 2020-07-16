@@ -28,4 +28,8 @@ public interface BlogService {
 
     List<Blog> getAllBlogs();
     List<BlogCount> getAllReportedBlogs();
+
+    List<BlogDTO> getBlogsByUser_id(Integer user_id);
+    List<BlogDTO> getRecommendBlogsByUser_id(Integer user_id);
+    List<BlogDTO> getFollowBlogsByUser_id(Integer user_id);
 }
