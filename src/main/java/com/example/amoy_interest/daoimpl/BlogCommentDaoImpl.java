@@ -1,4 +1,4 @@
-package com.example.amoy_interest.daoimpl;
+package com.example.demo.daoimpl;
 
 import com.example.amoy_interest.dao.BlogCommentDao;
 import com.example.amoy_interest.entity.BlogComment;
@@ -24,8 +24,20 @@ public class BlogCommentDaoImpl implements BlogCommentDao {
     }
 
     @Override
+    public void deleteByComment_id(Integer comment_id) {
+        BlogComment blogComment = blogCommentRepository.findBlogCommentByComment_id(comment_id);
+        blogComment.set_deleted(true);
+        blogCommentRepository.saveAndFlush(blogComment);
+    }
+
+    @Override
     public void incrCommentVoteCount(Integer comment_id) {
         blogCommentRepository.incrCommentVoteCount(comment_id);
+    }
+
+    @Override
+    public void decrCommentVoteCount(Integer comment_id) {
+        blogCommentRepository.decrCommentVoteCount(comment_id);
     }
 
 }

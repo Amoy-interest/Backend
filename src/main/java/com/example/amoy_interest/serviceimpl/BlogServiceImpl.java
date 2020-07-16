@@ -13,6 +13,7 @@ import com.example.amoy_interest.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -59,8 +60,23 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    public  void decrVoteCount(Integer blog_id) {
+        blogCountDao.decrVoteCount(blog_id);
+    }
+
+    @Override
+    public void decrCommentVoteCount(Integer comment_id) {
+        blogCommentDao.decrCommentVoteCount(comment_id);
+    }
+
+    @Override
     public BlogComment addBlogComment(BlogComment blogComment) {
         return blogCommentDao.saveBlogComment(blogComment);
+    }
+
+    @Override
+    public void deleteCommentByComment_id(Integer comment_id) {
+        blogCommentDao.deleteByComment_id(comment_id);
     }
 
     @Override
@@ -95,5 +111,10 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public List<Blog> getAllBlogs() {
         return blogDao.getAllBlogs();
+    }
+
+    @Override
+    public List<BlogCount> getAllReportedBlogs() {
+        return blogCountDao.findReportedBlogs();
     }
 }
