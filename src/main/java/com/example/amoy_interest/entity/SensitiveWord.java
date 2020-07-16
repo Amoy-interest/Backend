@@ -12,4 +12,8 @@ import javax.persistence.Table;
 public class SensitiveWord {
     @Id
     private String keyword;
+
+    public SensitiveWord(String keyword) {
+        this.keyword = keyword;
+    }
 }

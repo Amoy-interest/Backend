@@ -87,6 +87,7 @@ public class BlogController {
         blogService.addBlogComment(blogComment);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.COMMENT_SUCCESS_MSG);
     }
+
     @ApiOperation(value = "删除评论")
     @DeleteMapping(value = "/comments")
     public Msg DeleteComment(Integer comment_id) {
@@ -153,6 +154,27 @@ public class BlogController {
         blog.setCheck_status(blogCheckDTO.getCheck_status());
         blogService.updateBlog(blog);
         return new Msg(MsgCode.SUCCESS, MsgUtil.CHECK_BLOG_SUCCESS_MSG);
+    }
+
+    @ApiOperation(value = "获取推荐blog")
+    @GetMapping(value = "/recommend")
+    public Msg<List<BlogDTO>> GetRecommendBlogs(@RequestHeader(value = "token") String token) {
+        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
+        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getRecommendBlogsByUser_id(user_id));
+    }
+
+    @ApiOperation(value = "获取关注blog")
+    @GetMapping(value = "/follow")
+    public Msg<List<BlogDTO>> GetFollowBlogs(@RequestHeader(value = "token") String token) {
+        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
+        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getFollowBlogsByUser_id(user_id));
+    }
+
+    @ApiOperation(value = "获取自己blog")
+    @GetMapping(value = "/own")
+    public Msg<List<BlogDTO>> GetOwnBlogs(@RequestHeader(value = "token") String token) {
+        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
+        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getBlogsByUser_id(user_id));
     }
 
 }
