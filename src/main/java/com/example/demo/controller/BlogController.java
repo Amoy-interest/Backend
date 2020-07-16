@@ -78,10 +78,11 @@ public class BlogController {
         Integer root_comment_id = commentPostDTO.getRoot_comment_id();
         String reply_comment_nickname = commentPostDTO.getReply_comment_nickname();
         String text = commentPostDTO.getText();
+        String nickname = commentPostDTO.getNickname();
 
         BlogComment blogComment = new BlogComment();
         blogComment.setBlog_id(blog_id);
-        blogComment.setNickname("0"); //是否要添加UserService?感觉不是很行？
+        blogComment.setNickname(nickname);
         if (root_comment_id == -1) blogComment.setComment_level(1); //一级评论
         else {
             blogComment.setComment_level(2); //二级评论
@@ -98,7 +99,8 @@ public class BlogController {
     @ApiOperation(value = "删除评论")
     @DeleteMapping(value = "/comments")
     public Msg DeleteComment(Integer comment_id) {
-        return null;
+        blogService.deleteCommentByComment_id(comment_id);
+        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.DELETE_COMMENT_SUCCESS_MSG);
     }
     //不支持修改评论
 
@@ -118,7 +120,14 @@ public class BlogController {
     @ApiOperation(value = "取消点赞")
     @DeleteMapping(value = "/vote")
     public Msg CancelVote(@RequestBody VoteDTO voteDTO) { //用body还是在url上？
-        return null;
+        Integer comment_id = voteDTO.getComment_id();
+        Integer blog_id = voteDTO.getBlog_id();
+        if (comment_id == -1) {
+            blogService.decrVoteCount(blog_id);
+        } else {
+            blogService.decrCommentVoteCount(comment_id);
+        }
+        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.CANCEL_VOTE_SUCCESS_MSG);
     }
 
     @ApiOperation(value = "搜索")
@@ -137,15 +146,22 @@ public class BlogController {
     @ApiOperation(value = "获取被举报的blog")
     @GetMapping(value = "/reported")
     public Msg<List<BlogDTO>> GetReportedBlogs() {
-        return null;
+        List<BlogDTO> blogDTOS = new ArrayList<>();
+        List<BlogCount> blogCounts = blogService.getAllReportedBlogs();
+        for(BlogCount blogCount : blogCounts) {
+            blogDTOS.add(blogService.getSimpleBlogDetail(blogCount.getBlog_id()));
+        }
+        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, blogDTOS);
     }
 
     //一次审核一堆还是一次审核一个blog？效率？
     @ApiOperation(value = "审核blog")
     @PutMapping(value = "/reported")
     public Msg CheckReportedBlog(@RequestBody BlogCheckDTO blogCheckDTO) {
-
-        return null;
+        Blog blog = blogService.findBlogByBlog_id(blogCheckDTO.getBlog_id());
+        blog.setCheck_status(blogCheckDTO.getCheck_status());
+        blogService.updateBlog(blog);
+        return new Msg(MsgCode.SUCCESS, MsgUtil.CHECK_BLOG_SUCCESS_MSG);
     }
 
 }

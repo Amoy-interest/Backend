@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -57,6 +56,13 @@ public class BlogServiceTest extends DemoApplicationTests {
     }
 
     @Test
+    public void testDeleteCommentByComment_id() {
+        doNothing().when(blogCommentDao).deleteByComment_id(1);
+        blogService.deleteCommentByComment_id(1);
+        verify(blogCommentDao, times(1)).deleteByComment_id(any());
+    }
+
+    @Test
     public void testIncrVoteCount() {
         doNothing().when(blogCountDao).incrVoteCount(1);
         blogService.incrVoteCount(1);
@@ -64,10 +70,24 @@ public class BlogServiceTest extends DemoApplicationTests {
     }
 
     @Test
+    public void testDecrVoteCount() {
+        doNothing().when(blogCountDao).decrVoteCount(1);
+        blogService.decrVoteCount(1);
+        verify(blogCountDao, times(1)).decrVoteCount(any());
+    }
+
+    @Test
     public void testIncrCommentVoteCount() {
         doNothing().when(blogCommentDao).incrCommentVoteCount(1);
         blogService.incrCommentVoteCount(1);
         verify(blogCommentDao, times(1)).incrCommentVoteCount(any());
+    }
+
+    @Test
+    public void testDecrCommentVoteCount() {
+        doNothing().when(blogCommentDao).decrCommentVoteCount(1);
+        blogService.decrCommentVoteCount(1);
+        verify(blogCommentDao, times(1)).decrCommentVoteCount(any());
     }
 
     @Test
@@ -159,5 +179,24 @@ public class BlogServiceTest extends DemoApplicationTests {
         Assert.assertEquals(40, (long)blogDTO1.getBlog_count().getVote_count());
         Assert.assertEquals(50, (long)blogDTO1.getBlog_count().getReport_count());
         Assert.assertEquals(1, blogDTO1.getBlog_comments().size());
+    }
+
+    @Test
+    public void testGetAllBlogs() {
+        List<Blog> blogs = new ArrayList<>();
+        blogs.add(new Blog(1, 1, 1, 1, null, "test", false, 1, 1));
+        blogs.add(new Blog(1, 1, 1, 1, null, "test", false, 1, 1));
+        when(blogDao.getAllBlogs()).thenReturn(blogs);
+        List<Blog> blogList = blogService.getAllBlogs();
+        Assert.assertEquals(2, blogList.size());
+    }
+
+    @Test
+    public void testGetAllReportedBlogs() {
+        List<BlogCount> blogCounts = new ArrayList<>();
+        blogCounts.add(new BlogCount(1, 1, 1, 1, 1));
+        blogCounts.add(new BlogCount(1, 1, 1, 1, 1));
+        when(blogCountDao.findReportedBlogs()).thenReturn(blogCounts);
+        Assert.assertEquals(2, blogService.getAllReportedBlogs().size());
     }
 }
