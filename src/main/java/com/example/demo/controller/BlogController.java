@@ -78,10 +78,11 @@ public class BlogController {
         Integer root_comment_id = commentPostDTO.getRoot_comment_id();
         String reply_comment_nickname = commentPostDTO.getReply_comment_nickname();
         String text = commentPostDTO.getText();
+        String nickname = commentPostDTO.getNickname();
 
         BlogComment blogComment = new BlogComment();
         blogComment.setBlog_id(blog_id);
-        blogComment.setNickname("0"); //是否要添加UserService?感觉不是很行？
+        blogComment.setNickname(nickname);
         if (root_comment_id == -1) blogComment.setComment_level(1); //一级评论
         else {
             blogComment.setComment_level(2); //二级评论
