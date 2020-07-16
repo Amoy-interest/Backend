@@ -3,6 +3,7 @@ package com.example.amoy_interest.service;
 import com.example.amoy_interest.dto.BlogDTO;
 import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.BlogComment;
+import com.example.amoy_interest.entity.BlogCount;
 
 import java.util.List;
 

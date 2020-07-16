@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.BlogComment;
+import com.example.amoy_interest.entity.BlogCount;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;

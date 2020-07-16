@@ -1,4 +1,4 @@
-package com.example.demo.daoimpl;
+package com.example.amoy_interest.daoimpl;
 
 import com.example.amoy_interest.dao.BlogCommentDao;
 import com.example.amoy_interest.entity.BlogComment;

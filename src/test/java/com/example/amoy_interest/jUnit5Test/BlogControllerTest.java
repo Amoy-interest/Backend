@@ -1,10 +1,11 @@
-package com.example.demo.jUnit5Test;
+package com.example.amoy_interest.jUnit5Test;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.amoy_interest.DemoApplicationTests;
 import com.example.amoy_interest.controller.BlogController;
-import com.example.amoy_interest.dto.VoteDTO;
+import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.Blog;
+import com.example.amoy_interest.entity.BlogCount;
 import com.example.amoy_interest.serviceimpl.BlogServiceImpl;
 import org.junit.Before;
 import org.junit.Test;

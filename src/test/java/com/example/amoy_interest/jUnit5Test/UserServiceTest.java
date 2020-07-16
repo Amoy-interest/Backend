@@ -40,8 +40,9 @@ public class UserServiceTest {
         UserAuth insert_userAuth = new UserAuth("admin","123456",0,0);
         UserAuth userAuth = new UserAuth(100,"admin","123456",0,0);
         User user = new User(100,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"这个人很懒，什么都没留下",null);
+        user.setUserAuth(userAuth);
         UserCount userCount = new UserCount(100,0,0,0);
-        UserInfoDTO userInfoDTO = new UserInfoDTO(user);
+        UserInfoDTO userInfoDTO = new UserInfoDTO("mok",0,"上海市闵行区","这个人很懒，什么都没留下",null,0);
         when(userAuthDao.insert(insert_userAuth)).thenReturn(userAuth);
 
         assertEquals(userInfoDTO,userService.register(registerDTO));
