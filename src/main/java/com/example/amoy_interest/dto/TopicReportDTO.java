@@ -12,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ApiModel(value = "被举报话题信息", description = "被举报话题信息")
+@ApiModel(value = "TopicReportDTO", description = "被举报话题信息")
 public class TopicReportDTO {
     @ApiModelProperty(value = "话题的标题", required = true)
     private String name;

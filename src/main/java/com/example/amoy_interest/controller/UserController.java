@@ -92,31 +92,6 @@ public class UserController {
         return null;
     }
 
-    @ApiOperation(value = "用户禁言",notes = "对用户禁言")
-    @RequestMapping(value = "/admin/ban", method = RequestMethod.PUT)
-    public Msg Ban(@RequestBody UserCheckDTO userCheckDTO) {
-
-        return null;
-    }
-
-    @ApiOperation(value = "用户解禁",notes = "对用户解除禁言")
-    @RequestMapping(value = "/admin/unban", method = RequestMethod.PUT)
-    public Msg Unban(@RequestBody Integer user_id) {
-        return null;
-    }
-
-    @ApiOperation(value = "用户封号",notes = "对用户封号")
-    @RequestMapping(value = "/admin/forbid", method = RequestMethod.PUT)
-    public Msg Forbid(@RequestBody UserCheckDTO userCheckDTO) {
-        return null;
-    }
-
-    @ApiOperation(value = "用户解封",notes = "对用户解除封号")
-    @RequestMapping(value = "/admin/permit", method = RequestMethod.PUT)
-    public Msg Permit(@RequestBody Integer user_id) {
-        return null;
-    }
-
     //是否还需要check？
 //    @ApiOperation(value = "用户检查",notes = "用户检查")
 //    @GetMapping(value = "/check")

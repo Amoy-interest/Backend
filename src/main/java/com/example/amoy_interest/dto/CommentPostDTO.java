@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@ApiModel(value = "新建评论信息", description = "新建评论信息")
+@ApiModel(value = "CommentPostDTO", description = "新建评论信息")
 public class CommentPostDTO {
     private Integer blog_id;
     private Integer root_comment_id;

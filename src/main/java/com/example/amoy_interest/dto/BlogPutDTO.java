@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@ApiModel(value = "编辑博文信息", description = "编辑博文信息")
+@ApiModel(value = "BlogPutDTO", description = "编辑博文信息")
 public class BlogPutDTO {
     private Integer blog_id;
     private String text;

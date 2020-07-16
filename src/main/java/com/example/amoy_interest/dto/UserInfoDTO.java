@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ApiModel(value = "User", description = "用户基本信息")
+@ApiModel(value = "UserInfoDTO", description = "用户基本信息")
 public class UserInfoDTO{
     @ApiModelProperty(value = "昵称", required = true)
     private String nickname;

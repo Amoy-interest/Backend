@@ -65,7 +65,7 @@ public class UserControllerTest {
     @Test
     public void testLogin() throws Exception{
         User user = new User(100,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"啥都不会",null);
-        UserAuth userAuth = new UserAuth(100,"admin","123456",0,0,user);
+        UserAuth userAuth = new UserAuth(100,"admin","123456",0,0,0,user);
         user.setUserAuth(userAuth);
         UserInfoDTO userInfoDTO = new UserInfoDTO("mok",0,"上海市闵行区","啥都不会",null,0);
         when(userService.findUserAuthByUsername("admin")).thenReturn(userAuth);
@@ -95,7 +95,7 @@ public class UserControllerTest {
 
         RegisterDTO registerDTO = new RegisterDTO("admin","mok","123456",0,"上海市闵行区","mokkkkk@sjtu.edu.cn");
         User user = new User(100,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"啥都不会",null);
-        UserAuth userAuth = new UserAuth(100,"admin","123456",0,0,user);
+        UserAuth userAuth = new UserAuth(100,"admin","123456",0,0,0,user);
         UserInfoDTO userInfoDTO = new UserInfoDTO("mok",0,"上海市闵行区","这个人很懒，什么都没留下",null,0);
         when(userService.findUserAuthByUsername("admin")).thenReturn(null).thenReturn(userAuth);
         when(userService.register(registerDTO)).thenReturn(userInfoDTO);
@@ -130,22 +130,6 @@ public class UserControllerTest {
         Msg<UserDTO> msg = om.readValue(resultContent,new TypeReference<Msg<UserDTO>>() {});
         assertEquals(0,msg.getStatus());
         assertEquals(MsgUtil.LOGOUT_SUCCESS_MSG,msg.getMsg());
-    }
-    @Test
-    public void testBan() throws Exception{
-
-    }
-    @Test
-    public void testUnban() throws Exception{
-
-    }
-    @Test
-    public void testForbid() throws Exception{
-
-    }
-    @Test
-    public void testPermit() throws Exception{
-
     }
     @Test
     public void testFollow() throws Exception{

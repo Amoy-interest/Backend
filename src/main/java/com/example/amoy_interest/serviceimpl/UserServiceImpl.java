@@ -1,9 +1,6 @@
 package com.example.amoy_interest.serviceimpl;
 
-import com.example.amoy_interest.dao.UserCountDao;
-import com.example.amoy_interest.dao.UserAuthDao;
-import com.example.amoy_interest.dao.UserFollowDao;
-import com.example.amoy_interest.dao.UserDao;
+import com.example.amoy_interest.dao.*;
 import com.example.amoy_interest.dto.RegisterDTO;
 import com.example.amoy_interest.dto.UserCheckDTO;
 import com.example.amoy_interest.dto.UserInfoDTO;
@@ -14,6 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.beans.Transient;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static com.example.amoy_interest.constant.SecurityConstants.EXPIRATION_TIME;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,6 +27,8 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
     @Autowired
     private UserFollowDao userFollowDao;
+    @Autowired
+    private UserBanDao userBanDao;
     @Override
     public UserAuth findUserAuthById(Integer id) {
         return userAuthDao.findUserById(id);
@@ -38,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserInfoDTO register(RegisterDTO registerDTO) {
-        UserAuth userAuth = new UserAuth(registerDTO.getUsername(),registerDTO.getPassword(),0,0);
+        UserAuth userAuth = new UserAuth(registerDTO.getUsername(),registerDTO.getPassword(),0,0,0);
         userAuth = userAuthDao.insert(userAuth);
         Integer user_id = userAuth.getUser_id();
         User user = new User(user_id,registerDTO.getNickname(),registerDTO.getEmail(),registerDTO.getSex(),
@@ -60,25 +64,52 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean ban(UserCheckDTO userCheckDTO) {
-        //时间怎么设置？在哪存？
-        UserAuth userAuth = userAuthDao.findUserById(userCheckDTO.getUser_id());
-//        userAuth.s
-        return false;
+        Date endTime = new Date(System.currentTimeMillis() + userCheckDTO.getTime()*1000);
+        Integer user_id = userCheckDTO.getUser_id();
+        UserAuth userAuth = userAuthDao.findUserById(user_id);
+        userAuth.setIs_ban(1);
+        userAuthDao.update(userAuth);
+        UserBan userBan = userBanDao.findUserBanById(user_id);
+        if(userBan == null) {
+            userBan = new UserBan(user_id,endTime,null);
+        }else {
+            userBan.setBan_time(endTime);
+        }
+        userBanDao.insert(userBan);
+        return true;
     }
 
     @Override
     public boolean unban(Integer user_id) {
-        return false;
+        UserAuth userAuth = userAuthDao.findUserById(user_id);
+        userAuth.setIs_ban(0);
+        userAuthDao.update(userAuth);
+        return true;
     }
 
     @Override
     public boolean forbid(UserCheckDTO userCheckDTO) {
-        return false;
+        Date endTime = new Date(System.currentTimeMillis() + userCheckDTO.getTime()*1000);
+        Integer user_id = userCheckDTO.getUser_id();
+        UserAuth userAuth = userAuthDao.findUserById(user_id);
+        userAuth.setIs_forbidden(1);
+        userAuthDao.update(userAuth);
+        UserBan userBan = userBanDao.findUserBanById(user_id);
+        if(userBan == null) {
+            userBan = new UserBan(user_id,null,endTime);
+        }else {
+            userBan.setForbidden_time(endTime);
+        }
+        userBanDao.insert(userBan);
+        return true;
     }
 
     @Override
     public boolean permit(Integer user_id) {
-        return false;
+        UserAuth userAuth = userAuthDao.findUserById(user_id);
+        userAuth.setIs_forbidden(0);
+        userAuthDao.update(userAuth);
+        return true;
     }
 
 }
