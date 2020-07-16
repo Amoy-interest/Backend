@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-07-16 08:32:39
+Date: 2020-07-16 14:58:16
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -125,10 +125,23 @@ CREATE TABLE `user` (
   `username` varchar(15) NOT NULL,
   `password` varchar(15) NOT NULL,
   `user_type` smallint NOT NULL,
-  `user_status` smallint DEFAULT NULL,
+  `is_ban` smallint DEFAULT NULL,
+  `is_forbidden` smallint DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for user_ban
+-- ----------------------------
+DROP TABLE IF EXISTS `user_ban`;
+CREATE TABLE `user_ban` (
+  `user_id` int NOT NULL,
+  `ban_time` datetime DEFAULT NULL,
+  `forbidden_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  CONSTRAINT `FK_Reference_12` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for user_count

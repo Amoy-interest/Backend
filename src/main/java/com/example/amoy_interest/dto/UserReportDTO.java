@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ApiModel(value = "被举报用户信息", description = "被举报用户信息")
+@ApiModel(value = "UserReportDTO", description = "被举报用户信息")
 public class UserReportDTO {
     private Integer user_id;
     private String username;

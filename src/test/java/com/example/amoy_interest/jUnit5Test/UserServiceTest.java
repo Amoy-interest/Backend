@@ -18,6 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Date;
+
+import static com.example.amoy_interest.constant.SecurityConstants.EXPIRATION_TIME;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -37,8 +41,8 @@ public class UserServiceTest {
     @Test
     public void TestRegister() {
         RegisterDTO registerDTO = new RegisterDTO("admin","mok","123456",0,"上海市闵行区","mokkkkk@sjtu.edu.cn");
-        UserAuth insert_userAuth = new UserAuth("admin","123456",0,0);
-        UserAuth userAuth = new UserAuth(100,"admin","123456",0,0);
+        UserAuth insert_userAuth = new UserAuth("admin","123456",0,0,0);
+        UserAuth userAuth = new UserAuth(100,"admin","123456",0,0,0);
         User user = new User(100,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"这个人很懒，什么都没留下",null);
         user.setUserAuth(userAuth);
         UserCount userCount = new UserCount(100,0,0,0);
@@ -59,7 +63,7 @@ public class UserServiceTest {
     @Test
     public void testfindUserAuthById() {
         Integer id = 100;
-        UserAuth userAuth = new UserAuth(100,"admin","123456",0,0);
+        UserAuth userAuth = new UserAuth(100,"admin","123456",0,0,0);
         when(userAuthDao.findUserById(id)).thenReturn(userAuth);
         assertEquals(userAuth,userService.findUserAuthById(id));
         verify(userAuthDao,times(1)).findUserById(id);
@@ -68,25 +72,10 @@ public class UserServiceTest {
     @Test
     public void testfindUserAuthByUsername() {
         String username = "admin";
-        UserAuth userAuth = new UserAuth(100,"admin","123456",0,0);
+        UserAuth userAuth = new UserAuth(100,"admin","123456",0,0,0);
         when(userAuthDao.findUserByUsername(username)).thenReturn(userAuth);
         assertEquals(userAuth,userService.findUserAuthByUsername(username));
         verify(userAuthDao,times(1)).findUserByUsername(username);
     }
-    @Test
-    public void testBan() {
 
-    }
-    @Test
-    public void testUnban() {
-
-    }
-    @Test
-    public void testForbid() {
-
-    }
-    @Test
-    public void testPermit() {
-
-    }
 }

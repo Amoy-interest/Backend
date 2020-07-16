@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ApiModel(value = "博文审核信息", description = "博文审核信息")
+@ApiModel(value = "BlogCheckDTO", description = "博文审核信息")
 public class BlogCheckDTO {
     Integer blog_id;
     Integer check_status;

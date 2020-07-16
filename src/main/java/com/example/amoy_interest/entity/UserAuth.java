@@ -25,18 +25,22 @@ public class UserAuth {
     private String username;
     private String password;
     private int user_type;
-    private int user_status; //用户禁言或者封号状态
+    private int is_ban; //用户禁言
+    private int is_forbidden;     // 封号
 
-    public UserAuth(String username, String password, int user_type, int user_status) {
+
+    public UserAuth(String username, String password, int user_type, int is_ban,int is_forbidden) {
         this.user_type = user_type;
-        this.user_status = user_status;
         this.username = username;
         this.password = password;
+        this.is_ban = is_ban;
+        this.is_forbidden = is_forbidden;
     }
-    public UserAuth(int user_id, String username, String password, int user_type, int user_status) {
+    public UserAuth(int user_id, String username, String password, int user_type, int is_ban,int is_forbidden) {
         this.user_id = user_id;
         this.user_type = user_type;
-        this.user_status = user_status;
+        this.is_ban = is_ban;
+        this.is_forbidden = is_forbidden;
         this.username = username;
         this.password = password;
     }

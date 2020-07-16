@@ -39,6 +39,9 @@ public class User {
     private UserCount userCount;
     @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
     private List<Blog> blogs;
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
+    private UserBan userBan;
 //    @OneToOne(fetch=FetchType.LAZY)
 //    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
 //    private UserFollow userFollow;

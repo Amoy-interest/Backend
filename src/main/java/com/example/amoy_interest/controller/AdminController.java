@@ -16,8 +16,15 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.plaf.synth.SynthEditorPaneUI;
+import javax.xml.crypto.Data;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import static com.example.amoy_interest.constant.SecurityConstants.EXPIRATION_TIME;
 
 @RequestMapping("/admins")
 @Api(tags="管理员模块")
@@ -76,25 +83,28 @@ public class AdminController {
     @ApiOperation(value = "用户禁言",notes = "对用户禁言")
     @RequestMapping(value = "/users/ban", method = RequestMethod.PUT)
     public Msg Ban(@RequestBody UserCheckDTO userCheckDTO) {
-
-        return null;
+        userService.ban(userCheckDTO);
+        return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
     }
 
     @ApiOperation(value = "用户解禁",notes = "对用户解除禁言")
     @RequestMapping(value = "/users/unban", method = RequestMethod.PUT)
     public Msg Unban(@RequestBody Integer user_id) {
-        return null;
+        userService.unban(user_id);
+        return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
     }
 
     @ApiOperation(value = "用户封号",notes = "对用户封号")
     @RequestMapping(value = "/users/forbid", method = RequestMethod.PUT)
     public Msg Forbid(@RequestBody UserCheckDTO userCheckDTO) {
-        return null;
+        userService.forbid(userCheckDTO);
+        return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
     }
 
     @ApiOperation(value = "用户解封",notes = "对用户解除封号")
     @RequestMapping(value = "/users/permit", method = RequestMethod.PUT)
     public Msg Permit(@RequestBody Integer user_id) {
-        return null;
+        userService.permit(user_id);
+        return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
     }
 }

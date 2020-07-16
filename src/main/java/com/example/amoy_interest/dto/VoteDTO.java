@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ApiModel(value = "点赞信息", description = "点赞信息")
+@ApiModel(value = "VoteDTO", description = "点赞信息")
 public class VoteDTO {
     @ApiModelProperty(value = "博文id(对评论点赞则将blog_id设为-1)",example = "0",required = true)
     private Integer blog_id;
