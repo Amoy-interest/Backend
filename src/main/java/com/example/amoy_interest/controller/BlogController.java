@@ -134,25 +134,4 @@ public class BlogController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, blogDTOS);
     }
 
-    @ApiOperation(value = "获取被举报的blog")
-    @GetMapping(value = "/admin/reported")
-    public Msg<List<BlogDTO>> GetReportedBlogs() {
-        List<BlogDTO> blogDTOS = new ArrayList<>();
-        List<BlogCount> blogCounts = blogService.getAllReportedBlogs();
-        for(BlogCount blogCount : blogCounts) {
-            blogDTOS.add(blogService.getSimpleBlogDetail(blogCount.getBlog_id()));
-        }
-        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, blogDTOS);
-    }
-
-    //一次审核一堆还是一次审核一个blog？效率？
-    @ApiOperation(value = "审核blog")
-    @PutMapping(value = "/admin/reported")
-    public Msg CheckReportedBlog(@RequestBody BlogCheckDTO blogCheckDTO) {
-        Blog blog = blogService.findBlogByBlog_id(blogCheckDTO.getBlog_id());
-        blog.setCheck_status(blogCheckDTO.getCheck_status());
-        blogService.updateBlog(blog);
-        return new Msg(MsgCode.SUCCESS, MsgUtil.CHECK_BLOG_SUCCESS_MSG);
-    }
-
 }

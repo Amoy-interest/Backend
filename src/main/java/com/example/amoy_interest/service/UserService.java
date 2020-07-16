@@ -3,8 +3,11 @@ package com.example.amoy_interest.service;
 import com.example.amoy_interest.dto.RegisterDTO;
 import com.example.amoy_interest.dto.UserCheckDTO;
 import com.example.amoy_interest.dto.UserInfoDTO;
+import com.example.amoy_interest.dto.UserReportDTO;
 import com.example.amoy_interest.entity.UserAuth;
 import io.swagger.models.auth.In;
+
+import java.util.List;
 
 public interface UserService {
     UserAuth findUserAuthById(Integer id);
@@ -15,4 +18,5 @@ public interface UserService {
     boolean unban(Integer user_id);
     boolean forbid(UserCheckDTO userCheckDTO);
     boolean permit(Integer user_id);
+    List<UserReportDTO> getReportedUsers();
 }

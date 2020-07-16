@@ -76,8 +76,7 @@ public class AdminController {
     @ApiOperation(value = "获取被举报用户",notes = "获取被举报用户")
     @RequestMapping(value = "/users/reported", method = RequestMethod.GET)
     public Msg<List<UserReportDTO>> GetReportedUser() {
-
-        return null;
+        return new Msg<>(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG,userService.getReportedUsers());
     }
 
     @ApiOperation(value = "用户禁言",notes = "对用户禁言")
@@ -107,4 +106,6 @@ public class AdminController {
         userService.permit(user_id);
         return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
     }
+
+
 }

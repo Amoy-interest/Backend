@@ -4,6 +4,7 @@ import com.example.amoy_interest.dao.*;
 import com.example.amoy_interest.dto.RegisterDTO;
 import com.example.amoy_interest.dto.UserCheckDTO;
 import com.example.amoy_interest.dto.UserInfoDTO;
+import com.example.amoy_interest.dto.UserReportDTO;
 import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.beans.Transient;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static com.example.amoy_interest.constant.SecurityConstants.EXPIRATION_TIME;
 
@@ -112,4 +115,14 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    @Override
+    public List<UserReportDTO> getReportedUsers() {
+        List<User> userList = userDao.getReportedUsers();
+        List<UserReportDTO> userReportDTOList = new ArrayList<>();
+        for(User user:userList) {
+            UserReportDTO userReportDTO = new UserReportDTO(user);
+            userReportDTOList.add(userReportDTO);
+        }
+        return userReportDTOList;
+    }
 }
