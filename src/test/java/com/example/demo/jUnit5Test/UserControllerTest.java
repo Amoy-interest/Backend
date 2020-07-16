@@ -2,6 +2,7 @@ package com.example.demo.jUnit5Test;
 
 import com.auth0.jwt.JWT;
 import com.example.demo.controller.UserController;
+import com.example.demo.dto.LoginDTO;
 import com.example.demo.dto.RegisterDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.dto.UserInfoDTO;
@@ -15,6 +16,7 @@ import com.example.demo.service.TokenService;
 import com.example.demo.service.UserService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
@@ -33,6 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -67,7 +70,12 @@ public class UserControllerTest {
         UserAuth userAuth = new UserAuth(100,"admin","123456",0,0,user);
         UserInfoDTO userInfoDTO = new UserInfoDTO("mok",0,"上海市闵行区","啥都不会",null);
         when(userService.findUserAuthByUsername("admin")).thenReturn(userAuth);
-        MvcResult result = mockMvc.perform(post("/user/login?password=123456&username=admin").contentType(MediaType.APPLICATION_JSON_VALUE))
+        LoginDTO loginDTO = new LoginDTO("admin","123456");
+
+        String requestJson = JSONObject.toJSONString(loginDTO);
+        MvcResult result = mockMvc.perform(post("/users/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
                 .andExpect(status().isOk()).andReturn();
         result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
         String resultContent = result.getResponse().getContentAsString();
@@ -92,8 +100,12 @@ public class UserControllerTest {
         UserInfoDTO userInfoDTO = new UserInfoDTO("mok",0,"上海市闵行区","这个人很懒，什么都没留下",null);
         when(userService.findUserAuthByUsername("admin")).thenReturn(null).thenReturn(userAuth);
         when(userService.register(registerDTO)).thenReturn(userInfoDTO);
-        MvcResult result = mockMvc.perform(post("/user/register?address=上海市闵行区&email=mokkkkk@sjtu.edu.cn&nickname=mok&password=123456&sex=0&username=admin")
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+//        String example = "{"username":"admin"}";
+
+        String requestJson = JSONObject.toJSONString(registerDTO);
+        MvcResult result = mockMvc.perform(post("/users/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
                 .andExpect(status().isOk()).andReturn();
 //        System.out.println(userInfoDTO);
         result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码

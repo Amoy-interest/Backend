@@ -15,6 +15,8 @@ public class Topic {
     private int topic_id;
     private String topic_name;
     private Date topic_time;
+    private int check_status;
+    private int report_count;
 
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name = "topic_id",referencedColumnName = "topic_id")
