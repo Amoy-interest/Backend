@@ -177,4 +177,9 @@ public class BlogController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getBlogsByUser_id(user_id));
     }
 
+    @ApiOperation(value = "获取未登录前blog")
+    @GetMapping(value = "/beforeLogin")
+    public Msg<List<BlogDTO>> GetBeforeLoginBlogs() {
+        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getRecommendBlogsByUser_id(1));
+    }
 }
