@@ -9,4 +9,5 @@ public interface BlogDao {
     Blog saveBlog(Blog blog);
     void deleteByBlog_id(Integer blog_id);
     List<Blog> getAllBlogs();
+    List<Blog> getBlogsByUser_id(Integer user_id);
 }
