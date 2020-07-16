@@ -39,12 +39,12 @@ public class TopicController {
     }
 
     @ApiOperation(value = "获取被举报的话题")
-    @GetMapping(value = "/reported")
+    @GetMapping(value = "/admin/reported")
     public Msg<List<TopicReportDTO>> GetReportedTopics() {
         return new Msg<>(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG,topicService.getReportedTopics());
     }
     @ApiOperation(value = "审核话题")
-    @PutMapping(value = "/reported")
+    @PutMapping(value = "/admin/reported")
     @ResponseBody
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "body", name = "topic_name", value = "话题名", required = true, dataType = "String"),

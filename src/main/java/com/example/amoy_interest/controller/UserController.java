@@ -86,33 +86,33 @@ public class UserController {
     }
 
     @ApiOperation(value = "获取被举报用户",notes = "获取被举报用户")
-    @RequestMapping(value = "/reported", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/reported", method = RequestMethod.GET)
     public Msg<List<UserReportDTO>> GetReportedUser() {
 
         return null;
     }
 
     @ApiOperation(value = "用户禁言",notes = "对用户禁言")
-    @RequestMapping(value = "/ban", method = RequestMethod.PUT)
+    @RequestMapping(value = "/admin/ban", method = RequestMethod.PUT)
     public Msg Ban(@RequestBody UserCheckDTO userCheckDTO) {
 
         return null;
     }
 
     @ApiOperation(value = "用户解禁",notes = "对用户解除禁言")
-    @RequestMapping(value = "/unban", method = RequestMethod.PUT)
+    @RequestMapping(value = "/admin/unban", method = RequestMethod.PUT)
     public Msg Unban(@RequestBody Integer user_id) {
         return null;
     }
 
     @ApiOperation(value = "用户封号",notes = "对用户封号")
-    @RequestMapping(value = "/forbid", method = RequestMethod.PUT)
+    @RequestMapping(value = "/admin/forbid", method = RequestMethod.PUT)
     public Msg Forbid(@RequestBody UserCheckDTO userCheckDTO) {
         return null;
     }
 
     @ApiOperation(value = "用户解封",notes = "对用户解除封号")
-    @RequestMapping(value = "/permit", method = RequestMethod.PUT)
+    @RequestMapping(value = "/admin/permit", method = RequestMethod.PUT)
     public Msg Permit(@RequestBody Integer user_id) {
         return null;
     }
