@@ -135,7 +135,7 @@ public class BlogController {
     }
 
     @ApiOperation(value = "获取被举报的blog")
-    @GetMapping(value = "/reported")
+    @GetMapping(value = "/admin/reported")
     public Msg<List<BlogDTO>> GetReportedBlogs() {
         List<BlogDTO> blogDTOS = new ArrayList<>();
         List<BlogCount> blogCounts = blogService.getAllReportedBlogs();
@@ -147,7 +147,7 @@ public class BlogController {
 
     //一次审核一堆还是一次审核一个blog？效率？
     @ApiOperation(value = "审核blog")
-    @PutMapping(value = "/reported")
+    @PutMapping(value = "/admin/reported")
     public Msg CheckReportedBlog(@RequestBody BlogCheckDTO blogCheckDTO) {
         Blog blog = blogService.findBlogByBlog_id(blogCheckDTO.getBlog_id());
         blog.setCheck_status(blogCheckDTO.getCheck_status());

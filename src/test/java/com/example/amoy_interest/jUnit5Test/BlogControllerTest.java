@@ -97,7 +97,7 @@ public class BlogControllerTest extends DemoApplicationTests {
         Mockito.when(blogService.updateBlog(Mockito.any())).thenReturn(null);
         BlogCheckDTO blogCheckDTO = new BlogCheckDTO(1, 1);
         String requestJson = JSONObject.toJSONString(blogCheckDTO);
-        mockMvc.perform(put("/blogs/reported")
+        mockMvc.perform(put("/blogs/admin/reported")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson)
                 .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
@@ -201,7 +201,7 @@ public class BlogControllerTest extends DemoApplicationTests {
         blogCounts.add(new BlogCount(1, 1, 1, 1, 1));
         Mockito.when(blogService.getAllReportedBlogs()).thenReturn(blogCounts);
         Mockito.when(blogService.getSimpleBlogDetail(any())).thenReturn(null);
-        mockMvc.perform(get("/blogs/reported"))
+        mockMvc.perform(get("/blogs/admin/reported"))
                 .andExpect(status().isOk()).andReturn();
         verify(blogService, times(1)).getAllReportedBlogs();
         verify(blogService, times(2)).getSimpleBlogDetail(Mockito.any());
