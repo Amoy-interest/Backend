@@ -36,7 +36,7 @@ public class BlogController {
 
     @ApiOperation(value = "写博文")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Msg AddBlog(@ModelAttribute @Valid @RequestBody BlogContentDTO blogContentDTO, @RequestHeader(value = "token") String token) {
+    public Msg AddBlog(@RequestBody BlogContentDTO blogContentDTO, @RequestHeader(value = "token") String token) {
         Blog blog = new Blog();
         blog.setUser_id(JWT.decode(token).getClaim("user_id").asInt());
         blog.setBlog_type(0);  //原创
@@ -117,7 +117,7 @@ public class BlogController {
 
     @ApiOperation(value = "取消点赞")
     @DeleteMapping(value = "/vote")
-    public Msg CancelVote(Integer blog_id,Integer comment_id) {
+    public Msg CancelVote(@RequestBody VoteDTO voteDTO) { //用body还是在url上？
         return null;
     }
 
