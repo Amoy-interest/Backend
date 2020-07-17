@@ -1,6 +1,7 @@
 package com.example.amoy_interest.controller;
 
 import com.auth0.jwt.JWT;
+import com.example.amoy_interest.annotation.UserLoginToken;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.BlogComment;
@@ -25,6 +26,7 @@ public class BlogController {
     @Autowired
     private BlogService blogService;
 
+    @UserLoginToken
     @ApiOperation(value = "写博文")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Msg AddBlog(@RequestBody BlogContentDTO blogContentDTO, @RequestHeader(value = "token") String token) {
@@ -37,13 +39,13 @@ public class BlogController {
         blogService.addBlog(blog);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.ADD_BLOG_SUCCESS_MSG);
     }
-
+    @UserLoginToken
     @ApiOperation(value = "GET博文")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Msg<BlogDTO> GetBlog(Integer blog_id) {
         return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getAllBlogDetail(blog_id));
     }
-
+    @UserLoginToken
     @ApiOperation(value = "编辑博文")
     @RequestMapping(value = "",method = RequestMethod.PUT)
     public Msg PutBlog(@RequestBody BlogPutDTO blogPutDTO) {
@@ -54,14 +56,14 @@ public class BlogController {
         blogService.updateBlog(blog);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.PUT_BLOG_SUCCESS_MSG);
     }
-
+    @UserLoginToken
     @ApiOperation(value = "删除博文")
     @RequestMapping(value = "", method = RequestMethod.DELETE)
     public Msg DeleteBlog(Integer blog_id) {
         blogService.deleteByBlog_id(blog_id);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.DELETE_BLOG_SUCCESS_MSG);
     }
-
+    @UserLoginToken
     @ApiOperation(value = "进行评论")
     @RequestMapping(value = "/comments",method = RequestMethod.POST)
     public Msg Comment(@RequestBody CommentPostDTO commentPostDTO) {
@@ -87,7 +89,7 @@ public class BlogController {
         blogService.addBlogComment(blogComment);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.COMMENT_SUCCESS_MSG);
     }
-
+    @UserLoginToken
     @ApiOperation(value = "删除评论")
     @DeleteMapping(value = "/comments")
     public Msg DeleteComment(Integer comment_id) {
@@ -95,7 +97,7 @@ public class BlogController {
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.DELETE_COMMENT_SUCCESS_MSG);
     }
     //不支持修改评论
-
+    @UserLoginToken
     @ApiOperation(value = "点赞")
     @RequestMapping(value = "/vote", method = RequestMethod.POST)
     public Msg Vote(@RequestBody VoteDTO voteDTO) {
@@ -108,7 +110,7 @@ public class BlogController {
         }
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.VOTE_SUCCESS_MSG);
     }
-
+    @UserLoginToken
     @ApiOperation(value = "取消点赞")
     @DeleteMapping(value = "/vote")
     public Msg CancelVote(@RequestBody VoteDTO voteDTO) { //用body还是在url上？
@@ -121,7 +123,7 @@ public class BlogController {
         }
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.CANCEL_VOTE_SUCCESS_MSG);
     }
-
+    @UserLoginToken
     @ApiOperation(value = "搜索")
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public Msg<List<BlogDTO>> Search(String keyword){
@@ -135,21 +137,21 @@ public class BlogController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, blogDTOS);
     }
 
-
+    @UserLoginToken
     @ApiOperation(value = "获取推荐blog")
     @GetMapping(value = "/recommend")
     public Msg<List<BlogDTO>> GetRecommendBlogs(@RequestHeader(value = "token") String token) {
         Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
         return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getRecommendBlogsByUser_id(user_id));
     }
-
+    @UserLoginToken
     @ApiOperation(value = "获取关注blog")
     @GetMapping(value = "/follow")
     public Msg<List<BlogDTO>> GetFollowBlogs(@RequestHeader(value = "token") String token) {
         Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
         return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getFollowBlogsByUser_id(user_id));
     }
-
+    @UserLoginToken
     @ApiOperation(value = "获取自己blog")
     @GetMapping(value = "/own")
     public Msg<List<BlogDTO>> GetOwnBlogs(@RequestHeader(value = "token") String token) {

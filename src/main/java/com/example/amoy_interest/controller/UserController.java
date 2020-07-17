@@ -29,7 +29,9 @@ public class UserController {
     public Msg<UserDTO> Login(@RequestBody LoginDTO data) {
         String username = data.getUsername();
         String password = data.getPassword();
+        //需要重写，用checkUser,检查用户是否被封号
         UserAuth userAuth = userService.findUserAuthByUsername(username);
+
         if(userAuth == null) {
             return new Msg<UserDTO>(MsgCode.USER_NOT_EXIST,MsgUtil.LOGIN_USER_ERROR_MSG,null);
         }else {
@@ -78,7 +80,7 @@ public class UserController {
 //    public Msg Check() {
 //        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.LOGIN_SUCCESS_MSG);
 //    }
-
+    @UserLoginToken
     @ApiOperation(value = "关注用户",notes = "关注")
     @PostMapping(value = "/follow")
     public Msg Follow(Integer follow_id,@RequestHeader(value="token") String token) {
