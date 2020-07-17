@@ -23,6 +23,7 @@ import java.util.List;
 public class TopicController {
     @Autowired
     private TopicService topicService;
+
     @ApiOperation(value = "查看话题")
     @RequestMapping(value = "",method = RequestMethod.GET)
     public Msg<TopicDTO> GetTopic(String topic_name) {

@@ -1,5 +1,6 @@
 package com.example.amoy_interest.controller;
 
+import com.example.amoy_interest.annotation.UserLoginToken;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.BlogCount;
@@ -36,6 +37,7 @@ public class AdminController {
     UserService userService;
     @Autowired
     TopicService topicService;
+    @UserLoginToken
     @ApiOperation(value = "获取被举报的blog")
     @GetMapping(value = "/blogs/reported")
     public Msg<List<BlogDTO>> GetReportedBlogs() {
@@ -48,6 +50,7 @@ public class AdminController {
     }
 
     //一次审核一堆还是一次审核一个blog？效率？
+    @UserLoginToken
     @ApiOperation(value = "审核blog")
     @PutMapping(value = "/blogs/reported")
     public Msg CheckReportedBlog(@RequestBody BlogCheckDTO blogCheckDTO) {
@@ -56,50 +59,49 @@ public class AdminController {
         blogService.updateBlog(blog);
         return new Msg(MsgCode.SUCCESS, MsgUtil.CHECK_BLOG_SUCCESS_MSG);
     }
+    @UserLoginToken
     @ApiOperation(value = "获取被举报的话题")
     @GetMapping(value = "/topics/reported")
     public Msg<List<TopicReportDTO>> GetReportedTopics() {
         return new Msg<>(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG,topicService.getReportedTopics());
     }
+    @UserLoginToken
     @ApiOperation(value = "审核话题")
     @PutMapping(value = "/topics/reported")
-    @ResponseBody
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "body", name = "topic_name", value = "话题名", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType = "body", name = "check_status", value = "审核状态（1为审核通过，2为审核关闭）", required = true, dataType = "int")
-    })
-    public Msg CheckReportedBlog(@RequestBody TopicCheckDTO topicCheckDTO) {
+//    @ResponseBody
+    public Msg CheckReportedTopic(@RequestBody TopicCheckDTO topicCheckDTO) {
         topicService.CheckReportedTopic(topicCheckDTO);
         return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
     }
 
+    @UserLoginToken
     @ApiOperation(value = "获取被举报用户",notes = "获取被举报用户")
     @RequestMapping(value = "/users/reported", method = RequestMethod.GET)
     public Msg<List<UserReportDTO>> GetReportedUser() {
         return new Msg<>(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG,userService.getReportedUsers());
     }
-
+    @UserLoginToken
     @ApiOperation(value = "用户禁言",notes = "对用户禁言")
     @RequestMapping(value = "/users/ban", method = RequestMethod.PUT)
     public Msg Ban(@RequestBody UserCheckDTO userCheckDTO) {
         userService.ban(userCheckDTO);
         return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
     }
-
+    @UserLoginToken
     @ApiOperation(value = "用户解禁",notes = "对用户解除禁言")
     @RequestMapping(value = "/users/unban", method = RequestMethod.PUT)
     public Msg Unban(@RequestBody Integer user_id) {
         userService.unban(user_id);
         return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
     }
-
+    @UserLoginToken
     @ApiOperation(value = "用户封号",notes = "对用户封号")
     @RequestMapping(value = "/users/forbid", method = RequestMethod.PUT)
     public Msg Forbid(@RequestBody UserCheckDTO userCheckDTO) {
         userService.forbid(userCheckDTO);
         return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
     }
-
+    @UserLoginToken
     @ApiOperation(value = "用户解封",notes = "对用户解除封号")
     @RequestMapping(value = "/users/permit", method = RequestMethod.PUT)
     public Msg Permit(@RequestBody Integer user_id) {
