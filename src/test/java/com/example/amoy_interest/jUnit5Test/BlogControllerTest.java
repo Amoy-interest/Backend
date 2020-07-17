@@ -1,7 +1,7 @@
 package com.example.amoy_interest.jUnit5Test;
 
 import com.alibaba.fastjson.JSONObject;
-import com.example.amoy_interest.DemoApplicationTests;
+//import com.example.amoy_interest.DemoApplicationTests;
 import com.example.amoy_interest.controller.BlogController;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.Blog;
@@ -32,11 +32,8 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class BlogControllerTest extends DemoApplicationTests {
-
-    @Test
-    public void contextLoads() {
-    }
+//public class BlogControllerTest extends DemoApplicationTests {
+public class BlogControllerTest{
 
     private MockMvc mockMvc;
 

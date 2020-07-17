@@ -1,6 +1,6 @@
 package com.example.amoy_interest.jUnit5Test;
 
-import com.example.amoy_interest.DemoApplicationTests;
+//import com.example.amoy_interest.DemoApplicationTests;
 import com.example.amoy_interest.dao.BlogCommentDao;
 import com.example.amoy_interest.dao.BlogCountDao;
 import com.example.amoy_interest.dao.BlogDao;
@@ -10,8 +10,11 @@ import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.serviceimpl.BlogServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +23,10 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class BlogServiceTest extends DemoApplicationTests {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+//public class BlogServiceTest extends DemoApplicationTests {
+public class BlogServiceTest{
     @InjectMocks
     private BlogServiceImpl blogService;
 

@@ -48,13 +48,14 @@ public class UserServiceImpl implements UserService {
         UserAuth userAuth = new UserAuth(registerDTO.getUsername(),registerDTO.getPassword(),0,0,0);
         userAuth = userAuthDao.insert(userAuth);
         Integer user_id = userAuth.getUser_id();
+        System.out.println(user_id);
         User user = new User(user_id,registerDTO.getNickname(),registerDTO.getEmail(),registerDTO.getSex(),
                 registerDTO.getAddress(),100,"这个人很懒，什么都没留下",null
         );
-        user.setUserAuth(userAuth);
         userDao.insert(user);
         UserCount userCount = new UserCount(user_id,0,0,0);
         userCountDao.insert(userCount);
+        user.setUserAuth(userAuth);
         return new UserInfoDTO(user);
     }
 
