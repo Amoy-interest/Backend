@@ -10,10 +10,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 public
 class DemoApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
-
     @Before
     public void init() {
         System.out.println("开始测试-----------------");
