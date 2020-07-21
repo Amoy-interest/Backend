@@ -14,4 +14,6 @@ public interface BlogCommentDao {
     void decrCommentVoteCount(Integer comment_id);
     Page<BlogComment> findLevel1CommentListByBlog_id(Integer blog_id, Pageable pageable);
     Page<BlogComment> findMultiLevelCommentListByComment_id(Integer root_comment_id, Pageable pageable);
+
+    BlogComment findOneByRoot_comment_id(Integer root_comment_id);
 }

@@ -73,21 +73,23 @@ public class BlogController {
     @UserLoginToken
     @ApiOperation(value = "进行评论")
     @RequestMapping(value = "/comments", method = RequestMethod.POST)
-    public Msg Comment(@RequestBody CommentPostDTO commentPostDTO) {
+    public Msg Comment(@RequestHeader(value = "token") String token,@RequestBody CommentPostDTO commentPostDTO) {
         Integer blog_id = commentPostDTO.getBlog_id();
         Integer root_comment_id = commentPostDTO.getRoot_comment_id();
-        String reply_comment_nickname = commentPostDTO.getReply_comment_nickname();
+        Integer reply_user_id = commentPostDTO.getReply_user_id();
         String text = commentPostDTO.getText();
-        String nickname = commentPostDTO.getNickname();
+        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
 
         BlogComment blogComment = new BlogComment();
         blogComment.setBlog_id(blog_id);
-        blogComment.setNickname(nickname);
-        if (root_comment_id == -1) blogComment.setComment_level(1); //一级评论
+        blogComment.setUser_id(user_id);
+        if (root_comment_id == -1) {
+            blogComment.setComment_level(1); //一级评论
+        }
         else {
             blogComment.setComment_level(2); //二级评论
-            blogComment.setReply_comment_nickname(reply_comment_nickname);
         }
+        blogComment.setReply_user_id(reply_user_id);
         blogComment.setComment_text(text);
         blogComment.setComment_time(new Date());
         blogComment.setVote_count(0);

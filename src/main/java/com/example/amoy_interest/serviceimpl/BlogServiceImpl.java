@@ -230,7 +230,12 @@ public class BlogServiceImpl implements BlogService {
         List<BlogCommentLevel1DTO> blogCommentLevel1DTOList = new ArrayList<>();
         for(BlogComment blogComment: blogCommentList) {
             //暂时设为true
-            blogCommentLevel1DTOList.add(new BlogCommentLevel1DTO(blogComment,true));
+            boolean flag = true;
+            if(blogCommentDao.findOneByRoot_comment_id(blogComment.getRoot_comment_id()) == null)
+                flag = false;
+            Integer user_id = blogComment.getUser_id();
+            String nickname = userDao.getById(user_id).getNickname();
+            blogCommentLevel1DTOList.add(new BlogCommentLevel1DTO(blogComment,nickname,flag));
         }
         return new PageImpl<BlogCommentLevel1DTO>(blogCommentLevel1DTOList,blogCommentPage.getPageable(),blogCommentPage.getTotalElements());
     }
@@ -242,7 +247,11 @@ public class BlogServiceImpl implements BlogService {
         List<BlogComment> blogCommentList = blogCommentPage.getContent();
         List<BlogCommentMultiLevelDTO> blogCommentMultiLevelDTOS = new ArrayList<>();
         for(BlogComment blogComment: blogCommentList) {
-            blogCommentMultiLevelDTOS.add(new BlogCommentMultiLevelDTO(blogComment));
+            Integer user_id = blogComment.getUser_id();
+            Integer reply_user_id = blogComment.getReply_user_id();
+            String nickname = userDao.getById(user_id).getNickname();
+            String reply_user_nickname = userDao.getById(reply_user_id).getNickname();
+            blogCommentMultiLevelDTOS.add(new BlogCommentMultiLevelDTO(blogComment,nickname,reply_user_nickname));
         }
         return new PageImpl<>(blogCommentMultiLevelDTOS,blogCommentPage.getPageable(),blogCommentPage.getTotalElements());
     }

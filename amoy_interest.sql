@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-07-16 14:58:16
+Date: 2020-07-22 01:41:17
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -31,8 +31,10 @@ CREATE TABLE `blog` (
   `reply_blog_id` int DEFAULT NULL,
   PRIMARY KEY (`blog_id`),
   KEY `FK_Reference_4` (`user_id`),
+  KEY `FK_Reference_13` (`reply_blog_id`),
+  CONSTRAINT `FK_Reference_13` FOREIGN KEY (`reply_blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE SET NULL ON UPDATE SET NULL,
   CONSTRAINT `FK_Reference_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for blog_comment
@@ -41,8 +43,8 @@ DROP TABLE IF EXISTS `blog_comment`;
 CREATE TABLE `blog_comment` (
   `comment_id` int NOT NULL,
   `blog_id` int DEFAULT NULL,
-  `nickname` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `reply_comment_nickname` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `reply_user_id` int DEFAULT NULL,
   `comment_level` smallint DEFAULT NULL,
   `comment_text` varchar(140) DEFAULT NULL,
   `comment_time` datetime DEFAULT NULL,
@@ -51,8 +53,8 @@ CREATE TABLE `blog_comment` (
   `root_comment_id` int DEFAULT NULL,
   PRIMARY KEY (`comment_id`),
   KEY `FK_Reference_5` (`blog_id`),
-  KEY `FK_Reference_10` (`nickname`),
-  CONSTRAINT `FK_Reference_10` FOREIGN KEY (`nickname`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
+  KEY `FK_Reference_10` (`user_id`),
+  CONSTRAINT `FK_Reference_10` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_Reference_5` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -101,7 +103,7 @@ CREATE TABLE `topic` (
   `check_status` smallint DEFAULT NULL,
   `report_count` int DEFAULT NULL,
   PRIMARY KEY (`topic_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for topic_blog
@@ -129,7 +131,7 @@ CREATE TABLE `user` (
   `is_forbidden` smallint DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for user_ban

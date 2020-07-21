@@ -14,6 +14,7 @@ import com.example.amoy_interest.service.UserService;
 import com.example.amoy_interest.utils.CommonPage;
 //import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -89,4 +90,22 @@ public class UserController {
         return MsgUtil.makeMsg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
     }
 
+    @UserLoginToken
+    @ApiOperation(value = "分页获取关注列表")
+    @GetMapping(value = "/follow")
+    public Msg<CommonPage<UserInfoDTO>> GetFollow(@RequestHeader(value="token") String token,
+                                      @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                      @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+        Integer userId = JWT.decode(token).getClaim("user_id").asInt();
+        return new Msg<>(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG,CommonPage.restPage(userService.getUserFollowPage(userId,pageNum,pageSize)));
+    }
+    @UserLoginToken
+    @ApiOperation(value = "分页获取粉丝列表")
+    @GetMapping(value = "/fans")
+    public Msg<CommonPage<UserInfoDTO>> GetFan(@RequestHeader(value="token") String token,
+                                      @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                      @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+        Integer userId = JWT.decode(token).getClaim("user_id").asInt();
+        return new Msg<>(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG,CommonPage.restPage(userService.getUserFanPage(userId,pageNum,pageSize)));
+    }
 }

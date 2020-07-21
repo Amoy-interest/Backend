@@ -123,6 +123,4 @@ public class AdminController {
         userService.permit(user_id);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
-
-
 }

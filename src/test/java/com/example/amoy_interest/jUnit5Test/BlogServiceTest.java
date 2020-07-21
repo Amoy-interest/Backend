@@ -98,7 +98,7 @@ public class BlogServiceTest{
     @Test
     public void testAddBlogComment() {
         when(blogCommentDao.saveBlogComment(any())).thenReturn(null);
-        blogService.addBlogComment(new BlogComment(1, 1, "explodingnerk", null, 1, "求求你练下力量吧", null, 5, false, -1));
+//        blogService.addBlogComment(new BlogComment(1, 1, "explodingnerk", null, 1, "求求你练下力量吧", null, 5, false, -1));
         verify(blogCommentDao, times(1)).saveBlogComment(any());
     }
 
@@ -157,7 +157,7 @@ public class BlogServiceTest{
         when(blogImageDao.findBlogImageByBlog_id(1)).thenReturn(images);
         when(blogImageDao.findBlogImageByBlog_id(2)).thenReturn(null);
         List<BlogComment> blogComments = new ArrayList<>();
-        blogComments.add(new BlogComment(1, 1, "explodingnerk", null, 1, "求求你练下力量吧", null, 5, false, -1));
+//        blogComments.add(new BlogComment(1, 1, "explodingnerk", null, 1, "求求你练下力量吧", null, 5, false, -1));
         when(blogCommentDao.findLevel1CommentByBlog_id(1)).thenReturn(blogComments);
         when(blogCommentDao.findLevel1CommentByBlog_id(2)).thenReturn(blogComments);
 
