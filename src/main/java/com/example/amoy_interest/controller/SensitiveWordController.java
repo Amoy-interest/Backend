@@ -22,9 +22,10 @@ public class SensitiveWordController {
     @Autowired
     private SensitiveWordService sensitiveWordService;
     @UserLoginToken
-    @ApiOperation(value = "获取敏感词列表")
+    @ApiOperation(value = "以分页的方式获取敏感词列表（暂未实现）")
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public Msg<List<SensitiveWord>> GetSensitiveWords() {
+    public Msg<List<SensitiveWord>> GetSensitiveWords(Integer pageNum,Integer pageSize) {
+        //还没实现分页
         List<SensitiveWord> sws = sensitiveWordService.getAllSensitiveWords();
         return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, sws);
     }

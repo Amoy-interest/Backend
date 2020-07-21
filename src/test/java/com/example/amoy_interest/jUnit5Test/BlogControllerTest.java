@@ -170,7 +170,7 @@ public class BlogControllerTest{
         blogList.add(new Blog(2, 1, 0, 0,null, "abcdde",  false, 1, -1));
         Mockito.when(blogService.getAllBlogs()).thenReturn(blogList);
         Mockito.when(blogService.getSimpleBlogDetail(1)).thenReturn(null);
-        mockMvc.perform(get("/blogs/search?keyword=abbc"))
+        mockMvc.perform(get("/blogs/searchAll?keyword=abbc"))
                 .andExpect(status().isOk()).andReturn();
         verify(blogService, times(1)).getAllBlogs();
         verify(blogService, times(1)).getSimpleBlogDetail(Mockito.any());

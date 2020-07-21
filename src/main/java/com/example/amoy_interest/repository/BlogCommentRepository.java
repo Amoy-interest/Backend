@@ -1,6 +1,9 @@
 package com.example.amoy_interest.repository;
 
+import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.BlogComment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +24,15 @@ public interface BlogCommentRepository extends JpaRepository<BlogComment, Intege
     @Modifying
     @Query(value = "update BlogComment bc set bc.vote_count = bc.vote_count - 1 where bc.comment_id = :comment_id")
     void decrCommentVoteCount(Integer comment_id);
+
+    @Query(value = "SELECT * FROM blog_comment WHERE blog_id = ?1 and comment_level = 1",
+            countQuery = "SELECT count(*) From blog_comment WHERE blog_id = ?1 and comment_level = 1",
+            nativeQuery = true)
+    Page<BlogComment> findLevel1CommentListByBlog_id(Integer blog_id, Pageable pageable);
+
+    @Query(value = "SELECT * FROM blog_comment WHERE root_comment_id = ?1",
+            countQuery = "SELECT count(*) From blog_comment WHERE root_comment_id = ?1",
+            nativeQuery = true)
+    Page<BlogComment> findMultiLevelCommentListByBlog_id(Integer root_comment_id, Pageable pageable);
+
 }
