@@ -1,5 +1,6 @@
 package com.example.amoy_interest.dto;
 
+import com.example.amoy_interest.entity.Blog;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -19,8 +20,11 @@ public class BlogChildDTO {
     private int user_id;
     @ApiModelProperty(value = "转发的用户昵称",example = "mok",required = true)
     private String nickname;
-    @ApiModelProperty(value = "转发的内容", example = "早上好！",required = true)
-    private String text;
-    @ApiModelProperty(value = "转发内容中的图片")
-    private List<String> images;
+    @ApiModelProperty(value = "转发的博文的内容")
+    private BlogContentDTO blog_content;
+    public BlogChildDTO(Blog child) {
+        this.blog_content = new BlogContentDTO(child);
+        this.user_id = child.getUser_id();
+        this.nickname = child.getUser().getNickname();
+    }
 }

@@ -5,6 +5,10 @@ import com.example.amoy_interest.dto.BlogDTO;
 import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -83,8 +87,8 @@ public class BlogServiceImpl implements BlogService {
         Blog blogChild = new Blog();
         List<BlogImage> blogChildImages = null;
         if (blog.getBlog_type() > 0) {
-            blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
-            blogChildImages = blogImageDao.findBlogImageByBlog_id(blog.getReply_blog_id());
+//            blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
+//            blogChildImages = blogImageDao.findBlogImageByBlog_id(blog.getReply_blog_id());
         }
         return new BlogDTO(blog, null, blogCount, blogImages, blogChild, blogChildImages);
     }
@@ -98,8 +102,8 @@ public class BlogServiceImpl implements BlogService {
         Blog blogChild = new Blog();
         List<BlogImage> blogChildImages = null;
         if (blog.getBlog_type() > 0) {
-            blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
-            blogChildImages = blogImageDao.findBlogImageByBlog_id(blog.getReply_blog_id());
+//            blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
+//            blogChildImages = blogImageDao.findBlogImageByBlog_id(blog.getReply_blog_id());
         }
         return new BlogDTO(blog, blogComments, blogCount, blogImages, blogChild, blogChildImages);
     }
@@ -122,7 +126,7 @@ public class BlogServiceImpl implements BlogService {
             Blog blogChild = new Blog();
             List<BlogImage> blogChildImages = null;
             if (blog.getBlog_type() > 0) {
-                blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
+//                blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
                 blogChildImages = blogChild.getBlogImages();
             }
             blogDTOS.add(
@@ -140,7 +144,7 @@ public class BlogServiceImpl implements BlogService {
             Blog blogChild = new Blog();
             List<BlogImage> blogChildImages = null;
             if (blog.getBlog_type() > 0) {
-                blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
+//                blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
                 blogChildImages = blogChild.getBlogImages();
             }
             blogDTOS.add(
@@ -161,7 +165,7 @@ public class BlogServiceImpl implements BlogService {
                 Blog blogChild = new Blog();
                 List<BlogImage> blogChildImages = null;
                 if (blog.getBlog_type() > 0) {
-                    blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
+//                    blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
                     blogChildImages = blogChild.getBlogImages();
                 }
                 blogDTOS.add(
@@ -170,5 +174,50 @@ public class BlogServiceImpl implements BlogService {
             }
         }
         return blogDTOS;
+    }
+
+    @Override
+    public boolean reportBlogByBlog_id(Integer blog_id) {
+        BlogCount blogCount = blogCountDao.findBlogCountByBlog_id(blog_id);
+        blogCount.setReport_count(blogCount.getReport_count()+1);
+        blogCountDao.saveBlogCount(blogCount);
+        return true;
+    }
+
+    @Override
+    public Page<BlogDTO> list(String keyword, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<Blog> blogPage = blogDao.findBlogListByBlog_text(keyword,pageable);
+//        System.out.println(blogList.size());
+        List<Blog> blogList = blogPage.getContent();
+        List<BlogDTO> blogDTOList = new ArrayList<>();
+        for(Blog blog: blogList) {
+            blogDTOList.add(new BlogDTO(blog));
+        }
+        return new PageImpl<BlogDTO>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
+    }
+
+    @Override
+    public Page<BlogDTO> getListByUser_id(Integer user_id, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<Blog> blogPage = blogDao.findBlogListByUser_id(user_id,pageable);
+        List<Blog> blogList = blogPage.getContent();
+        List<BlogDTO> blogDTOList = new ArrayList<>();
+        for(Blog blog: blogList) {
+            blogDTOList.add(new BlogDTO(blog));
+        }
+        return new PageImpl<BlogDTO>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
+    }
+
+    @Override
+    public Page<BlogDTO> getListByTopic_id(Integer topic_id, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<Blog> blogPage = blogDao.findBlogListByTopic_id(topic_id,pageable);
+        List<Blog> blogList = blogPage.getContent();
+        List<BlogDTO> blogDTOList = new ArrayList<>();
+        for(Blog blog: blogList) {
+            blogDTOList.add(new BlogDTO(blog));
+        }
+        return new PageImpl<BlogDTO>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
     }
 }

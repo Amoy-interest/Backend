@@ -195,7 +195,7 @@ public class AdminControllerTest {
     @Test
     public void testCheckReportedTopic() throws Exception{
         TopicCheckDTO topicCheckDTO = new TopicCheckDTO("高考加油",86400);
-        when(topicService.CheckReportedTopic(topicCheckDTO)).thenReturn(true);
+        when(topicService.checkReportedTopic(topicCheckDTO)).thenReturn(true);
         String requestJson = JSONObject.toJSONString(topicCheckDTO);
         MvcResult result = mockMvc.perform(put("/admins/topics/reported")
                 .contentType(MediaType.APPLICATION_JSON)

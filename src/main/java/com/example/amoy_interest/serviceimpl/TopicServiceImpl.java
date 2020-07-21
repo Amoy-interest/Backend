@@ -1,11 +1,14 @@
 package com.example.amoy_interest.serviceimpl;
 
+import com.example.amoy_interest.dao.BlogDao;
 import com.example.amoy_interest.dao.TopicDao;
 import com.example.amoy_interest.dto.TopicCheckDTO;
 import com.example.amoy_interest.dto.TopicDTO;
 import com.example.amoy_interest.dto.TopicReportDTO;
 import com.example.amoy_interest.entity.Topic;
+import com.example.amoy_interest.service.BlogService;
 import com.example.amoy_interest.service.TopicService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +19,16 @@ import java.util.List;
 public class TopicServiceImpl implements TopicService {
     @Autowired
     private TopicDao topicDao;
+    @Autowired
+    private BlogDao blogDao;
 
     @Override
-    public TopicDTO getTopicByName(String topic_name) {
+    public Integer getTopic_idByName(String topic_name) {
+        return topicDao.getTopicByName(topic_name).getTopic_id();
+    }
+
+    @Override
+    public TopicDTO getTopicDTOByName(String topic_name) {
         Topic topic = topicDao.getTopicByName(topic_name);
         return new TopicDTO(topic);
     }
@@ -35,10 +45,19 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public boolean CheckReportedTopic(TopicCheckDTO topicCheckDTO) {
+    public boolean checkReportedTopic(TopicCheckDTO topicCheckDTO) {
         Topic topic = topicDao.getTopicByName(topicCheckDTO.getTopic_name());
         topic.setCheck_status(topicCheckDTO.getCheck_status());
         topicDao.update(topic);
         return true;
     }
+
+    @Override
+    public boolean reportTopicByName(String topic_name) {
+        Topic topic = topicDao.getTopicByName(topic_name);
+        topic.setReport_count(topic.getReport_count()+1);
+        topicDao.update(topic);
+        return true;
+    }
+
 }

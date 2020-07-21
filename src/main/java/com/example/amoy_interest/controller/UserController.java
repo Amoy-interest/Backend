@@ -3,17 +3,23 @@ package com.example.amoy_interest.controller;
 import com.auth0.jwt.JWT;
 import com.example.amoy_interest.annotation.UserLoginToken;
 import com.example.amoy_interest.dto.*;
+import com.example.amoy_interest.entity.User;
 import com.example.amoy_interest.entity.UserAuth;
+import com.example.amoy_interest.entity.UserFollow;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
 import com.example.amoy_interest.service.TokenService;
 import com.example.amoy_interest.service.UserService;
+import com.example.amoy_interest.utils.CommonPage;
+//import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.plaf.synth.SynthEditorPaneUI;
 import java.util.List;
 
 @RequestMapping("/users")
@@ -74,12 +80,6 @@ public class UserController {
         return new Msg<UserDTO>(MsgCode.SUCCESS,MsgUtil.REGISTER_SUCCESS_MSG,userDTO);
     }
 
-    //是否还需要check？
-//    @ApiOperation(value = "用户检查",notes = "用户检查")
-//    @GetMapping(value = "/check")
-//    public Msg Check() {
-//        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.LOGIN_SUCCESS_MSG);
-//    }
     @UserLoginToken
     @ApiOperation(value = "关注用户",notes = "关注")
     @PostMapping(value = "/follow")

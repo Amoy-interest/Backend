@@ -51,13 +51,13 @@ public class TopicControllerTest {
 
     @Test
     public void testGetTopic() throws Exception{
-        when(topicService.getTopicByName("高考加油")).thenReturn(null);
+        when(topicService.getTopicDTOByName("高考加油")).thenReturn(null);
         MvcResult result = mockMvc.perform(get("/topics?topic_name=高考加油"))
                 .andExpect(status().isOk()).andReturn();
         result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
         String resultContent = result.getResponse().getContentAsString();
         Msg<TopicDTO> msg = om.readValue(resultContent,new TypeReference<Msg<TopicDTO>>() {});
-        verify(topicService,times(1)).getTopicByName("高考加油");
+        verify(topicService,times(1)).getTopicDTOByName("高考加油");
         assertEquals(0,msg.getStatus());
         assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
     }

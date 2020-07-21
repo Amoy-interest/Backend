@@ -7,7 +7,12 @@ import com.example.amoy_interest.dto.UserInfoDTO;
 import com.example.amoy_interest.dto.UserReportDTO;
 import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.service.UserService;
+//import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -125,5 +130,18 @@ public class UserServiceImpl implements UserService {
             userReportDTOList.add(userReportDTO);
         }
         return userReportDTOList;
+    }
+
+    @Override
+    public User findUserById(Integer user_id) {
+        return userDao.getById(user_id);
+    }
+
+    @Override
+    public Page<UserFollow> getAllUserFollow(Integer pageNum, Integer pageSize) {
+//        Sort sort = Sort.by("user_id");
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<UserFollow> userFollowList = userFollowDao.test(pageable);
+        return userFollowList;
     }
 }

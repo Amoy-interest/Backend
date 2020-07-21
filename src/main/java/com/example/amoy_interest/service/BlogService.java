@@ -4,6 +4,8 @@ import com.example.amoy_interest.dto.BlogDTO;
 import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.BlogComment;
 import com.example.amoy_interest.entity.BlogCount;
+//import com.github.pagehelper.PageInfo;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -32,4 +34,12 @@ public interface BlogService {
     List<BlogDTO> getBlogsByUser_id(Integer user_id);
     List<BlogDTO> getRecommendBlogsByUser_id(Integer user_id);
     List<BlogDTO> getFollowBlogsByUser_id(Integer user_id);
+
+    boolean reportBlogByBlog_id(Integer blog_id);
+
+    Page<BlogDTO> list(String keyword, Integer pageNum, Integer pageSize);
+    Page<BlogDTO> getListByUser_id(Integer user_id,Integer pageNum,Integer pageSize);
+    Page<BlogDTO> getListByTopic_id(Integer topic_id,Integer pageNum,Integer pageSize);
+
+
 }

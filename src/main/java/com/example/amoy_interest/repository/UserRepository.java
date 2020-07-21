@@ -9,4 +9,5 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Integer> {
     @Query(value = "from User where credits < 60")
     List<User> getReportedUsers();
+
 }
