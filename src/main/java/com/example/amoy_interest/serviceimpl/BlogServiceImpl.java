@@ -1,6 +1,8 @@
 package com.example.amoy_interest.serviceimpl;
 
 import com.example.amoy_interest.dao.*;
+import com.example.amoy_interest.dto.BlogCommentLevel1DTO;
+import com.example.amoy_interest.dto.BlogCommentMultiLevelDTO;
 import com.example.amoy_interest.dto.BlogDTO;
 import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.service.BlogService;
@@ -185,10 +187,9 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public Page<BlogDTO> list(String keyword, Integer pageNum, Integer pageSize) {
+    public Page<BlogDTO> getSearchListByBlog_text(String keyword, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Blog> blogPage = blogDao.findBlogListByBlog_text(keyword,pageable);
-//        System.out.println(blogList.size());
         List<Blog> blogList = blogPage.getContent();
         List<BlogDTO> blogDTOList = new ArrayList<>();
         for(Blog blog: blogList) {
@@ -220,4 +221,42 @@ public class BlogServiceImpl implements BlogService {
         }
         return new PageImpl<BlogDTO>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
     }
+
+    @Override
+    public Page<BlogCommentLevel1DTO> getLevel1CommentPage(Integer blog_id, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<BlogComment> blogCommentPage = blogCommentDao.findLevel1CommentListByBlog_id(blog_id,pageable);
+        List<BlogComment> blogCommentList = blogCommentPage.getContent();
+        List<BlogCommentLevel1DTO> blogCommentLevel1DTOList = new ArrayList<>();
+        for(BlogComment blogComment: blogCommentList) {
+            //暂时设为true
+            blogCommentLevel1DTOList.add(new BlogCommentLevel1DTO(blogComment,true));
+        }
+        return new PageImpl<BlogCommentLevel1DTO>(blogCommentLevel1DTOList,blogCommentPage.getPageable(),blogCommentPage.getTotalElements());
+    }
+
+    @Override
+    public Page<BlogCommentMultiLevelDTO> getMultiLevelCommentPage(Integer root_comment_id, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<BlogComment> blogCommentPage = blogCommentDao.findMultiLevelCommentListByComment_id(root_comment_id,pageable);
+        List<BlogComment> blogCommentList = blogCommentPage.getContent();
+        List<BlogCommentMultiLevelDTO> blogCommentMultiLevelDTOS = new ArrayList<>();
+        for(BlogComment blogComment: blogCommentList) {
+            blogCommentMultiLevelDTOS.add(new BlogCommentMultiLevelDTO(blogComment));
+        }
+        return new PageImpl<>(blogCommentMultiLevelDTOS,blogCommentPage.getPageable(),blogCommentPage.getTotalElements());
+    }
+
+    @Override
+    public Page<BlogDTO> getReportedBlogsPage(Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<Blog> blogPage = blogDao.findReportedBlogsPage(pageable);
+        List<Blog> blogList = blogPage.getContent();
+        List<BlogDTO> blogDTOList = new ArrayList<>();
+        for(Blog blog:blogList) {
+            blogDTOList.add(new BlogDTO(blog));
+        }
+        return new PageImpl<>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
+    }
+
 }

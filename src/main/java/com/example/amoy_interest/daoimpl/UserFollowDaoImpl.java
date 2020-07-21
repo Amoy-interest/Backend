@@ -27,7 +27,12 @@ public class UserFollowDaoImpl implements UserFollowDao {
     }
 
     @Override
-    public Page<UserFollow> test(Pageable pageable) {
-        return userFollowRepository.findAll(pageable);
+    public Page<UserFollow> findFollowPageByUser_id(Integer user_id, Pageable pageable) {
+        return userFollowRepository.findFollowByUser_id(user_id,pageable);
+    }
+
+    @Override
+    public Page<UserFollow> findFollowPageByFollow_id(Integer follow_id, Pageable pageable) {
+        return userFollowRepository.findFollowByFollow_id(follow_id,pageable);
     }
 }

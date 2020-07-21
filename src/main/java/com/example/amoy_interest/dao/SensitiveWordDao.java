@@ -11,5 +11,6 @@ public interface SensitiveWordDao {
     SensitiveWord findSensitiveWordByKeyword(String keyword);
     SensitiveWord saveSensitiveWord(SensitiveWord sensitiveWord);
     void deleteByKeyword(String keyword);
-    Page<SensitiveWord> findList(Pageable pageable);
+    Page<SensitiveWord> findPage(Pageable pageable);
+    Page<SensitiveWord> findPageByKeyword(String keyword,Pageable pageable);
 }

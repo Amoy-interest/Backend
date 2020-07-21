@@ -19,4 +19,13 @@ public interface SensitiveWordRepository extends JpaRepository<SensitiveWord,Int
     @Query(value = "delete from SensitiveWord where keyword = :keyword")
     void deleteByKeyword(String keyword);
 
+//    @Query(value = "SELECT * FROM sensitive_words ",
+//            countQuery = "SELECT count(*) From sensitive_words",
+//            nativeQuery = true)
+//    Page<SensitiveWord> findPage(Pageable pageable);
+
+    @Query(value = "SELECT * FROM sensitive_words WHERE keyword like %?1%",
+            countQuery = "SELECT count(*) From sensitive_words WHERE keyword like %?1%",
+            nativeQuery = true)
+    Page<SensitiveWord> findPageByKeyword(String keyword,Pageable pageable);
 }

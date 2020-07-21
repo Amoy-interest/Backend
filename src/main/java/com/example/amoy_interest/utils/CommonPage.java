@@ -1,15 +1,23 @@
 package com.example.amoy_interest.utils;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.domain.Page;
 //import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
+@ApiModel(value = "CommonPage", description = "通用分页")
 public class CommonPage<T> {
+    @ApiModelProperty(value = "该page所在页数")
     private Integer pageNum;
+    @ApiModelProperty(value = "一个page的实例个数")
     private Integer pageSize;
+    @ApiModelProperty(value = "总页数")
     private Integer totalPage;
+    @ApiModelProperty(value = "总个数")
     private Long total;
+    @ApiModelProperty(value = "该page的实例")
     private List<T> list;
 
     /**

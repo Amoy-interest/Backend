@@ -2,14 +2,20 @@ package com.example.amoy_interest.serviceimpl;
 
 import com.example.amoy_interest.dao.BlogDao;
 import com.example.amoy_interest.dao.TopicDao;
+import com.example.amoy_interest.dto.BlogDTO;
 import com.example.amoy_interest.dto.TopicCheckDTO;
 import com.example.amoy_interest.dto.TopicDTO;
 import com.example.amoy_interest.dto.TopicReportDTO;
+import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.Topic;
 import com.example.amoy_interest.service.BlogService;
 import com.example.amoy_interest.service.TopicService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -60,4 +66,15 @@ public class TopicServiceImpl implements TopicService {
         return true;
     }
 
+    @Override
+    public Page<TopicReportDTO> getReportedTopicsPage(Integer pageNum,Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<Topic> topicPage = topicDao.getReportedTopicPage(pageable);
+        List<Topic> topicList = topicPage.getContent();
+        List<TopicReportDTO> topicReportDTOList = new ArrayList<>();
+        for(Topic topic: topicList) {
+            topicReportDTOList.add(new TopicReportDTO(topic));
+        }
+        return new PageImpl<>(topicReportDTOList,topicPage.getPageable(),topicPage.getTotalElements());
+    }
 }

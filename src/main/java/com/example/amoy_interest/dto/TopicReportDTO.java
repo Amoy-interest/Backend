@@ -1,6 +1,7 @@
 package com.example.amoy_interest.dto;
 
 
+import com.example.amoy_interest.entity.Topic;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -20,4 +21,10 @@ public class TopicReportDTO {
     private Date time;
     @ApiModelProperty(value = "被举报数", required = true)
     private Integer report_count;
+
+    public TopicReportDTO(Topic topic) {
+        this.name = topic.getTopic_name();
+        this.time = topic.getTopic_time();
+        this.report_count = topic.getReport_count();
+    }
 }

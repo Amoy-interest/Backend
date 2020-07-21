@@ -1,5 +1,6 @@
 package com.example.amoy_interest.dto;
 
+import com.example.amoy_interest.entity.BlogComment;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -32,4 +33,8 @@ public class BlogCommentLevel1DTO {
     private Integer vote_count;
     @ApiModelProperty(value = "是否有子评论")
     private boolean have_child;
+
+    public BlogCommentLevel1DTO(BlogComment blogComment,boolean have_child) {
+
+    }
 }

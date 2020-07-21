@@ -4,6 +4,8 @@ import com.example.amoy_interest.dao.TopicDao;
 import com.example.amoy_interest.entity.Topic;
 import com.example.amoy_interest.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,5 +38,10 @@ public class TopicDaoImpl implements TopicDao {
     @Override
     public List<Topic> getReportedTopic() {
         return topicRepository.getReportedTopic();
+    }
+
+    @Override
+    public Page<Topic> getReportedTopicPage(Pageable pageable) {
+        return topicRepository.getReportedTopicPage(pageable);
     }
 }

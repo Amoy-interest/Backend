@@ -15,4 +15,6 @@ public interface TopicService {
     List<TopicReportDTO> getReportedTopics();
     boolean checkReportedTopic(TopicCheckDTO topicCheckDTO);
     boolean reportTopicByName(String topic_name);
+    Page<TopicReportDTO> getReportedTopicsPage(Integer pageNum,Integer pageSize);
+
 }

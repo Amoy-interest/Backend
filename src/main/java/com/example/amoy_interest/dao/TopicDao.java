@@ -2,6 +2,8 @@ package com.example.amoy_interest.dao;
 
 
 import com.example.amoy_interest.entity.Topic;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -11,4 +13,5 @@ public interface TopicDao {
     void update(Topic topic);
     Topic getTopicByName(String topic_name);
     List<Topic> getReportedTopic();
+    Page<Topic> getReportedTopicPage(Pageable pageable);
 }
