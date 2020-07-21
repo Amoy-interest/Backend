@@ -36,8 +36,13 @@ public class SensitiveWordDaoImpl implements SensitiveWordDao {
     }
 
     @Override
-    public Page<SensitiveWord> findList(Pageable pageable) {
+    public Page<SensitiveWord> findPage(Pageable pageable) {
         return sensitiveWordRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<SensitiveWord> findPageByKeyword(String keyword, Pageable pageable) {
+        return sensitiveWordRepository.findPageByKeyword(keyword, pageable);
     }
 }
 

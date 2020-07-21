@@ -58,4 +58,9 @@ public class BlogDaoImpl implements BlogDao {
     public Page<Blog> findBlogListByTopic_id(Integer topic_id, Pageable pageable) {
         return blogRepository.findListByTopic_id(topic_id,pageable);
     }
+
+    @Override
+    public Page<Blog> findReportedBlogsPage(Pageable pageable) {
+        return blogRepository.findReportedBlogsPage(pageable);
+    }
 }

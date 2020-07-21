@@ -10,6 +10,7 @@ import com.example.amoy_interest.msgutils.MsgUtil;
 import com.example.amoy_interest.service.BlogService;
 import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.service.UserService;
+import com.example.amoy_interest.utils.CommonPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -41,14 +42,15 @@ public class AdminController {
     @UserLoginToken
     @ApiOperation(value = "分页获取被举报的blog")
     @GetMapping(value = "/blogs/reported")
-    public Msg<List<BlogDTO>> GetReportedBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                               @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        List<BlogDTO> blogDTOS = new ArrayList<>();
-        List<BlogCount> blogCounts = blogService.getAllReportedBlogs();
-        for (BlogCount blogCount : blogCounts) {
-            blogDTOS.add(blogService.getSimpleBlogDetail(blogCount.getBlog_id()));
-        }
-        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, blogDTOS);
+    public Msg<CommonPage<BlogDTO>> GetReportedBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                                     @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+//        List<BlogDTO> blogDTOS = new ArrayList<>();
+//        List<BlogCount> blogCounts = blogService.getAllReportedBlogs();
+//        for (BlogCount blogCount : blogCounts) {
+//            blogDTOS.add(blogService.getSimpleBlogDetail(blogCount.getBlog_id()));
+//        }
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG,CommonPage.restPage(blogService.getReportedBlogsPage(pageNum, pageSize)));
+//        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, blogDTOS);
     }
 
     //一次审核一堆还是一次审核一个blog？效率？
@@ -65,9 +67,11 @@ public class AdminController {
     @UserLoginToken
     @ApiOperation(value = "分页获取被举报的话题")
     @GetMapping(value = "/topics/reported")
-    public Msg<List<TopicReportDTO>> GetReportedTopics(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+    public Msg<CommonPage<TopicReportDTO>> GetReportedTopics(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                        @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.getReportedTopics());
+//        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.getReportedTopics());
+//        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,)
+        return null;
     }
 
     @UserLoginToken
@@ -82,9 +86,10 @@ public class AdminController {
     @UserLoginToken
     @ApiOperation(value = "分页获取被举报用户", notes = "获取被举报用户")
     @RequestMapping(value = "/users/reported", method = RequestMethod.GET)
-    public Msg<List<UserReportDTO>> GetReportedUser(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+    public Msg<CommonPage<UserReportDTO>> GetReportedUser(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                     @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, userService.getReportedUsers());
+//        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, userService.getReportedUsers());
+        return null;
     }
 
     @UserLoginToken

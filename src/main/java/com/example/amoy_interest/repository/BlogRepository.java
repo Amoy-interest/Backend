@@ -33,7 +33,11 @@ public interface BlogRepository extends JpaRepository<Blog,Integer> {
             countQuery = "SELECT count(*) From blog WHERE user_id = ?1",
             nativeQuery = true)
     Page<Blog> findListByUser_id(Integer user_id,Pageable pageable);
-//    Page<Blog> findByBlogTextContaining(String blog_text,Pageable pageable);
-//    @Query(value = "from Blog where blog_text like CONCAT('%',:keyword,'%')")
-//    Page<Blog> findBlogListByBlog_text(String keyword, Pageable pageable);
+
+    //如何写？
+//    @Query(value = "SELECT * FROM blog as b WHERE b.is_deleted = 0 and b.check_status = 0 and (report_count > 10)",
+//            countQuery = "SELECT count(*) FROM blog natural join blog_count WHERE is_deleted = 0 and check_status = 0 and report_count > 10",
+//            nativeQuery = true)
+    @Query(value = "From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10",countQuery = "SELECT count(b.blog_id) From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10")
+    Page<Blog> findReportedBlogsPage(Pageable pageable);
 }

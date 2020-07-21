@@ -1,5 +1,6 @@
 package com.example.amoy_interest.dto;
 
+import com.example.amoy_interest.entity.BlogComment;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -28,4 +29,8 @@ public class BlogCommentMultiLevelDTO {
     private Date comment_time;
     @ApiModelProperty(value = "评论点赞数", required = true)
     private Integer vote_count;
+
+    public BlogCommentMultiLevelDTO(BlogComment blogComment) {
+
+    }
 }

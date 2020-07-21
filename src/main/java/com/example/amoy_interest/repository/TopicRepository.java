@@ -1,6 +1,9 @@
 package com.example.amoy_interest.repository;
 
 import com.example.amoy_interest.entity.Topic;
+import com.example.amoy_interest.entity.UserFollow;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,5 +16,9 @@ public interface TopicRepository extends JpaRepository<Topic,Integer> {
     @Query(value = "from Topic where report_count >= 10 and check_status = 0")
     List<Topic> getReportedTopic();
 
+    @Query(value = "SELECT * FROM topic WHERE report_count >= 10 and check_status = 0",
+            countQuery = "SELECT count(*) FROM topic WHERE report_count >= 10 and check_status = 0",
+            nativeQuery = true)
+    Page<Topic> getReportedTopicPage(Pageable pageable);
 
 }
