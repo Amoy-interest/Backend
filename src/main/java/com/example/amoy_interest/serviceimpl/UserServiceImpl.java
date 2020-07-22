@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.amoy_interest.constant.SecurityConstants.EXPIRATION_TIME;
 
@@ -72,10 +73,12 @@ public class UserServiceImpl implements UserService {
         UserAuth userAuth = userAuthDao.findUserById(user_id);
         userAuth.setIs_ban(1);
         userAuthDao.update(userAuth);
-        UserBan userBan = userBanDao.findUserBanById(user_id);
-        if(userBan == null) {
+        Optional<UserBan> userBanOptional = userBanDao.findUserBanById(user_id);
+        UserBan userBan = null;
+        if(!userBanOptional.isPresent()) {
             userBan = new UserBan(user_id,endTime,null);
         }else {
+            userBan = userBanOptional.get();
             userBan.setBan_time(endTime);
         }
         userBanDao.insert(userBan);
@@ -97,10 +100,12 @@ public class UserServiceImpl implements UserService {
         UserAuth userAuth = userAuthDao.findUserById(user_id);
         userAuth.setIs_forbidden(1);
         userAuthDao.update(userAuth);
-        UserBan userBan = userBanDao.findUserBanById(user_id);
-        if(userBan == null) {
+        Optional<UserBan> userBanOptional = userBanDao.findUserBanById(user_id);
+        UserBan userBan = null;
+        if(!userBanOptional.isPresent()) {
             userBan = new UserBan(user_id,null,endTime);
         }else {
+            userBan = userBanOptional.get();
             userBan.setForbidden_time(endTime);
         }
         userBanDao.insert(userBan);
