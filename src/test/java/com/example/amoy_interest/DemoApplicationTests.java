@@ -7,8 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public
-class DemoApplicationTests {
+public class DemoApplicationTests {
 
     @Before
     public void init() {
@@ -18,5 +17,9 @@ class DemoApplicationTests {
     @After
     public void after() {
         System.out.println("测试结束-----------------");
+    }
+    @Test
+    public void test() {
+
     }
 }

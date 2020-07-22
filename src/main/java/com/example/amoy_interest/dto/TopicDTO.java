@@ -41,6 +41,7 @@ public class TopicDTO {
     public List<Topic_Blog> convert(List<Blog> blogs) {
         List<Topic_Blog> list = new ArrayList<>();
         for(Blog blog : blogs) {
+            if(blog.is_deleted() || blog.getCheck_status()==2) continue;//过滤掉被删除的blog
             Topic_Blog topic_blog = new Topic_Blog();
             User user = blog.getUser();
             topic_blog.nickname = user.getNickname();
@@ -49,8 +50,10 @@ public class TopicDTO {
             topic_blog.blog_time = blog.getBlog_time();
             List<BlogImage> blogImages = blog.getBlogImages();
             List<String> tmp_blog_images = new ArrayList<>();
-            for (BlogImage blogImage : blogImages) {
-                tmp_blog_images.add(blogImage.getBlog_image());
+            if(blogImages != null) {
+                for (BlogImage blogImage : blogImages) {
+                    tmp_blog_images.add(blogImage.getBlog_image());
+                }
             }
             topic_blog.blog_content = new BlogContentDTO(blog.getBlog_text(), tmp_blog_images);
             topic_blog.blog_child = null;  //转发还在topic里吗？？暂时不在

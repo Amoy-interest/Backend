@@ -26,14 +26,12 @@ public class UserController {
     private TokenService tokenService;
     @ApiOperation(value = "登录", notes = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "body", name = "username", value = "用户名", required = true, dataType = "String"),
-//            @ApiImplicitParam(paramType = "body", name = "password", value = "密码", required = true, dataType = "String")
-//    })
     public Msg<UserDTO> Login(@RequestBody LoginDTO data) {
         String username = data.getUsername();
         String password = data.getPassword();
+        //需要重写，用checkUser,检查用户是否被封号
         UserAuth userAuth = userService.findUserAuthByUsername(username);
+
         if(userAuth == null) {
             return new Msg<UserDTO>(MsgCode.USER_NOT_EXIST,MsgUtil.LOGIN_USER_ERROR_MSG,null);
         }else {
@@ -48,15 +46,6 @@ public class UserController {
         }
     }
 
-    //用于测试
-//    @UserLoginToken
-//    @GetMapping("/getMessage")
-//    public String getMessage(@RequestHeader(value="token") String token){
-//        Integer userId = JWT.decode(token).getClaim("user_id").asInt();
-////        Integer userId = Integer.parseInt(JWT.decode(token).getAudience().get(0));
-//
-//        return "你的用户id为"+Integer.toString(userId);
-//    }
 
 
     //登出后台不需要做什么，直接前台把token删掉就好了
@@ -85,20 +74,13 @@ public class UserController {
         return new Msg<UserDTO>(MsgCode.SUCCESS,MsgUtil.REGISTER_SUCCESS_MSG,userDTO);
     }
 
-    @ApiOperation(value = "获取被举报用户",notes = "获取被举报用户")
-    @RequestMapping(value = "/admin/reported", method = RequestMethod.GET)
-    public Msg<List<UserReportDTO>> GetReportedUser() {
-
-        return null;
-    }
-
     //是否还需要check？
 //    @ApiOperation(value = "用户检查",notes = "用户检查")
 //    @GetMapping(value = "/check")
 //    public Msg Check() {
 //        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.LOGIN_SUCCESS_MSG);
 //    }
-
+    @UserLoginToken
     @ApiOperation(value = "关注用户",notes = "关注")
     @PostMapping(value = "/follow")
     public Msg Follow(Integer follow_id,@RequestHeader(value="token") String token) {

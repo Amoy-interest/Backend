@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.example.amoy_interest.annotation.AdminLoginToken;
 import com.example.amoy_interest.annotation.PassToken;
 import com.example.amoy_interest.annotation.UserLoginToken;
 import com.example.amoy_interest.service.UserService;
@@ -70,6 +71,30 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 return true;
             }
         }
+//        if (method.isAnnotationPresent(AdminLoginToken.class)) {
+//            UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
+//            if (userLoginToken.required()) {
+//                // 执行认证
+//                if (token == null) {
+//                    throw new RuntimeException("无token，请重新登录");
+//                }
+////                DecodedJWT jwt = null;
+//                try {
+//                    // 使用了HMAC256加密算法。
+//                    JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET))
+//                            .withIssuer("auth0")
+//                            .build(); //Reusable verifier instance
+//                    verifier.verify(token);
+//                } catch (JWTVerificationException exception){
+//                    //Invalid signature/claims
+//                    throw new RuntimeException("Token失效，请重新登陆");
+//                } catch (IllegalArgumentException e) {
+//                    // TODO Auto-generated catch block
+//                    throw new RuntimeException("401");
+//                }
+//                return true;
+//            }
+//        }
         return true;
     }
 

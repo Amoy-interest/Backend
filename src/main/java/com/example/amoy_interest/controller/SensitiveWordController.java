@@ -1,5 +1,6 @@
 package com.example.amoy_interest.controller;
 
+import com.example.amoy_interest.annotation.UserLoginToken;
 import com.example.amoy_interest.entity.SensitiveWord;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
@@ -20,21 +21,22 @@ import java.util.List;
 public class SensitiveWordController {
     @Autowired
     private SensitiveWordService sensitiveWordService;
-
+    @UserLoginToken
     @ApiOperation(value = "获取敏感词列表")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Msg<List<SensitiveWord>> GetSensitiveWords() {
         List<SensitiveWord> sws = sensitiveWordService.getAllSensitiveWords();
         return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, sws);
     }
-
+    @UserLoginToken
     @ApiOperation(value = "添加敏感词")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Msg AddSensitiveWord(String keyword) {
+        System.out.println(keyword);
         sensitiveWordService.addSensitiveWord(new SensitiveWord(keyword));
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.ADD_BLOG_SUCCESS_MSG);
     }
-
+    @UserLoginToken
     @ApiOperation(value = "编辑敏感词")
     @RequestMapping(value = "", method = RequestMethod.PUT)
     public Msg PutSensitiveWord(String oldWord, String newWord) {
@@ -43,10 +45,11 @@ public class SensitiveWordController {
         sensitiveWordService.updateSensitiveWord(sensitiveWord);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.PUT_BLOG_SUCCESS_MSG);
     }
-
+    @UserLoginToken
     @ApiOperation(value = "删除敏感词")
     @RequestMapping(value = "", method = RequestMethod.DELETE)
     public Msg DeleteSensitiveWord(String keyword) {
+        System.out.println(keyword);
         sensitiveWordService.deleteByKeyword(keyword);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.DELETE_BLOG_SUCCESS_MSG);
     }
