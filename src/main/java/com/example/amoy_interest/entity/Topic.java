@@ -21,14 +21,19 @@ public class Topic {
     private Date topic_time;
     private int check_status;
     private int report_count;
+    private int host_id;
+    private String logo_path;
+    private String topic_intro;
 
-//    public Topic(int topic_id,String topic_name,Date topic_time,int check_status,int report_count){
-//        this.topic_id = topic_id;
-//        this.topic_name = topic_name;
-//        this.topic_time = topic_time;
-//        this.check_status = check_status;
-//        this.report_count = report_count;
-//    }
+    public Topic(String topic_name,Date topic_time,int check_status,int report_count,Integer host_id,String logo_path,String topic_intro){
+        this.topic_name = topic_name;
+        this.topic_time = topic_time;
+        this.check_status = check_status;
+        this.report_count = report_count;
+        this.host_id = host_id;
+        this.logo_path = logo_path;
+        this.topic_intro = topic_intro;
+    }
 //    @OneToMany(fetch=FetchType.LAZY)
 //    @JoinColumn(name = "topic_id",referencedColumnName = "topic_id")
 //    private List<Blog> blogs;

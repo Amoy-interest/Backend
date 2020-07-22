@@ -1,9 +1,6 @@
 package com.example.amoy_interest.service;
 
-import com.example.amoy_interest.dto.BlogDTO;
-import com.example.amoy_interest.dto.TopicCheckDTO;
-import com.example.amoy_interest.dto.TopicDTO;
-import com.example.amoy_interest.dto.TopicReportDTO;
+import com.example.amoy_interest.dto.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -16,5 +13,7 @@ public interface TopicService {
     boolean checkReportedTopic(TopicCheckDTO topicCheckDTO);
     boolean reportTopicByName(String topic_name);
     Page<TopicReportDTO> getReportedTopicsPage(Integer pageNum,Integer pageSize);
-
+    boolean addTopic(String topic_name);
+    boolean modifyTopicIntro(TopicIntroDTO topicIntroDTO);
+    boolean modifyTopicLogo(TopicLogoDTO topicLogoDTO);
 }
