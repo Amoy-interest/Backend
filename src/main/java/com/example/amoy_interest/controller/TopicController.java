@@ -30,7 +30,7 @@ public class TopicController {
     @Autowired
     private BlogService blogService;
     @ApiOperation(value = "查看话题基本内容（还需要给话题加点内容）")
-    @RequestMapping(value = "/",method = RequestMethod.GET)
+    @RequestMapping(value = "",method = RequestMethod.GET)
     public Msg<TopicDTO> GetTopicAll(String topic_name) {
         return new Msg<>(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG,topicService.getTopicDTOByName(topic_name));
     }

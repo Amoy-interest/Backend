@@ -1,5 +1,6 @@
 package com.example.amoy_interest.config;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import io.swagger.annotations.Api;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Configuration
 @EnableSwagger2
+@EnableKnife4j
 public class Swagger2Config {
 
     @Bean
