@@ -1,12 +1,13 @@
 package com.example.amoy_interest.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "user_info")
@@ -30,6 +31,24 @@ public class User {
         this.introduction = introduction;
         this.avatar_path = avatar_path;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User that = (User) o;
+        return user_id == that.user_id &&
+                Objects.equals(nickname, that.nickname) &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(sex, that.sex) &&
+                Objects.equals(address, that.address) &&
+                Objects.equals(credits,that.credits) &&
+                Objects.equals(introduction,that.introduction) ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user_id, nickname,address,email,sex,address,credits,introduction,avatar_path);
+    }
 
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id",referencedColumnName = "user_id")
@@ -37,11 +56,13 @@ public class User {
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id",referencedColumnName = "user_id")
     private UserCount userCount;
-    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-    private List<Blog> blogs;
+    //一般用分页，不再关联
+//    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+//    private List<Blog> blogs;
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id",referencedColumnName = "user_id")
     private UserBan userBan;
+    //这个是不是也得不再关联？
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id",referencedColumnName = "user_id")
     private List<UserFollow> userFollow;

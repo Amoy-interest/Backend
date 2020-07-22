@@ -17,10 +17,8 @@ public class CommentPostDTO {
     private Integer blog_id;
     @ApiModelProperty(value = "多级评论的根评论id(如果本身是一级评论，则为-1)",required =  true)
     private Integer root_comment_id;
-    @ApiModelProperty(value = "评论者的昵称",required = true)
-    private String nickname;
-    @ApiModelProperty(value = "被评论者的昵称(多级评论的时候才有,一级评论为null)",required = false)
-    private String reply_comment_nickname;
+    @ApiModelProperty(value = "被评论者的id(多级评论的时候才有,一级评论为null)",required = false)
+    private Integer reply_user_id;
     @ApiModelProperty(value = "评论内容",required = true)
     private String text;
 }

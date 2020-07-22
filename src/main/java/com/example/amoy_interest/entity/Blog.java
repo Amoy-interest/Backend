@@ -21,7 +21,7 @@ public class Blog {
     private String blog_text;
     private boolean is_deleted;
     private Integer check_status;
-    private Integer reply_blog_id;
+//    private Integer reply_blog_id;
 
     public Blog(){}
 
@@ -34,9 +34,8 @@ public class Blog {
         this.blog_text = blog_text;
         this.is_deleted = is_deleted;
         this.check_status = check_status;
-        this.reply_blog_id = reply_blog_id;
+//        this.reply_blog_id = reply_blog_id;
     }
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id",insertable = false, updatable = false)
     private User user;
@@ -45,9 +44,9 @@ public class Blog {
 //    @JoinColumn(name="topic_id",insertable = false, updatable = false)
 //    private Topic topic;
 
-    @OneToMany(fetch=FetchType.LAZY)
-    @JoinColumn(name = "blog_id",referencedColumnName = "blog_id")
-    private List<BlogComment> comments;
+//    @OneToMany(fetch=FetchType.LAZY)
+//    @JoinColumn(name = "blog_id",referencedColumnName = "blog_id")
+//    private List<BlogComment> comments;
 
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "blog_id",referencedColumnName = "blog_id")
@@ -57,4 +56,6 @@ public class Blog {
     @JoinColumn(name = "blog_id",referencedColumnName = "blog_id")
     private List<BlogImage> blogImages;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private Blog reply;
 }

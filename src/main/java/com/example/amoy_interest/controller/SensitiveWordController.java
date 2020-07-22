@@ -6,11 +6,14 @@ import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
 import com.example.amoy_interest.service.SensitiveWordService;
+import com.example.amoy_interest.utils.CommonPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,11 +25,12 @@ public class SensitiveWordController {
     @Autowired
     private SensitiveWordService sensitiveWordService;
     @UserLoginToken
-    @ApiOperation(value = "获取敏感词列表")
+    @ApiOperation(value = "以分页的方式获取敏感词列表")
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public Msg<List<SensitiveWord>> GetSensitiveWords() {
-        List<SensitiveWord> sws = sensitiveWordService.getAllSensitiveWords();
-        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, sws);
+    public Msg<CommonPage<SensitiveWord>> GetSensitiveWords(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                                            @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+        Page<SensitiveWord> sws = sensitiveWordService.getSensitiveWordsPage(pageNum,pageSize);
+        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(sws));
     }
     @UserLoginToken
     @ApiOperation(value = "添加敏感词")
@@ -36,6 +40,7 @@ public class SensitiveWordController {
         sensitiveWordService.addSensitiveWord(new SensitiveWord(keyword));
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.ADD_BLOG_SUCCESS_MSG);
     }
+    //有bug，不能修改主键？
     @UserLoginToken
     @ApiOperation(value = "编辑敏感词")
     @RequestMapping(value = "", method = RequestMethod.PUT)

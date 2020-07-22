@@ -4,6 +4,8 @@ import com.example.amoy_interest.dao.BlogCommentDao;
 import com.example.amoy_interest.entity.BlogComment;
 import com.example.amoy_interest.repository.BlogCommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -40,4 +42,18 @@ public class BlogCommentDaoImpl implements BlogCommentDao {
         blogCommentRepository.decrCommentVoteCount(comment_id);
     }
 
+    @Override
+    public Page<BlogComment> findLevel1CommentListByBlog_id(Integer blog_id, Pageable pageable) {
+        return blogCommentRepository.findLevel1CommentListByBlog_id(blog_id,pageable);
+    }
+
+    @Override
+    public Page<BlogComment> findMultiLevelCommentListByComment_id(Integer root_comment_id, Pageable pageable) {
+        return blogCommentRepository.findMultiLevelCommentListByBlog_id(root_comment_id, pageable);
+    }
+
+    @Override
+    public BlogComment findOneByRoot_comment_id(Integer root_comment_id) {
+        return blogCommentRepository.findOneByRoot_comment_id(root_comment_id);
+    }
 }

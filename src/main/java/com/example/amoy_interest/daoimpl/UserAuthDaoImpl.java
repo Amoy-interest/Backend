@@ -29,4 +29,6 @@ public class UserAuthDaoImpl implements UserAuthDao {
     public void update(UserAuth userAuth) {
         userAuthRepository.save(userAuth);
     }
+
+
 }

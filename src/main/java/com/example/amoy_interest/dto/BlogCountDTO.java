@@ -20,13 +20,13 @@ public class BlogCountDTO {
     private Integer comment_count;
     @ApiModelProperty(value = "点赞数")
     private Integer vote_count;
-    @ApiModelProperty(value = "被举报数")
-    private Integer report_count;
+//    @ApiModelProperty(value = "被举报数")
+//    private Integer report_count;
 
     public BlogCountDTO(BlogCount blogCount) {
         this.setComment_count(blogCount.getComment_count());
         this.setForward_count(blogCount.getForward_count());
         this.setVote_count(blogCount.getVote_count());
-        this.setReport_count(blogCount.getReport_count());
+//        this.setReport_count(blogCount.getReport_count());
     }
 }

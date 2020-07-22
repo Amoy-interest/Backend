@@ -1,9 +1,13 @@
 package com.example.amoy_interest.service;
 
+import com.example.amoy_interest.dto.BlogCommentLevel1DTO;
+import com.example.amoy_interest.dto.BlogCommentMultiLevelDTO;
 import com.example.amoy_interest.dto.BlogDTO;
 import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.BlogComment;
 import com.example.amoy_interest.entity.BlogCount;
+//import com.github.pagehelper.PageInfo;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -32,4 +36,16 @@ public interface BlogService {
     List<BlogDTO> getBlogsByUser_id(Integer user_id);
     List<BlogDTO> getRecommendBlogsByUser_id(Integer user_id);
     List<BlogDTO> getFollowBlogsByUser_id(Integer user_id);
+
+    boolean reportBlogByBlog_id(Integer blog_id);
+
+    Page<BlogDTO> getSearchListByBlog_text(String keyword, Integer pageNum, Integer pageSize);
+    Page<BlogDTO> getListByUser_id(Integer user_id,Integer pageNum,Integer pageSize);
+    Page<BlogDTO> getListByTopic_id(Integer topic_id,Integer pageNum,Integer pageSize);
+
+    Page<BlogCommentLevel1DTO> getLevel1CommentPage(Integer blog_id,Integer pageNum,Integer pageSize);
+    Page<BlogCommentMultiLevelDTO> getMultiLevelCommentPage(Integer root_comment_id,Integer pageNum,Integer pageSize);
+    Page<BlogDTO> getReportedBlogsPage(Integer pageNum,Integer pageSize);
+
+
 }

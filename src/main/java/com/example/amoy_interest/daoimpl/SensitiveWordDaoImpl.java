@@ -4,6 +4,8 @@ import com.example.amoy_interest.dao.SensitiveWordDao;
 import com.example.amoy_interest.entity.SensitiveWord;
 import com.example.amoy_interest.repository.SensitiveWordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,6 +33,16 @@ public class SensitiveWordDaoImpl implements SensitiveWordDao {
     @Override
     public void deleteByKeyword(String keyword) {
         sensitiveWordRepository.deleteByKeyword(keyword);
+    }
+
+    @Override
+    public Page<SensitiveWord> findPage(Pageable pageable) {
+        return sensitiveWordRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<SensitiveWord> findPageByKeyword(String keyword, Pageable pageable) {
+        return sensitiveWordRepository.findPageByKeyword(keyword, pageable);
     }
 }
 

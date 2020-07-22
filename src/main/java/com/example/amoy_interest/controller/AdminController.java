@@ -10,6 +10,7 @@ import com.example.amoy_interest.msgutils.MsgUtil;
 import com.example.amoy_interest.service.BlogService;
 import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.service.UserService;
+import com.example.amoy_interest.utils.CommonPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -28,7 +29,7 @@ import java.util.List;
 import static com.example.amoy_interest.constant.SecurityConstants.EXPIRATION_TIME;
 
 @RequestMapping("/admins")
-@Api(tags="管理员模块")
+@Api(tags = "管理员模块")
 @RestController
 public class AdminController {
     @Autowired
@@ -37,16 +38,19 @@ public class AdminController {
     UserService userService;
     @Autowired
     TopicService topicService;
+
     @UserLoginToken
-    @ApiOperation(value = "获取被举报的blog")
+    @ApiOperation(value = "分页获取被举报的blog")
     @GetMapping(value = "/blogs/reported")
-    public Msg<List<BlogDTO>> GetReportedBlogs() {
-        List<BlogDTO> blogDTOS = new ArrayList<>();
-        List<BlogCount> blogCounts = blogService.getAllReportedBlogs();
-        for(BlogCount blogCount : blogCounts) {
-            blogDTOS.add(blogService.getSimpleBlogDetail(blogCount.getBlog_id()));
-        }
-        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, blogDTOS);
+    public Msg<CommonPage<BlogDTO>> GetReportedBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                                     @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+//        List<BlogDTO> blogDTOS = new ArrayList<>();
+//        List<BlogCount> blogCounts = blogService.getAllReportedBlogs();
+//        for (BlogCount blogCount : blogCounts) {
+//            blogDTOS.add(blogService.getSimpleBlogDetail(blogCount.getBlog_id()));
+//        }
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG,CommonPage.restPage(blogService.getReportedBlogsPage(pageNum, pageSize)));
+//        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, blogDTOS);
     }
 
     //一次审核一堆还是一次审核一个blog？效率？
@@ -59,55 +63,64 @@ public class AdminController {
         blogService.updateBlog(blog);
         return new Msg(MsgCode.SUCCESS, MsgUtil.CHECK_BLOG_SUCCESS_MSG);
     }
+
     @UserLoginToken
-    @ApiOperation(value = "获取被举报的话题")
+    @ApiOperation(value = "分页获取被举报的话题")
     @GetMapping(value = "/topics/reported")
-    public Msg<List<TopicReportDTO>> GetReportedTopics() {
-        return new Msg<>(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG,topicService.getReportedTopics());
+    public Msg<CommonPage<TopicReportDTO>> GetReportedTopics(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                                       @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+//        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.getReportedTopics());
+//        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,)
+        return null;
     }
+
     @UserLoginToken
     @ApiOperation(value = "审核话题")
     @PutMapping(value = "/topics/reported")
 //    @ResponseBody
     public Msg CheckReportedTopic(@RequestBody TopicCheckDTO topicCheckDTO) {
-        topicService.CheckReportedTopic(topicCheckDTO);
-        return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
+        topicService.checkReportedTopic(topicCheckDTO);
+        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 
     @UserLoginToken
-    @ApiOperation(value = "获取被举报用户",notes = "获取被举报用户")
+    @ApiOperation(value = "分页获取被举报用户", notes = "获取被举报用户")
     @RequestMapping(value = "/users/reported", method = RequestMethod.GET)
-    public Msg<List<UserReportDTO>> GetReportedUser() {
-        return new Msg<>(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG,userService.getReportedUsers());
+    public Msg<CommonPage<UserReportDTO>> GetReportedUser(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                                    @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+//        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, userService.getReportedUsers());
+        return null;
     }
+
     @UserLoginToken
-    @ApiOperation(value = "用户禁言",notes = "对用户禁言")
+    @ApiOperation(value = "用户禁言", notes = "对用户禁言")
     @RequestMapping(value = "/users/ban", method = RequestMethod.PUT)
     public Msg Ban(@RequestBody UserCheckDTO userCheckDTO) {
         userService.ban(userCheckDTO);
-        return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
+        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
+
     @UserLoginToken
-    @ApiOperation(value = "用户解禁",notes = "对用户解除禁言")
+    @ApiOperation(value = "用户解禁", notes = "对用户解除禁言")
     @RequestMapping(value = "/users/unban", method = RequestMethod.PUT)
     public Msg Unban(@RequestBody Integer user_id) {
         userService.unban(user_id);
-        return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
+        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
+
     @UserLoginToken
-    @ApiOperation(value = "用户封号",notes = "对用户封号")
+    @ApiOperation(value = "用户封号", notes = "对用户封号")
     @RequestMapping(value = "/users/forbid", method = RequestMethod.PUT)
     public Msg Forbid(@RequestBody UserCheckDTO userCheckDTO) {
         userService.forbid(userCheckDTO);
-        return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
+        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
+
     @UserLoginToken
-    @ApiOperation(value = "用户解封",notes = "对用户解除封号")
+    @ApiOperation(value = "用户解封", notes = "对用户解除封号")
     @RequestMapping(value = "/users/permit", method = RequestMethod.PUT)
     public Msg Permit(@RequestBody Integer user_id) {
         userService.permit(user_id);
-        return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
+        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
-
-
 }

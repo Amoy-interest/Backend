@@ -1,13 +1,12 @@
 package com.example.amoy_interest.serviceimpl;
 
 import com.example.amoy_interest.dao.*;
-import com.example.amoy_interest.dto.RegisterDTO;
-import com.example.amoy_interest.dto.UserCheckDTO;
-import com.example.amoy_interest.dto.UserInfoDTO;
-import com.example.amoy_interest.dto.UserReportDTO;
+import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.service.UserService;
+//import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -126,5 +125,49 @@ public class UserServiceImpl implements UserService {
             userReportDTOList.add(userReportDTO);
         }
         return userReportDTOList;
+    }
+
+    @Override
+    public User findUserById(Integer user_id) {
+        return userDao.getById(user_id);
+    }
+
+
+    @Override
+    public Page<UserReportDTO> getReportedUsersPage(Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<User> userPage = userDao.getReportedUsersPage(pageable);
+        List<User> userList = userPage.getContent();
+        List<UserReportDTO> userReportDTOList = new ArrayList<>();
+        for(User user:userList) {
+            userReportDTOList.add(new UserReportDTO(user));
+        }
+        return new PageImpl<>(userReportDTOList,userPage.getPageable(),userPage.getTotalElements());
+    }
+
+    @Override
+    public Page<UserInfoDTO> getUserFollowPage(Integer user_id, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<UserFollow> userFollowPage = userFollowDao.findFollowPageByUser_id(user_id,pageable);
+        List<UserFollow> userFollowList = userFollowPage.getContent();
+        List<UserInfoDTO> userInfoDTOList = new ArrayList<>();
+        for(UserFollow userFollow:userFollowList) {
+            User user = userDao.getById(userFollow.getFollow_id());
+            userInfoDTOList.add(new UserInfoDTO(user));
+        }
+        return new PageImpl<>(userInfoDTOList,userFollowPage.getPageable(),userFollowPage.getTotalElements());
+    }
+
+    @Override
+    public Page<UserInfoDTO> getUserFanPage(Integer user_id, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<UserFollow> userFanPage = userFollowDao.findFollowPageByFollow_id(user_id,pageable);
+        List<UserFollow> userFollowList = userFanPage.getContent();
+        List<UserInfoDTO> userInfoDTOList = new ArrayList<>();
+        for(UserFollow userFollow:userFollowList) {
+            User user = userDao.getById(userFollow.getUser_id());
+            userInfoDTOList.add(new UserInfoDTO(user));
+        }
+        return new PageImpl<>(userInfoDTOList,userFanPage.getPageable(),userFanPage.getTotalElements());
     }
 }
