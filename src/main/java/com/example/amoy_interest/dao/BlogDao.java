@@ -16,4 +16,27 @@ public interface BlogDao {
     Page<Blog> findBlogListByUser_id(Integer user_id, Pageable pageable);
     Page<Blog> findBlogListByTopic_id(Integer topic_id, Pageable pageable);
     Page<Blog> findReportedBlogsPage(Pageable pageable);
+
+    /**
+     *
+     * @param pageable
+     * @return 按照给定的分页和排序获取博文（范围为所有用户）
+     */
+    Page<Blog> getAllBlogPage(Pageable pageable);
+
+    /**
+     *
+     * @param user_id
+     * @param pageable
+     * @return 按照给定的分页和排序获取关注的博文
+     */
+    Page<Blog> getFollowBlogPageByUser_id(Integer user_id,Pageable pageable);
+
+    /**
+     *
+     * @param user_id
+     * @param pageable
+     * @return 按照给定的分页和排序获取某用户的博文
+     */
+    Page<Blog> getBlogPageByUser_id(Integer user_id,Pageable pageable);
 }

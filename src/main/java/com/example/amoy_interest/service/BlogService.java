@@ -8,6 +8,7 @@ import com.example.amoy_interest.entity.BlogComment;
 import com.example.amoy_interest.entity.BlogCount;
 //import com.github.pagehelper.PageInfo;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -47,5 +48,30 @@ public interface BlogService {
     Page<BlogCommentMultiLevelDTO> getMultiLevelCommentPage(Integer root_comment_id,Integer pageNum,Integer pageSize);
     Page<BlogDTO> getReportedBlogsPage(Integer pageNum,Integer pageSize);
 
+    /**
+     *
+     * @param pageNum
+     * @param pageSize
+     * @return 分页返回最新博文
+     */
+    Page<BlogDTO> getAllBlogPageOrderByTime(Integer pageNum,Integer pageSize);
+
+    /**
+     *
+     * @param user_id
+     * @param pageNum
+     * @param pageSize
+     * @return 分页返回关注和自己的最新博文
+     */
+    Page<BlogDTO> getFollowBlogPageByUser_idOrderByTime(Integer user_id,Integer pageNum,Integer pageSize);
+
+    /**
+     *
+     * @param user_id
+     * @param pageNum
+     * @param pageSize
+     * @return 分页返回某用户的最新博文
+     */
+    Page<BlogDTO> getBlogPageByUser_idOrderByTime(Integer user_id,Integer pageNum,Integer pageSize);
 
 }

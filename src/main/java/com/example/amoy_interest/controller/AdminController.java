@@ -71,7 +71,7 @@ public class AdminController {
                                                        @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
 //        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.getReportedTopics());
 //        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,)
-        return null;
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,CommonPage.restPage(topicService.getReportedTopicsPage(pageNum, pageSize)));
     }
 
     @UserLoginToken
@@ -89,7 +89,7 @@ public class AdminController {
     public Msg<CommonPage<UserReportDTO>> GetReportedUser(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                     @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
 //        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, userService.getReportedUsers());
-        return null;
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,CommonPage.restPage(userService.getReportedUsersPage(pageNum, pageSize)));
     }
 
     @UserLoginToken

@@ -7,10 +7,7 @@ import com.example.amoy_interest.dto.BlogDTO;
 import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -190,11 +187,7 @@ public class BlogServiceImpl implements BlogService {
     public Page<BlogDTO> getSearchListByBlog_text(String keyword, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Blog> blogPage = blogDao.findBlogListByBlog_text(keyword,pageable);
-        List<Blog> blogList = blogPage.getContent();
-        List<BlogDTO> blogDTOList = new ArrayList<>();
-        for(Blog blog: blogList) {
-            blogDTOList.add(new BlogDTO(blog));
-        }
+        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
         return new PageImpl<BlogDTO>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
     }
 
@@ -202,11 +195,7 @@ public class BlogServiceImpl implements BlogService {
     public Page<BlogDTO> getListByUser_id(Integer user_id, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Blog> blogPage = blogDao.findBlogListByUser_id(user_id,pageable);
-        List<Blog> blogList = blogPage.getContent();
-        List<BlogDTO> blogDTOList = new ArrayList<>();
-        for(Blog blog: blogList) {
-            blogDTOList.add(new BlogDTO(blog));
-        }
+        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
         return new PageImpl<BlogDTO>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
     }
 
@@ -214,11 +203,7 @@ public class BlogServiceImpl implements BlogService {
     public Page<BlogDTO> getListByTopic_id(Integer topic_id, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Blog> blogPage = blogDao.findBlogListByTopic_id(topic_id,pageable);
-        List<Blog> blogList = blogPage.getContent();
-        List<BlogDTO> blogDTOList = new ArrayList<>();
-        for(Blog blog: blogList) {
-            blogDTOList.add(new BlogDTO(blog));
-        }
+        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
         return new PageImpl<BlogDTO>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
     }
 
@@ -260,12 +245,43 @@ public class BlogServiceImpl implements BlogService {
     public Page<BlogDTO> getReportedBlogsPage(Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Blog> blogPage = blogDao.findReportedBlogsPage(pageable);
-        List<Blog> blogList = blogPage.getContent();
+        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
+        return new PageImpl<>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
+    }
+
+    @Override
+    public Page<BlogDTO> getAllBlogPageOrderByTime(Integer pageNum, Integer pageSize) {
+        Sort sort = Sort.by(Sort.Direction.DESC,"blog_time");
+        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
+        Page<Blog> blogPage = blogDao.getAllBlogPage(pageable);
+        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
+        return new PageImpl<>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
+    }
+
+    @Override
+    public Page<BlogDTO> getFollowBlogPageByUser_idOrderByTime(Integer user_id, Integer pageNum, Integer pageSize) {
+        Sort sort = Sort.by(Sort.Direction.DESC,"blog_time");
+        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
+        Page<Blog> blogPage = blogDao.getFollowBlogPageByUser_id(user_id,pageable);
+        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
+        return new PageImpl<>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
+    }
+
+    @Override
+    public Page<BlogDTO> getBlogPageByUser_idOrderByTime(Integer user_id, Integer pageNum, Integer pageSize) {
+        Sort sort = Sort.by(Sort.Direction.DESC,"blog_time");
+        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
+        Page<Blog> blogPage = blogDao.getBlogPageByUser_id(user_id,pageable);
+        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
+        return new PageImpl<>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
+    }
+
+
+    private List<BlogDTO> convertToBlogDTOList(List<Blog> blogList) {
         List<BlogDTO> blogDTOList = new ArrayList<>();
         for(Blog blog:blogList) {
             blogDTOList.add(new BlogDTO(blog));
         }
-        return new PageImpl<>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
+        return blogDTOList;
     }
-
 }

@@ -63,4 +63,19 @@ public class BlogDaoImpl implements BlogDao {
     public Page<Blog> findReportedBlogsPage(Pageable pageable) {
         return blogRepository.findReportedBlogsPage(pageable);
     }
+
+    @Override
+    public Page<Blog> getAllBlogPage(Pageable pageable) {
+        return blogRepository.getAllBlogPage(pageable);
+    }
+
+    @Override
+    public Page<Blog> getFollowBlogPageByUser_id(Integer user_id, Pageable pageable) {
+        return blogRepository.getFollowBlogPageByUser_id(user_id,pageable);
+    }
+
+    @Override
+    public Page<Blog> getBlogPageByUser_id(Integer user_id, Pageable pageable) {
+        return blogRepository.getBlogPageByUser_id(user_id, pageable);
+    }
 }
