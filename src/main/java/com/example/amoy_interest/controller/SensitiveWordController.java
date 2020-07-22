@@ -39,6 +39,7 @@ public class SensitiveWordController {
         sensitiveWordService.addSensitiveWord(new SensitiveWord(keyword));
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.ADD_BLOG_SUCCESS_MSG);
     }
+    //有bug，不能修改主键？
     @UserLoginToken
     @ApiOperation(value = "编辑敏感词")
     @RequestMapping(value = "", method = RequestMethod.PUT)

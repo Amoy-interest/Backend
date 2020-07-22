@@ -35,4 +35,6 @@ public interface BlogCommentRepository extends JpaRepository<BlogComment, Intege
             nativeQuery = true)
     Page<BlogComment> findMultiLevelCommentListByBlog_id(Integer root_comment_id, Pageable pageable);
 
+    @Query(value = "SELECT * From blog_comment where root_comment_id = ?1 limit 1",nativeQuery = true)
+    BlogComment findOneByRoot_comment_id(Integer root_comment_id);
 }

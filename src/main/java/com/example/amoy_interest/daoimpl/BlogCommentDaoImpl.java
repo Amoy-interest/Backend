@@ -51,4 +51,9 @@ public class BlogCommentDaoImpl implements BlogCommentDao {
     public Page<BlogComment> findMultiLevelCommentListByComment_id(Integer root_comment_id, Pageable pageable) {
         return blogCommentRepository.findMultiLevelCommentListByBlog_id(root_comment_id, pageable);
     }
+
+    @Override
+    public BlogComment findOneByRoot_comment_id(Integer root_comment_id) {
+        return blogCommentRepository.findOneByRoot_comment_id(root_comment_id);
+    }
 }

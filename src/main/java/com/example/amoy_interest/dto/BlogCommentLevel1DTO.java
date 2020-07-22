@@ -23,8 +23,8 @@ public class BlogCommentLevel1DTO {
     private String nickname;
     @ApiModelProperty(value = "该评论的评论id", required = true)
     private Integer comment_id;
-    @ApiModelProperty(value = "该评论所在的博文id", required = true)
-    private Integer blog_id;
+//    @ApiModelProperty(value = "该评论所在的博文id", required = true)
+//    private Integer blog_id;
     @ApiModelProperty(value = "该评论的文字内容", required = true)
     private String comment_text;
     @ApiModelProperty(value = "评论时间", required = true)
@@ -34,7 +34,13 @@ public class BlogCommentLevel1DTO {
     @ApiModelProperty(value = "是否有子评论")
     private boolean have_child;
 
-    public BlogCommentLevel1DTO(BlogComment blogComment,boolean have_child) {
-
+    public BlogCommentLevel1DTO(BlogComment blogComment,String nickname,boolean have_child) {
+        this.user_id = blogComment.getUser_id();
+        this.comment_id = blogComment.getComment_id();
+        this.comment_text = blogComment.getComment_text();
+        this.comment_time = blogComment.getComment_time();
+        this.vote_count = blogComment.getVote_count();
+        this.nickname = nickname;
+        this.have_child = have_child;
     }
 }
