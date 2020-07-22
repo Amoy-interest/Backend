@@ -30,7 +30,7 @@ public class SensitiveWordController {
     public Msg<CommonPage<SensitiveWord>> GetSensitiveWords(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                             @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         Page<SensitiveWord> sws = sensitiveWordService.getSensitiveWordsPage(pageNum,pageSize);
-        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(sws));
+        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(sws));
     }
     @UserLoginToken
     @ApiOperation(value = "添加敏感词")
@@ -38,17 +38,15 @@ public class SensitiveWordController {
     public Msg AddSensitiveWord(String keyword) {
         System.out.println(keyword);
         sensitiveWordService.addSensitiveWord(new SensitiveWord(keyword));
-        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.ADD_BLOG_SUCCESS_MSG);
+        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
     //有bug，不能修改主键？
     @UserLoginToken
     @ApiOperation(value = "编辑敏感词")
     @RequestMapping(value = "", method = RequestMethod.PUT)
     public Msg PutSensitiveWord(String oldWord, String newWord) {
-        SensitiveWord sensitiveWord = sensitiveWordService.findSensitiveWordByKeyword(oldWord);
-        sensitiveWord.setKeyword(newWord);
-        sensitiveWordService.updateSensitiveWord(sensitiveWord);
-        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.PUT_BLOG_SUCCESS_MSG);
+        sensitiveWordService.updateSensitiveWord(oldWord,newWord);
+        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
     @UserLoginToken
     @ApiOperation(value = "删除敏感词")
@@ -56,6 +54,6 @@ public class SensitiveWordController {
     public Msg DeleteSensitiveWord(String keyword) {
         System.out.println(keyword);
         sensitiveWordService.deleteByKeyword(keyword);
-        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.DELETE_BLOG_SUCCESS_MSG);
+        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 }

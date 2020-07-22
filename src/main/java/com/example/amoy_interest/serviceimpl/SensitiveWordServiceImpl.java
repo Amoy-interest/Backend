@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,11 +29,15 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
     }
 
     @Override
-    public SensitiveWord updateSensitiveWord(SensitiveWord sensitiveWord) {
+    @Transactional
+    public SensitiveWord updateSensitiveWord(String oldWord,String newWord) {
+        sensitiveWordDao.deleteByKeyword(oldWord);
+        SensitiveWord sensitiveWord = new SensitiveWord(newWord);
         return sensitiveWordDao.saveSensitiveWord(sensitiveWord);
     }
 
     @Override
+    @Transactional
     public void deleteByKeyword(String keyword) {
         sensitiveWordDao.deleteByKeyword(keyword);
     }

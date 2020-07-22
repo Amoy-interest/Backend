@@ -77,9 +77,9 @@ public class TopicServiceTest {
             blog.setUser(user);
             blogList.add(blog);
         }
-        Topic topic = new Topic(1,"高考加油",time,0,0);
+//        Topic topic = new Topic(1,"高考加油",time,0,0);
 //        topic.setBlogs(blogList);
-        when(topicDao.getTopicByName("高考加油")).thenReturn(topic);
+//        when(topicDao.getTopicByName("高考加油")).thenReturn(topic);
         TopicDTO topicDTO = topicService.getTopicDTOByName("高考加油");
 //        assertEquals(12, topicDTO.getBlogs().size());
         assertEquals("高考加油",topicDTO.getName());
@@ -91,8 +91,8 @@ public class TopicServiceTest {
         List<Topic> topicList = new ArrayList<>();
         Date time = new Date();
         for(int i = 1;i <= 10;i++) {
-            Topic topic = new Topic(1,"高考加油"+ Integer.toString(i),time,0,13);
-            topicList.add(topic);
+//            Topic topic = new Topic(1,"高考加油"+ Integer.toString(i),time,0,13);
+//            topicList.add(topic);
         }
         when(topicDao.getReportedTopic()).thenReturn(topicList);
         List<TopicReportDTO> topicReportDTOList = topicService.getReportedTopics();
@@ -102,8 +102,8 @@ public class TopicServiceTest {
     public void CheckReportedTopic() throws Exception{
         TopicCheckDTO topicCheckDTO = new TopicCheckDTO("高考加油",1);
         Date time = new Date();
-        Topic topic = new Topic(1,"高考加油",time,0,13);
-        when(topicDao.getTopicByName("高考加油")).thenReturn(topic);
+//        Topic topic = new Topic(1,"高考加油",time,0,13);
+//        when(topicDao.getTopicByName("高考加油")).thenReturn(topic);
         assertEquals(true,topicService.checkReportedTopic(topicCheckDTO));
     }
 }

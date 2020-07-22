@@ -19,6 +19,8 @@ public class BlogCommentMultiLevelDTO {
     private Integer user_id;
     @ApiModelProperty(value = "该评论的用户名", required = true)
     private String nickname;
+    @ApiModelProperty(value = "该评论用户头像")
+    private String avatar_path;
     @ApiModelProperty(value = "该评论的评论id", required = true)
     private Integer comment_id;
     @ApiModelProperty(value = "该评论回复的用户id", required = true)
@@ -32,7 +34,7 @@ public class BlogCommentMultiLevelDTO {
     @ApiModelProperty(value = "评论点赞数", required = true)
     private Integer vote_count;
 
-    public BlogCommentMultiLevelDTO(BlogComment blogComment,String nickname,String reply_user_nickname) {
+    public BlogCommentMultiLevelDTO(BlogComment blogComment,String nickname,String reply_user_nickname,String avatar_path) {
         this.user_id = blogComment.getUser_id();
         this.comment_id = blogComment.getComment_id();
         this.reply_user_id = blogComment.getReply_user_id();
@@ -40,6 +42,7 @@ public class BlogCommentMultiLevelDTO {
         this.comment_time = blogComment.getComment_time();
         this.vote_count = blogComment.getVote_count();
         this.nickname = nickname;
+        this.avatar_path = avatar_path;
         this.reply_user_nickname = reply_user_nickname;
     }
 }

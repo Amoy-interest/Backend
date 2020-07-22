@@ -1,9 +1,6 @@
 package com.example.amoy_interest.controller;
 
-import com.example.amoy_interest.dto.BlogDTO;
-import com.example.amoy_interest.dto.TopicCheckDTO;
-import com.example.amoy_interest.dto.TopicDTO;
-import com.example.amoy_interest.dto.TopicReportDTO;
+import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
@@ -29,18 +26,39 @@ public class TopicController {
 
     @Autowired
     private BlogService blogService;
-    @ApiOperation(value = "查看话题基本内容（还需要给话题加点内容）")
-    @RequestMapping(value = "/",method = RequestMethod.GET)
+    @ApiOperation(value = "查看话题基本内容")
+    @RequestMapping(value = "",method = RequestMethod.GET)
     public Msg<TopicDTO> GetTopicAll(String topic_name) {
         return new Msg<>(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG,topicService.getTopicDTOByName(topic_name));
     }
-    @ApiOperation(value = "按照分页形式查看话题")
+    @ApiOperation(value = "按照分页形式查看话题的博文")
     @RequestMapping(value = "/blogs",method = RequestMethod.GET)
     public Msg<CommonPage<BlogDTO>> GetBlogs(String topic_name, Integer pageNum, Integer pageSize, Integer orderType) {
         Integer topic_id = topicService.getTopic_idByName(topic_name);
         return new Msg<CommonPage<BlogDTO>>(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG,CommonPage.restPage(blogService.getListByTopic_id(topic_id,pageNum,pageSize)));
     }
 
+
+    @ApiOperation(value = "编辑话题简介")
+    @PutMapping(value = "/intro")
+    public Msg ModifyTopicIntro(@RequestBody TopicIntroDTO topicIntroDTO) {
+        topicService.modifyTopicIntro(topicIntroDTO);
+        return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
+    }
+
+    @ApiOperation(value = "新增话题")
+    @PostMapping(value = "")
+    public Msg AddTopic(@RequestBody String topic_name) {
+        topicService.addTopic(topic_name);
+        return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
+    }
+
+    @ApiOperation(value = "编辑话题logo")
+    @PutMapping(value = "/logo")
+    public Msg ModifyTopicLogo(@RequestBody TopicLogoDTO topicLogoDTO) {
+        topicService.modifyTopicLogo(topicLogoDTO);
+        return new Msg(MsgCode.SUCCESS,MsgUtil.SUCCESS_MSG);
+    }
 
     @ApiOperation(value = "获取热榜")
     @RequestMapping(value = "/hotList",method = RequestMethod.GET)
