@@ -73,7 +73,7 @@ public class BlogController {
     @UserLoginToken
     @ApiOperation(value = "进行评论")
     @RequestMapping(value = "/comments", method = RequestMethod.POST)
-    public Msg Comment(@RequestHeader(value = "token") String token,@RequestBody CommentPostDTO commentPostDTO) {
+    public Msg Comment(@RequestHeader(value = "token") String token, @RequestBody CommentPostDTO commentPostDTO) {
         Integer blog_id = commentPostDTO.getBlog_id();
         Integer root_comment_id = commentPostDTO.getRoot_comment_id();
         Integer reply_user_id = commentPostDTO.getReply_user_id();
@@ -85,8 +85,7 @@ public class BlogController {
         blogComment.setUser_id(user_id);
         if (root_comment_id == -1) {
             blogComment.setComment_level(1); //一级评论
-        }
-        else {
+        } else {
             blogComment.setComment_level(2); //二级评论
         }
         blogComment.setReply_user_id(reply_user_id);
@@ -113,7 +112,7 @@ public class BlogController {
     public Msg<CommonPage<BlogCommentLevel1DTO>> GetLevel1Comments(Integer blog_id,
                                                                    @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                                    @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        return null;
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getLevel1CommentPage(blog_id, pageNum, pageSize)));
     }
 
     @UserLoginToken
@@ -122,7 +121,7 @@ public class BlogController {
     public Msg<CommonPage<BlogCommentMultiLevelDTO>> GetMultiComments(Integer root_comment_id,
                                                                       @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                                       @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        return null;
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getMultiLevelCommentPage(root_comment_id, pageNum, pageSize)));
     }
 
     //不支持修改评论
@@ -179,45 +178,40 @@ public class BlogController {
     }
 
     @UserLoginToken
-    @ApiOperation(value = "分页获取推荐blog（未实现）")
+    @ApiOperation(value = "分页获取推荐blog（未实现热度,现在等于未登录前的blog）")
     @GetMapping(value = "/recommend")
     public Msg<CommonPage<BlogDTO>> GetRecommendBlogs(@RequestHeader(value = "token") String token,
-                                                @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                                @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+                                                      @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                                      @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
-        return null;
-//        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getRecommendBlogsByUser_id(user_id));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getAllBlogPageOrderByTime(pageNum, pageSize)));
     }
 
     @UserLoginToken
-    @ApiOperation(value = "分页获取关注blog(未实现)")
+    @ApiOperation(value = "分页获取关注blog")
     @GetMapping(value = "/follow")
     public Msg<CommonPage<BlogDTO>> GetFollowBlogs(@RequestHeader(value = "token") String token,
-                                             @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                             @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+                                                   @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                                   @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
-        return null;
-//        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getFollowBlogsByUser_id(user_id));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getFollowBlogPageByUser_idOrderByTime(user_id, pageNum, pageSize)));
     }
 
     @UserLoginToken
-    @ApiOperation(value = "分页获取自己blog")
-    @GetMapping(value = "/own")
-    public Msg<CommonPage<BlogDTO>> GetOwnBlogs(@RequestHeader(value = "token") String token,
-                                          @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                          @RequestParam(required = false, defaultValue = "5") Integer pageSize,
-                                          @RequestParam(required = false, defaultValue = "0") Integer order) {
-        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
-        return null;
-//        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getBlogsByUser_id(user_id));
+    @ApiOperation(value = "分页获取某人(可以是自己也可以是他人)blog")
+    @GetMapping(value = "/users")
+    public Msg<CommonPage<BlogDTO>> GetUserBlogs(@RequestParam(required = true) Integer user_id,
+                                                @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                                @RequestParam(required = false, defaultValue = "5") Integer pageSize,
+                                                @RequestParam(required = false, defaultValue = "0") Integer order) {
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getBlogPageByUser_idOrderByTime(user_id,pageNum, pageSize)));
     }
 
-    @ApiOperation(value = "分页获取未登录前blog(未实现)")
+    @ApiOperation(value = "分页获取未登录前blog(未实现热度,暂时取最新的blog)")
     @GetMapping(value = "/beforeLogin")
     public Msg<CommonPage<BlogDTO>> GetBeforeLoginBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                                  @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        return null;
-//        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getRecommendBlogsByUser_id(1));
+                                                        @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getAllBlogPageOrderByTime(pageNum, pageSize)));
     }
 
     @ApiOperation(value = "举报博文")
