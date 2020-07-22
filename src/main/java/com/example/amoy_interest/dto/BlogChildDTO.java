@@ -20,10 +20,13 @@ public class BlogChildDTO {
     private int user_id;
     @ApiModelProperty(value = "转发的用户昵称",example = "mok",required = true)
     private String nickname;
+    @ApiModelProperty(value = "转发的用户头像")
+    private String avatar_path;
     @ApiModelProperty(value = "转发的博文的内容")
     private BlogContentDTO blog_content;
     public BlogChildDTO(Blog child) {
         this.blog_content = new BlogContentDTO(child);
+        this.avatar_path = child.getUser().getAvatar_path();
         this.user_id = child.getUser_id();
         this.nickname = child.getUser().getNickname();
     }
