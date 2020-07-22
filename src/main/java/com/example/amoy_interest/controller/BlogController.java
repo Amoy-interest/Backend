@@ -194,6 +194,7 @@ public class BlogController {
                                                    @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                    @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
+        System.out.println(user_id);
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getFollowBlogPageByUser_idOrderByTime(user_id, pageNum, pageSize)));
     }
 

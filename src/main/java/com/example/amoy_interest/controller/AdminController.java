@@ -96,6 +96,7 @@ public class AdminController {
     @ApiOperation(value = "用户禁言", notes = "对用户禁言")
     @RequestMapping(value = "/users/ban", method = RequestMethod.PUT)
     public Msg Ban(@RequestBody UserCheckDTO userCheckDTO) {
+        System.out.println(userCheckDTO.toString());
         userService.ban(userCheckDTO);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
@@ -112,6 +113,7 @@ public class AdminController {
     @ApiOperation(value = "用户封号", notes = "对用户封号")
     @RequestMapping(value = "/users/forbid", method = RequestMethod.PUT)
     public Msg Forbid(@RequestBody UserCheckDTO userCheckDTO) {
+        System.out.println(userCheckDTO.toString());
         userService.forbid(userCheckDTO);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }

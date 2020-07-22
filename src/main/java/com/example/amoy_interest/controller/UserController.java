@@ -65,6 +65,7 @@ public class UserController {
     @ApiOperation(value = "注册",notes = "注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public Msg<UserDTO> Register( @RequestBody RegisterDTO registerDTO){ //@ModelAttribute @Valid ?检验有效性？
+        System.out.println(registerDTO.toString());
         String username = registerDTO.getUsername();
         UserAuth userAuth = userService.findUserAuthByUsername(username);
         if(userAuth != null) {
