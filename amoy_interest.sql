@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-07-22 09:58:54
+Date: 2020-07-22 16:49:53
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -102,6 +102,9 @@ CREATE TABLE `topic` (
   `topic_time` datetime DEFAULT NULL,
   `check_status` smallint DEFAULT NULL,
   `report_count` int DEFAULT NULL,
+  `host_id` int DEFAULT NULL,
+  `logo_path` varchar(1024) DEFAULT NULL,
+  `topic_intro` varchar(140) DEFAULT NULL,
   PRIMARY KEY (`topic_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

@@ -9,7 +9,7 @@ public interface SensitiveWordService {
     List<SensitiveWord> getAllSensitiveWords();
     SensitiveWord findSensitiveWordByKeyword(String keyword);
     SensitiveWord addSensitiveWord(SensitiveWord sensitiveWord);
-    SensitiveWord updateSensitiveWord(SensitiveWord sensitiveWord);
+    SensitiveWord updateSensitiveWord(String oldWord,String newWord);
     void deleteByKeyword(String keyword);
     Page<SensitiveWord> getSensitiveWordsPage(Integer pageNum,Integer pageSize);
     Page<SensitiveWord> findSensitiveWordsPageByKeyword(String keyword,Integer pageNum,Integer pageSize);

@@ -2,10 +2,7 @@ package com.example.amoy_interest.serviceimpl;
 
 import com.example.amoy_interest.dao.BlogDao;
 import com.example.amoy_interest.dao.TopicDao;
-import com.example.amoy_interest.dto.BlogDTO;
-import com.example.amoy_interest.dto.TopicCheckDTO;
-import com.example.amoy_interest.dto.TopicDTO;
-import com.example.amoy_interest.dto.TopicReportDTO;
+import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.Topic;
 import com.example.amoy_interest.service.BlogService;
@@ -19,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -37,6 +35,37 @@ public class TopicServiceImpl implements TopicService {
     public TopicDTO getTopicDTOByName(String topic_name) {
         Topic topic = topicDao.getTopicByName(topic_name);
         return new TopicDTO(topic);
+    }
+
+    @Override
+    public boolean addTopic(String topic_name) {
+        if(topicDao.getTopicByName(topic_name) == null) {
+            Topic topic = new Topic(topic_name,new Date(),0,0,null,null,null);
+            topicDao.insert(topic);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean modifyTopicIntro(TopicIntroDTO topicIntroDTO) {
+        Topic topic = topicDao.getTopicByName(topicIntroDTO.getTopic_name());
+        if(topic == null) {
+            return false;
+        }
+        topic.setTopic_intro(topicIntroDTO.getTopic_intro());
+        topicDao.update(topic);
+        return true;
+    }
+
+    @Override
+    public boolean modifyTopicLogo(TopicLogoDTO topicLogoDTO) {
+        Topic topic = topicDao.getTopicByName(topicLogoDTO.getTopic_name());
+        if(topic == null) {
+            return false;
+        }
+        topic.setLogo_path(topicLogoDTO.getLogo_path());
+        topicDao.update(topic);
+        return true;
     }
 
     @Override
@@ -77,4 +106,6 @@ public class TopicServiceImpl implements TopicService {
         }
         return new PageImpl<>(topicReportDTOList,topicPage.getPageable(),topicPage.getTotalElements());
     }
+
+
 }

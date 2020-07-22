@@ -20,11 +20,20 @@ public class TopicDTO {
     private String name;
     @ApiModelProperty(value = "话题创建时间", required = true)
     private Date time;
+    @ApiModelProperty(value = "主持人id")
+    private int host_id;
+    @ApiModelProperty(value = "话题logo")
+    private String logo_path;
+    @ApiModelProperty(value = "话题简介")
+    private String topic_intro;
 
     public TopicDTO(Topic topic) {
-        BlogDTO convert = null;
+//        BlogDTO convert = null;
         this.name = topic.getTopic_name();
         this.time = topic.getTopic_time();
+        this.host_id = topic.getHost_id();
+        this.logo_path = topic.getLogo_path();
+        this.topic_intro = topic.getTopic_intro();
 //        this.blogs = null;
 //        if(topic.getBlogs() != null) {
 //            this.blogs = new ArrayList<>();
