@@ -17,13 +17,13 @@ public class UserDaoImpl implements UserDao {
     UserRepository userRepository;
 
     @Override
-    public void insert(User user) {
-        userRepository.save(user);
+    public User insert(User user) {
+        return userRepository.save(user);
     }
 
     @Override
-    public void update(User user) {
-        userRepository.save(user);
+    public User update(User user) {
+        return userRepository.save(user);
     }
 
     @Override
