@@ -16,4 +16,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             countQuery = "SELECT count(*) From user_info WHERE credits < 60",
             nativeQuery = true)
     Page<User> findReportedUsersPage(Pageable pageable);
+    @Query(value = "SELECT * FROM user_info WHERE credits < 60 and nickname like %?1%",
+            countQuery = "SELECT count(*) From user_info WHERE credits < 60 and nickname like %?1%",
+            nativeQuery = true)
+    Page<User> searchReportedUsersPage(String keyword,Pageable pageable);
 }

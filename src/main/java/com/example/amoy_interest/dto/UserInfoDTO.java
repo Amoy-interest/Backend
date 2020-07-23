@@ -28,8 +28,10 @@ public class UserInfoDTO{
     private String avatar;
     @ApiModelProperty(value = "用户类型")
     private int user_type;
+    @ApiModelProperty(value = "是否已经关注，如果是自己默认为false")
+    private boolean is_follow;
 
-    public UserInfoDTO (User user) {
+    public UserInfoDTO (User user,boolean is_follow) {
         this.user_id = user.getUser_id();
         this.nickname = user.getNickname();
         this.sex = user.getSex();

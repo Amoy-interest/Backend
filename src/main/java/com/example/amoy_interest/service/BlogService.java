@@ -1,8 +1,6 @@
 package com.example.amoy_interest.service;
 
-import com.example.amoy_interest.dto.BlogCommentLevel1DTO;
-import com.example.amoy_interest.dto.BlogCommentMultiLevelDTO;
-import com.example.amoy_interest.dto.BlogDTO;
+import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.BlogComment;
 import com.example.amoy_interest.entity.BlogCount;
@@ -13,9 +11,9 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface BlogService {
-    Blog addBlog(Blog blog);
-    Blog updateBlog(Blog blog);
-
+    BlogDTO addBlog(BlogAddDTO blogContentDTO);
+    BlogDTO updateBlog(BlogPutDTO blogPutDTO);
+    BlogDTO forwardBlog(BlogForwardDTO blogForwardDTO);
     Blog findBlogByBlog_id(Integer blog_id);
     void deleteByBlog_id(Integer blog_id);
 
@@ -39,7 +37,7 @@ public interface BlogService {
     List<BlogDTO> getFollowBlogsByUser_id(Integer user_id);
 
     boolean reportBlogByBlog_id(Integer blog_id);
-
+    boolean checkReportedBlog(BlogCheckDTO blogCheckDTO);
     Page<BlogDTO> getSearchListByBlog_text(String keyword, Integer pageNum, Integer pageSize);
     Page<BlogDTO> getListByUser_id(Integer user_id,Integer pageNum,Integer pageSize);
     Page<BlogDTO> getListByTopic_id(Integer topic_id,Integer pageNum,Integer pageSize);
@@ -47,6 +45,7 @@ public interface BlogService {
     Page<BlogCommentLevel1DTO> getLevel1CommentPage(Integer blog_id,Integer pageNum,Integer pageSize);
     Page<BlogCommentMultiLevelDTO> getMultiLevelCommentPage(Integer root_comment_id,Integer pageNum,Integer pageSize);
     Page<BlogDTO> getReportedBlogsPage(Integer pageNum,Integer pageSize);
+    Page<BlogDTO> searchReportedBlogsPage(String keyword,Integer pageNum,Integer pageSize);
 
     /**
      *

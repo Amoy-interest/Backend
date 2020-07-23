@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserFollowRepository extends JpaRepository<UserFollow,Integer> {
     @Query(value = "SELECT * FROM user_follow WHERE user_id = ?1",
@@ -20,4 +21,7 @@ public interface UserFollowRepository extends JpaRepository<UserFollow,Integer> 
             countQuery = "SELECT count(*) From user_follow WHERE follow_id = ?1",
             nativeQuery = true)
     Page<UserFollow> findFollowByFollow_id(Integer follow_id, Pageable pageable);
+
+    @Query(value = "from UserFollow where user_id = :user_id and follow_id = :follow_id")
+    Optional<UserFollow> findByUser_idAndFollow_id(Integer user_id,Integer follow_id);
 }

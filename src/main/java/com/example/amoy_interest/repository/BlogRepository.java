@@ -41,6 +41,10 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
     @Query(value = "From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10", countQuery = "SELECT count(b.blog_id) From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10")
     Page<Blog> findReportedBlogsPage(Pageable pageable);
 
+    @Query(value = "From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10 and b.blog_text like %?1%",
+            countQuery = "SELECT count(b.blog_id) From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10 and b.blog_text like %?1%")
+    Page<Blog> searchReportedBlogsPage(String keyword, Pageable pageable);
+
     @Query(value = "From Blog b where b.check_status <> 2 and b.is_deleted = false and b.user_id = ?1",
             countQuery = "SELECT count(b.blog_id) from Blog b where b.check_status <> 2 and b.is_deleted = false and b.user_id = ?1")
     Page<Blog> getBlogPageByUser_id(Integer user_id, Pageable pageable);
@@ -54,7 +58,6 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
     @Query(value = "FROM Blog b where b.is_deleted = false and b.check_status <> 2",
             countQuery = "SELECT count(b.blog_id) FROM Blog b where b.is_deleted = false and b.check_status <> 2")
     Page<Blog> getAllBlogPage(Pageable pageable);
-
 
 
 }

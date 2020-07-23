@@ -26,8 +26,8 @@ public class TopicDaoImpl implements TopicDao {
     }
 
     @Override
-    public void update(Topic topic) {
-        topicRepository.save(topic);
+    public Topic update(Topic topic) {
+        return topicRepository.save(topic);
     }
 
     @Override
@@ -43,5 +43,10 @@ public class TopicDaoImpl implements TopicDao {
     @Override
     public Page<Topic> getReportedTopicPage(Pageable pageable) {
         return topicRepository.getReportedTopicPage(pageable);
+    }
+
+    @Override
+    public Page<Topic> searchReportedTopicPage(String keyword, Pageable pageable) {
+        return topicRepository.searchReportedTopicPage(keyword, pageable);
     }
 }

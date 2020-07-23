@@ -7,9 +7,10 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface UserDao {
-    void insert(User user);
-    void update(User user);
+    User insert(User user);
+    User update(User user);
     User getById(Integer user_id);
     List<User> getReportedUsers();
     Page<User> getReportedUsersPage(Pageable pageable);
+    Page<User> searchReportedUsersPage(String keyword,Pageable pageable);
 }

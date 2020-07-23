@@ -42,14 +42,14 @@ public class BlogServiceTest{
     @Test
     public void testAddBlog() {
         when(blogDao.saveBlog(any())).thenReturn(null);
-        blogService.addBlog(new Blog(1, 1, 0, 0,null, "666",  false, 1, -1));
+//        blogService.addBlog(new Blog(1, 1, 0, 0,null, "666",  false, 1, -1));
         verify(blogDao, times(1)).saveBlog(any());
     }
 
     @Test
     public void testUpdateBlog() {
         when(blogDao.saveBlog(any())).thenReturn(null);
-        blogService.updateBlog(new Blog(1, 1, 0, 0,null, "666",  false, 1, -1));
+//        blogService.updateBlog(new Blog(1, 1, 0, 0,null, "666",  false, 1, -1));
         verify(blogDao, times(1)).saveBlog(any());
     }
 

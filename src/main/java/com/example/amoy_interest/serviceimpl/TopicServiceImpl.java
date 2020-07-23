@@ -38,34 +38,35 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public boolean addTopic(String topic_name) {
+    public TopicDTO addTopic(String topic_name) {
         if(topicDao.getTopicByName(topic_name) == null) {
             Topic topic = new Topic(topic_name,new Date(),0,0,null,null,null);
-            topicDao.insert(topic);
+            topic = topicDao.insert(topic);
+            return new TopicDTO(topic);
         }
-        return true;
+        return null;
     }
 
     @Override
-    public boolean modifyTopicIntro(TopicIntroDTO topicIntroDTO) {
+    public TopicDTO modifyTopicIntro(TopicIntroDTO topicIntroDTO) {
         Topic topic = topicDao.getTopicByName(topicIntroDTO.getTopic_name());
         if(topic == null) {
-            return false;
+            return null;
         }
         topic.setTopic_intro(topicIntroDTO.getTopic_intro());
         topicDao.update(topic);
-        return true;
+        return new TopicDTO(topic);
     }
 
     @Override
-    public boolean modifyTopicLogo(TopicLogoDTO topicLogoDTO) {
+    public TopicDTO modifyTopicLogo(TopicLogoDTO topicLogoDTO) {
         Topic topic = topicDao.getTopicByName(topicLogoDTO.getTopic_name());
         if(topic == null) {
-            return false;
+            return null;
         }
         topic.setLogo_path(topicLogoDTO.getLogo_path());
         topicDao.update(topic);
-        return true;
+        return new TopicDTO(topic);
     }
 
     @Override
@@ -107,5 +108,15 @@ public class TopicServiceImpl implements TopicService {
         return new PageImpl<>(topicReportDTOList,topicPage.getPageable(),topicPage.getTotalElements());
     }
 
-
+    @Override
+    public Page<TopicReportDTO> searchReportedTopicsPage(String keyword, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<Topic> topicPage = topicDao.searchReportedTopicPage(keyword,pageable);
+        List<Topic> topicList = topicPage.getContent();
+        List<TopicReportDTO> topicReportDTOList = new ArrayList<>();
+        for(Topic topic: topicList) {
+            topicReportDTOList.add(new TopicReportDTO(topic));
+        }
+        return new PageImpl<>(topicReportDTOList,topicPage.getPageable(),topicPage.getTotalElements());
+    }
 }

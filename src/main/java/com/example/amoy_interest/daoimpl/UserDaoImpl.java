@@ -17,13 +17,13 @@ public class UserDaoImpl implements UserDao {
     UserRepository userRepository;
 
     @Override
-    public void insert(User user) {
-        userRepository.save(user);
+    public User insert(User user) {
+        return userRepository.save(user);
     }
 
     @Override
-    public void update(User user) {
-        userRepository.save(user);
+    public User update(User user) {
+        return userRepository.save(user);
     }
 
     @Override
@@ -39,5 +39,10 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Page<User> getReportedUsersPage(Pageable pageable) {
         return userRepository.findReportedUsersPage(pageable);
+    }
+
+    @Override
+    public Page<User> searchReportedUsersPage(String keyword, Pageable pageable) {
+        return userRepository.searchReportedUsersPage(keyword,pageable);
     }
 }
