@@ -9,6 +9,7 @@ import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +30,7 @@ public class BlogServiceImpl implements BlogService {
     private UserDao userDao;
 
     @Override
+    @Transactional
     public BlogDTO addBlog(BlogAddDTO blogAddDTO) {
         Blog blog = new Blog();
         blog.setUser_id(blogAddDTO.getUser_id());
@@ -38,7 +40,19 @@ public class BlogServiceImpl implements BlogService {
         blog.set_deleted(false);
         blog.setCheck_status(0);
         blog.setTopic_id(blogAddDTO.getTopic_id());
-        return new BlogDTO(blogDao.saveBlog(blog));
+        blog = blogDao.saveBlog(blog);
+        BlogCount blogCount = new BlogCount(blog.getBlog_id(),0,0,0,0);
+        blogCountDao.saveBlogCount(blogCount);
+        List<BlogImage> blogImageList = new ArrayList<>();
+        if(!blogAddDTO.getImages().isEmpty()) {
+            BlogImage blogImage = new BlogImage(blog.getBlog_id(),blogAddDTO.getImages().get(0));//暂时只存一张
+            blogImageDao.save(blogImage);
+            blogImageList.add(blogImage);
+        }
+        blog.setBlogCount(blogCount);
+        blog.setBlogImages(blogImageList);
+        blog.setUser(userDao.getById(blogAddDTO.getUser_id()));
+        return new BlogDTO(blog);
     }
     @Override
     public BlogDTO forwardBlog(BlogForwardDTO blogForwardDTO) {
@@ -74,21 +88,25 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    @Transactional
     public  void incrVoteCount(Integer blog_id) {
         blogCountDao.incrVoteCount(blog_id);
     }
 
     @Override
+    @Transactional
     public void incrCommentVoteCount(Integer comment_id) {
         blogCommentDao.incrCommentVoteCount(comment_id);
     }
 
     @Override
+    @Transactional
     public  void decrVoteCount(Integer blog_id) {
         blogCountDao.decrVoteCount(blog_id);
     }
 
     @Override
+    @Transactional
     public void decrCommentVoteCount(Integer comment_id) {
         blogCommentDao.decrCommentVoteCount(comment_id);
     }

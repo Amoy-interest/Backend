@@ -26,4 +26,6 @@ public interface TopicRepository extends JpaRepository<Topic,Integer> {
             nativeQuery = true)
     Page<Topic> searchReportedTopicPage(String keyword,Pageable pageable);
 
+    @Query(value = "SELECT t.topic_id,sum(vote_count),sum(forward_count),sum(comment_count),topic_time from topic t join blog b join blog_count bc where t.topic_id = b.topic_id and b.blog_id = bc.blog_id group by t.topic_id",nativeQuery = true)
+    List<Object[]> getAllTopicCount();
 }

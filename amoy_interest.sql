@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-07-22 16:49:53
+Date: 2020-07-23 23:56:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -34,7 +34,7 @@ CREATE TABLE `blog` (
   KEY `FK_Reference_13` (`reply_blog_id`),
   CONSTRAINT `FK_Reference_13` FOREIGN KEY (`reply_blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE SET NULL ON UPDATE SET NULL,
   CONSTRAINT `FK_Reference_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for blog_comment
@@ -119,6 +119,16 @@ CREATE TABLE `topic_blog` (
   KEY `FK_Reference_7` (`blog_id`),
   CONSTRAINT `FK_Reference_6` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`topic_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FK_Reference_7` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for topic_heat
+-- ----------------------------
+DROP TABLE IF EXISTS `topic_heat`;
+CREATE TABLE `topic_heat` (
+  `topic_id` int NOT NULL,
+  `heat` int DEFAULT NULL,
+  PRIMARY KEY (`topic_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------

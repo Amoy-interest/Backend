@@ -1,6 +1,7 @@
 package com.example.amoy_interest.dao;
 
 
+import com.example.amoy_interest.dto.TopicHeatParam;
 import com.example.amoy_interest.entity.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,5 +16,5 @@ public interface TopicDao {
     List<Topic> getReportedTopic();
     Page<Topic> getReportedTopicPage(Pageable pageable);
     Page<Topic> searchReportedTopicPage(String keyword,Pageable pageable);
-
+    List<TopicHeatParam> getAllTopicCount();
 }
