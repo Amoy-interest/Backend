@@ -16,7 +16,6 @@ public class SensitiveWord {
     @Id
     private String keyword;
 
-    public SensitiveWord() {}
     public SensitiveWord(String keyword) {
         this.keyword = keyword;
     }
