@@ -38,6 +38,7 @@ public class BlogController {
     @ApiOperation(value = "写博文")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Msg<BlogDTO> AddBlog(@RequestBody @Valid BlogAddDTO blogAddDTO, @RequestHeader(value = "token") String token) {
+        System.out.println(blogAddDTO.toString());
         blogAddDTO.setUser_id(JWT.decode(token).getClaim("user_id").asInt());
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.ADD_BLOG_SUCCESS_MSG, blogService.addBlog(blogAddDTO));
     }
@@ -138,6 +139,7 @@ public class BlogController {
     @ApiOperation(value = "点赞")
     @RequestMapping(value = "/vote", method = RequestMethod.POST)
     public Msg Vote(@RequestBody @Valid VoteDTO voteDTO) {
+        System.out.println(voteDTO.toString());
         Integer comment_id = voteDTO.getComment_id();
         Integer blog_id = voteDTO.getBlog_id();
         if (comment_id == 0) {

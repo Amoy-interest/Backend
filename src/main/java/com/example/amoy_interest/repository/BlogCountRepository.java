@@ -4,6 +4,7 @@ import com.example.amoy_interest.entity.BlogCount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,10 +16,12 @@ public interface BlogCountRepository extends JpaRepository<BlogCount,Integer> {
     List<BlogCount> findReportedBlogs();
 
     @Modifying
+    @Transactional
     @Query(value = "update BlogCount bc set bc.vote_count = bc.vote_count + 1 where bc.blog_id = :blog_id")
     void incrVoteCount(Integer blog_id);
 
     @Modifying
+    @Transactional
     @Query(value = "update BlogCount bc set bc.vote_count = bc.vote_count - 1 where bc.blog_id = :blog_id")
     void decrVoteCount(Integer blog_id);
 }

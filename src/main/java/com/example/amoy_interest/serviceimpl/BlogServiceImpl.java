@@ -9,6 +9,7 @@ import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,21 +75,25 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    @Transactional
     public  void incrVoteCount(Integer blog_id) {
         blogCountDao.incrVoteCount(blog_id);
     }
 
     @Override
+    @Transactional
     public void incrCommentVoteCount(Integer comment_id) {
         blogCommentDao.incrCommentVoteCount(comment_id);
     }
 
     @Override
+    @Transactional
     public  void decrVoteCount(Integer blog_id) {
         blogCountDao.decrVoteCount(blog_id);
     }
 
     @Override
+    @Transactional
     public void decrCommentVoteCount(Integer comment_id) {
         blogCommentDao.decrCommentVoteCount(comment_id);
     }
