@@ -12,4 +12,5 @@ public interface UserDao {
     User getById(Integer user_id);
     List<User> getReportedUsers();
     Page<User> getReportedUsersPage(Pageable pageable);
+    Page<User> searchReportedUsersPage(String keyword,Pageable pageable);
 }

@@ -21,4 +21,9 @@ public interface TopicRepository extends JpaRepository<Topic,Integer> {
             nativeQuery = true)
     Page<Topic> getReportedTopicPage(Pageable pageable);
 
+    @Query(value = "SELECT * FROM topic WHERE report_count >= 10 and check_status = 0 and topic_name like %?1%",
+            countQuery = "SELECT count(*) FROM topic WHERE report_count >= 10 and check_status = 0 and topic_name like %?1%",
+            nativeQuery = true)
+    Page<Topic> searchReportedTopicPage(String keyword,Pageable pageable);
+
 }

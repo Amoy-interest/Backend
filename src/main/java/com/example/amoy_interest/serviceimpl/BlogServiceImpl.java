@@ -280,6 +280,13 @@ public class BlogServiceImpl implements BlogService {
         return new PageImpl<>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
     }
 
+    @Override
+    public Page<BlogDTO> searchReportedBlogsPage(String keyword, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<Blog> blogPage = blogDao.searchReportedBlogsPage(keyword,pageable);
+        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
+        return new PageImpl<>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
+    }
 
     private List<BlogDTO> convertToBlogDTOList(List<Blog> blogList) {
         List<BlogDTO> blogDTOList = new ArrayList<>();
