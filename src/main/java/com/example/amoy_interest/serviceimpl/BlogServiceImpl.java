@@ -40,6 +40,18 @@ public class BlogServiceImpl implements BlogService {
         blog.setTopic_id(blogAddDTO.getTopic_id());
         return new BlogDTO(blogDao.saveBlog(blog));
     }
+    @Override
+    public BlogDTO forwardBlog(BlogForwardDTO blogForwardDTO) {
+        Blog blog = new Blog();
+        blog.setUser_id(blogForwardDTO.getUser_id());
+        blog.setBlog_type(1);
+        blog.setBlog_time(new Date());
+        blog.setBlog_text(blogForwardDTO.getText());
+        blog.set_deleted(false);
+        blog.setCheck_status(0);
+        blog.setTopic_id(blogForwardDTO.getTopic_id());
+        return new BlogDTO(blogDao.saveBlog(blog));
+    }
 
 
     @Override
@@ -310,6 +322,8 @@ public class BlogServiceImpl implements BlogService {
         List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
         return new PageImpl<>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
     }
+
+
 
     private List<BlogDTO> convertToBlogDTOList(List<Blog> blogList) {
         List<BlogDTO> blogDTOList = new ArrayList<>();

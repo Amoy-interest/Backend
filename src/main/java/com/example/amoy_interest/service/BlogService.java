@@ -13,7 +13,7 @@ import java.util.List;
 public interface BlogService {
     BlogDTO addBlog(BlogAddDTO blogContentDTO);
     BlogDTO updateBlog(BlogPutDTO blogPutDTO);
-
+    BlogDTO forwardBlog(BlogForwardDTO blogForwardDTO);
     Blog findBlogByBlog_id(Integer blog_id);
     void deleteByBlog_id(Integer blog_id);
 
