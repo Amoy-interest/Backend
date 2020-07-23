@@ -50,12 +50,21 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getAllBlogDetail(blog_id));
     }
 
+
     @UserLoginToken
     @ApiOperation(value = "编辑博文")
     @RequestMapping(value = "", method = RequestMethod.PUT)
     public Msg<BlogDTO> PutBlog(@RequestBody @Valid BlogPutDTO blogPutDTO) {
         blogPutDTO.setImages(null);
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.PUT_BLOG_SUCCESS_MSG, blogService.updateBlog(blogPutDTO));
+    }
+
+    @UserLoginToken
+    @ApiOperation(value = "转发")
+    @PostMapping(value = "/forward")
+    public Msg<BlogDTO> ForwardBlog(@RequestBody @Valid BlogForwardDTO blogForwardDTO,@RequestHeader(value = "token") String token) {
+        blogForwardDTO.setUser_id(JWT.decode(token).getClaim("user_id").asInt());
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,blogService.forwardBlog(blogForwardDTO));
     }
 
     @UserLoginToken
@@ -224,5 +233,6 @@ public class BlogController {
         blogService.reportBlogByBlog_id(blog_id);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
+
 
 }
