@@ -26,8 +26,8 @@ public class TopicDaoImpl implements TopicDao {
     }
 
     @Override
-    public void update(Topic topic) {
-        topicRepository.save(topic);
+    public Topic update(Topic topic) {
+        return topicRepository.save(topic);
     }
 
     @Override

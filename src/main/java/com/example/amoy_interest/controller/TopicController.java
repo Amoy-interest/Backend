@@ -54,9 +54,8 @@ public class TopicController {
 
     @ApiOperation(value = "编辑话题简介")
     @PutMapping(value = "/intro")
-    public Msg ModifyTopicIntro(@RequestBody @Valid TopicIntroDTO topicIntroDTO) {
-        topicService.modifyTopicIntro(topicIntroDTO);
-        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
+    public Msg<TopicDTO> ModifyTopicIntro(@RequestBody @Valid TopicIntroDTO topicIntroDTO) {
+        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,topicService.modifyTopicIntro(topicIntroDTO));
     }
 
     @ApiOperation(value = "新增话题")
@@ -71,9 +70,8 @@ public class TopicController {
 
     @ApiOperation(value = "编辑话题logo")
     @PutMapping(value = "/logo")
-    public Msg ModifyTopicLogo(@RequestBody @Valid TopicLogoDTO topicLogoDTO) {
-        topicService.modifyTopicLogo(topicLogoDTO);
-        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
+    public Msg<TopicDTO> ModifyTopicLogo(@RequestBody @Valid TopicLogoDTO topicLogoDTO) {
+        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,topicService.modifyTopicLogo(topicLogoDTO));
     }
 
     @ApiOperation(value = "获取热榜(未实现)")

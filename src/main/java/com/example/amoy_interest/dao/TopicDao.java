@@ -10,7 +10,7 @@ import java.util.List;
 public interface TopicDao {
     Topic getTopicById(int topic_id);
     Topic insert(Topic topic);
-    void update(Topic topic);
+    Topic update(Topic topic);
     Topic getTopicByName(String topic_name);
     List<Topic> getReportedTopic();
     Page<Topic> getReportedTopicPage(Pageable pageable);

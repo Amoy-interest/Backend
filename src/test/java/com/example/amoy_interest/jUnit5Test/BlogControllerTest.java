@@ -78,7 +78,7 @@ public class BlogControllerTest{
     public void testUpdateBlog() throws Exception {
         Mockito.when(blogService.findBlogByBlog_id(1)).thenReturn(new Blog(1, 1, 0, 0,null, "666",  false, 1, -1));
         Mockito.when(blogService.updateBlog(Mockito.any())).thenReturn(null);
-        BlogPutDTO blogPutDTO = new BlogPutDTO(1, "dest");
+        BlogPutDTO blogPutDTO = new BlogPutDTO(1, "dest",null);
         String requestJson = JSONObject.toJSONString(blogPutDTO);
         mockMvc.perform(put("/blogs")
                 .contentType(MediaType.APPLICATION_JSON)

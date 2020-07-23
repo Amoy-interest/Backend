@@ -1,16 +1,17 @@
 package com.example.amoy_interest.serviceimpl;
 
+import com.auth0.jwt.JWT;
 import com.example.amoy_interest.dao.*;
-import com.example.amoy_interest.dto.BlogCommentLevel1DTO;
-import com.example.amoy_interest.dto.BlogCommentMultiLevelDTO;
-import com.example.amoy_interest.dto.BlogDTO;
+import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.service.BlogService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,14 +29,26 @@ public class BlogServiceImpl implements BlogService {
     private UserDao userDao;
 
     @Override
-    public Blog addBlog(Blog blog) {
-
-        return blogDao.saveBlog(blog);
+    public BlogDTO addBlog(BlogAddDTO blogAddDTO) {
+        Blog blog = new Blog();
+        blog.setUser_id(blogAddDTO.getUser_id());
+        blog.setBlog_type(0);  //原创
+        blog.setBlog_time(new Date());
+        blog.setBlog_text(blogAddDTO.getText());
+        blog.set_deleted(false);
+        blog.setCheck_status(0);
+        blog.setTopic_id(blogAddDTO.getTopic_id());
+        return new BlogDTO(blogDao.saveBlog(blog));
     }
 
+
     @Override
-    public Blog updateBlog(Blog blog) {
-        return blogDao.saveBlog(blog);
+    public BlogDTO updateBlog(BlogPutDTO blogPutDTO) {
+        Integer blog_id = blogPutDTO.getBlog_id();
+        String text = blogPutDTO.getText();
+        Blog blog = blogDao.findBlogByBlog_id(blog_id);
+        blog.setBlog_text(text);
+        return new BlogDTO(blogDao.saveBlog(blog));
     }
 
     @Override
@@ -81,30 +94,32 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public BlogDTO getSimpleBlogDetail(Integer blog_id) {
         Blog blog = blogDao.findBlogByBlog_id(blog_id);
-        BlogCount blogCount = blogCountDao.findBlogCountByBlog_id(blog_id);
-        List<BlogImage> blogImages = blogImageDao.findBlogImageByBlog_id(blog_id);
-        Blog blogChild = new Blog();
-        List<BlogImage> blogChildImages = null;
-        if (blog.getBlog_type() > 0) {
-//            blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
-//            blogChildImages = blogImageDao.findBlogImageByBlog_id(blog.getReply_blog_id());
-        }
-        return new BlogDTO(blog, null, blogCount, blogImages, blogChild, blogChildImages);
+//        BlogCount blogCount = blogCountDao.findBlogCountByBlog_id(blog_id);
+//        List<BlogImage> blogImages = blogImageDao.findBlogImageByBlog_id(blog_id);
+//        Blog blogChild = new Blog();
+//        List<BlogImage> blogChildImages = null;
+//        if (blog.getBlog_type() > 0) {
+////            blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
+////            blogChildImages = blogImageDao.findBlogImageByBlog_id(blog.getReply_blog_id());
+//        }
+        return new BlogDTO(blog);
+//        return new BlogDTO(blog, null, blogCount, blogImages, blogChild, blogChildImages);
     }
 
     @Override
     public BlogDTO getAllBlogDetail(Integer blog_id) {
         Blog blog = blogDao.findBlogByBlog_id(blog_id);
-        List<BlogComment> blogComments = blogCommentDao.findLevel1CommentByBlog_id(blog_id);
-        BlogCount blogCount = blogCountDao.findBlogCountByBlog_id(blog_id);
-        List<BlogImage> blogImages = blogImageDao.findBlogImageByBlog_id(blog_id);
-        Blog blogChild = new Blog();
-        List<BlogImage> blogChildImages = null;
-        if (blog.getBlog_type() > 0) {
-//            blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
-//            blogChildImages = blogImageDao.findBlogImageByBlog_id(blog.getReply_blog_id());
-        }
-        return new BlogDTO(blog, blogComments, blogCount, blogImages, blogChild, blogChildImages);
+        return new BlogDTO(blog);
+//        List<BlogComment> blogComments = blogCommentDao.findLevel1CommentByBlog_id(blog_id);
+//        BlogCount blogCount = blogCountDao.findBlogCountByBlog_id(blog_id);
+//        List<BlogImage> blogImages = blogImageDao.findBlogImageByBlog_id(blog_id);
+//        Blog blogChild = new Blog();
+//        List<BlogImage> blogChildImages = null;
+//        if (blog.getBlog_type() > 0) {
+////            blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
+////            blogChildImages = blogImageDao.findBlogImageByBlog_id(blog.getReply_blog_id());
+//        }
+//        return new BlogDTO(blog, blogComments, blogCount, blogImages, blogChild, blogChildImages);
     }
 
     @Override
@@ -115,6 +130,14 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public List<BlogCount> getAllReportedBlogs() {
         return blogCountDao.findReportedBlogs();
+    }
+
+    @Override
+    public boolean checkReportedBlog(BlogCheckDTO blogCheckDTO) {
+        Blog blog = blogDao.findBlogByBlog_id(blogCheckDTO.getBlog_id());
+        blog.setCheck_status(blogCheckDTO.getCheck_status());
+        blogDao.saveBlog(blog);
+        return true;
     }
 
     @Override
