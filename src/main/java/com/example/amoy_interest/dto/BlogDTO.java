@@ -19,6 +19,8 @@ import java.util.List;
 @Setter
 @ApiModel(value = "BlogDto", description = "博文信息")
 public class BlogDTO {
+    @ApiModelProperty(value = "发博文的用户id", required = true)
+    private Integer user_id;
     @ApiModelProperty(value = "发此博文的用户的昵称",example = "mok")
     private String nickname;
     @ApiModelProperty(value = "此博文的id")
@@ -70,6 +72,7 @@ public class BlogDTO {
     }
     public BlogDTO(Blog blog) {
         User user = blog.getUser();
+        this.setUser_id(user.getUser_id());
         this.setNickname(user.getNickname());
         this.setAvatar_path(user.getAvatar_path());
         this.setBlog_id(blog.getBlog_id());
