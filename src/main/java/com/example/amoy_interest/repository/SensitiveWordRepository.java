@@ -30,4 +30,6 @@ public interface SensitiveWordRepository extends JpaRepository<SensitiveWord,Int
             countQuery = "SELECT count(*) From sensitive_words WHERE keyword like %?1%",
             nativeQuery = true)
     Page<SensitiveWord> findPageByKeyword(String keyword,Pageable pageable);
+
+
 }

@@ -48,7 +48,6 @@ public class UserServiceImpl implements UserService {
         UserAuth userAuth = new UserAuth(registerDTO.getUsername(),registerDTO.getPassword(),0,0,0);
         userAuth = userAuthDao.insert(userAuth);
         Integer user_id = userAuth.getUser_id();
-        System.out.println(user_id);
         User user = new User(user_id,registerDTO.getNickname(),registerDTO.getEmail(),registerDTO.getSex(),
                 registerDTO.getAddress(),100,"这个人很懒，什么都没留下",null
         );
@@ -56,7 +55,7 @@ public class UserServiceImpl implements UserService {
         UserCount userCount = new UserCount(user_id,0,0,0);
         userCountDao.insert(userCount);
         user.setUserAuth(userAuth);
-        return new UserInfoDTO(user);
+        return new UserInfoDTO(user,false);
     }
 
     @Override
@@ -157,21 +156,47 @@ public class UserServiceImpl implements UserService {
         List<UserInfoDTO> userInfoDTOList = new ArrayList<>();
         for(UserFollow userFollow:userFollowList) {
             User user = userDao.getById(userFollow.getFollow_id());
-            userInfoDTOList.add(new UserInfoDTO(user));
+            userInfoDTOList.add(new UserInfoDTO(user,true));
         }
         return new PageImpl<>(userInfoDTOList,userFollowPage.getPageable(),userFollowPage.getTotalElements());
     }
 
     @Override
+    @Transactional
     public Page<UserInfoDTO> getUserFanPage(Integer user_id, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<UserFollow> userFanPage = userFollowDao.findFollowPageByFollow_id(user_id,pageable);
         List<UserFollow> userFollowList = userFanPage.getContent();
         List<UserInfoDTO> userInfoDTOList = new ArrayList<>();
         for(UserFollow userFollow:userFollowList) {
-            User user = userDao.getById(userFollow.getUser_id());
-            userInfoDTOList.add(new UserInfoDTO(user));
+            Integer fan_id = userFollow.getUser_id();
+            User fan = userDao.getById(fan_id);
+            Optional<UserFollow> userFollow1 = userFollowDao.findByUser_idAndFollow_id(user_id,fan_id);
+            if(userFollow1.isPresent())
+                userInfoDTOList.add(new UserInfoDTO(fan,true));
+            else
+                userInfoDTOList.add(new UserInfoDTO(fan,false));
         }
         return new PageImpl<>(userInfoDTOList,userFanPage.getPageable(),userFanPage.getTotalElements());
+    }
+
+    @Override
+    @Transactional
+    public boolean unfollow(Integer user_id, Integer unfollow_id) {
+        UserFollow userFollow = new UserFollow(user_id,unfollow_id);
+        userFollowDao.delete(userFollow);
+        return true;
+    }
+
+    @Override
+    public Page<UserReportDTO> searchReportedUsersPage(String keyword, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<User> userPage = userDao.searchReportedUsersPage(keyword,pageable);
+        List<User> userList = userPage.getContent();
+        List<UserReportDTO> userReportDTOList = new ArrayList<>();
+        for(User user:userList) {
+            userReportDTOList.add(new UserReportDTO(user));
+        }
+        return new PageImpl<>(userReportDTOList,userPage.getPageable(),userPage.getTotalElements());
     }
 }

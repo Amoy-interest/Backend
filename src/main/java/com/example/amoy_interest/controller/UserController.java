@@ -51,7 +51,7 @@ public class UserController {
                 return new Msg<UserDTO>(MsgCode.ERROR, MsgUtil.LOGIN_USER_ERROR_MSG, null);
             } else {
                 String token = tokenService.getToken(userAuth);
-                UserInfoDTO userInfoDTO = new UserInfoDTO(userAuth.getUser());
+                UserInfoDTO userInfoDTO = new UserInfoDTO(userAuth.getUser(), false);
                 UserDTO userDTO = new UserDTO(userInfoDTO, token);
                 return new Msg<UserDTO>(MsgCode.SUCCESS, MsgUtil.LOGIN_SUCCESS_MSG, userDTO);
             }
@@ -95,6 +95,18 @@ public class UserController {
         userService.follow(userId, follow_id);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
+
+    @UserLoginToken
+    @ApiOperation(value = "取关用户", notes = "取关")
+    @PostMapping(value = "/unfollow")
+    public Msg UnFollow(@NotNull(message = "取关id不能为空")
+                        @Min(value = 1, message = "取关id不能小于1") Integer follow_id,
+                        @RequestHeader(value = "token") String token) {
+        Integer userId = JWT.decode(token).getClaim("user_id").asInt();
+        userService.follow(userId, follow_id);
+        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
+    }
+
 
     @UserLoginToken
     @ApiOperation(value = "分页获取关注列表")

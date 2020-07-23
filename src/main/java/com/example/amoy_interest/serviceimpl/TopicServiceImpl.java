@@ -107,5 +107,15 @@ public class TopicServiceImpl implements TopicService {
         return new PageImpl<>(topicReportDTOList,topicPage.getPageable(),topicPage.getTotalElements());
     }
 
-
+    @Override
+    public Page<TopicReportDTO> searchReportedTopicsPage(String keyword, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<Topic> topicPage = topicDao.searchReportedTopicPage(keyword,pageable);
+        List<Topic> topicList = topicPage.getContent();
+        List<TopicReportDTO> topicReportDTOList = new ArrayList<>();
+        for(Topic topic: topicList) {
+            topicReportDTOList.add(new TopicReportDTO(topic));
+        }
+        return new PageImpl<>(topicReportDTOList,topicPage.getPageable(),topicPage.getTotalElements());
+    }
 }

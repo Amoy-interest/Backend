@@ -18,12 +18,14 @@ public interface UserService {
     UserAuth findUserAuthByUsername(String username);
     UserInfoDTO register(RegisterDTO registerDTO);
     boolean follow(Integer user_id,Integer follow_id);
+    boolean unfollow(Integer user_id,Integer unfollow_id);
     boolean ban(UserCheckDTO userCheckDTO);
     boolean unban(Integer user_id);
     boolean forbid(UserCheckDTO userCheckDTO);
     boolean permit(Integer user_id);
     List<UserReportDTO> getReportedUsers();
     Page<UserReportDTO> getReportedUsersPage(Integer pageNum,Integer pageSize);
+    Page<UserReportDTO> searchReportedUsersPage(String keyword,Integer pageNum,Integer pageSize);
     Page<UserInfoDTO> getUserFollowPage(Integer user_id,Integer pageNum, Integer pageSize);
     Page<UserInfoDTO> getUserFanPage(Integer user_id,Integer pageNum,Integer pageSize);
 }

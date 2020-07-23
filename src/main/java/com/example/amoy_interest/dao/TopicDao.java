@@ -14,4 +14,6 @@ public interface TopicDao {
     Topic getTopicByName(String topic_name);
     List<Topic> getReportedTopic();
     Page<Topic> getReportedTopicPage(Pageable pageable);
+    Page<Topic> searchReportedTopicPage(String keyword,Pageable pageable);
+
 }

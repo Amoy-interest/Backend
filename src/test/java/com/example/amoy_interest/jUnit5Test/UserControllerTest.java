@@ -67,7 +67,7 @@ public class UserControllerTest {
         User user = new User(100,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"啥都不会",null);
         UserAuth userAuth = new UserAuth(100,"admin","123456",0,0,0,user);
         user.setUserAuth(userAuth);
-        UserInfoDTO userInfoDTO = new UserInfoDTO(100,"mok",0,"上海市闵行区","啥都不会",null,0);
+        UserInfoDTO userInfoDTO = new UserInfoDTO(100,"mok",0,"上海市闵行区","啥都不会",null,0,false);
         when(userService.findUserAuthByUsername("admin")).thenReturn(userAuth);
         LoginDTO loginDTO = new LoginDTO("admin","123456");
 
@@ -96,7 +96,7 @@ public class UserControllerTest {
         RegisterDTO registerDTO = new RegisterDTO("admin","mok","123456",0,"上海市闵行区","mokkkkk@sjtu.edu.cn");
         User user = new User(100,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"啥都不会",null);
         UserAuth userAuth = new UserAuth(100,"admin","123456",0,0,0,user);
-        UserInfoDTO userInfoDTO = new UserInfoDTO(100,"mok",0,"上海市闵行区","这个人很懒，什么都没留下",null,0);
+        UserInfoDTO userInfoDTO = new UserInfoDTO(100,"mok",0,"上海市闵行区","这个人很懒，什么都没留下",null,0,false);
         when(userService.findUserAuthByUsername("admin")).thenReturn(null).thenReturn(userAuth);
         when(userService.register(registerDTO)).thenReturn(userInfoDTO);
 

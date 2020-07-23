@@ -3,13 +3,13 @@ package com.example.amoy_interest.daoimpl;
 import com.example.amoy_interest.dao.UserFollowDao;
 import com.example.amoy_interest.entity.UserFollow;
 import com.example.amoy_interest.repository.UserFollowRepository;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.domain.Pageable;
-import java.util.List;
+
+import java.util.Optional;
 
 @Repository
 public class UserFollowDaoImpl implements UserFollowDao {
@@ -34,5 +34,10 @@ public class UserFollowDaoImpl implements UserFollowDao {
     @Override
     public Page<UserFollow> findFollowPageByFollow_id(Integer follow_id, Pageable pageable) {
         return userFollowRepository.findFollowByFollow_id(follow_id,pageable);
+    }
+
+    @Override
+    public Optional<UserFollow> findByUser_idAndFollow_id(Integer user_id, Integer follow_id) {
+        return userFollowRepository.findByUser_idAndFollow_id(user_id, follow_id);
     }
 }
