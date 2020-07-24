@@ -45,9 +45,12 @@ public class BlogServiceImpl implements BlogService {
         blogCountDao.saveBlogCount(blogCount);
         List<BlogImage> blogImageList = new ArrayList<>();
         if(!blogAddDTO.getImages().isEmpty()) {
-            BlogImage blogImage = new BlogImage(blog.getBlog_id(),blogAddDTO.getImages().get(0));//暂时只存一张
-            blogImageDao.save(blogImage);
-            blogImageList.add(blogImage);
+            List<String> images = blogAddDTO.getImages();
+            for(String image:images) {
+                BlogImage blogImage = new BlogImage(blog.getBlog_id(),image);//暂时只存一张
+                blogImage = blogImageDao.save(blogImage);
+                blogImageList.add(blogImage);
+            }
         }
         blog.setBlogCount(blogCount);
         blog.setBlogImages(blogImageList);
