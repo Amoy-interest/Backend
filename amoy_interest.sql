@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : mok
+Source Server         : dd
 Source Server Version : 80020
 Source Host           : localhost:3306
 Source Database       : amoy_interest
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-07-24 11:55:42
+Date: 2020-07-24 13:24:04
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -77,10 +77,12 @@ CREATE TABLE `blog_count` (
 -- ----------------------------
 DROP TABLE IF EXISTS `blog_image`;
 CREATE TABLE `blog_image` (
+  `image_id` int NOT NULL AUTO_INCREMENT,
   `blog_id` int NOT NULL,
   `blog_image` varchar(1024) DEFAULT NULL,
-  PRIMARY KEY (`blog_id`),
-  CONSTRAINT `FK_Reference_11` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  PRIMARY KEY (`image_id`),
+  KEY `FK_Reference_15` (`blog_id`),
+  CONSTRAINT `FK_Reference_15` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------

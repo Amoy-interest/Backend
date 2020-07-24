@@ -48,13 +48,7 @@ public class AdminController {
     public Msg<CommonPage<BlogDTO>> GetReportedBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                      @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                                      @RequestParam(required = false, defaultValue = "1") Integer orderType) {
-//        List<BlogDTO> blogDTOS = new ArrayList<>();
-//        List<BlogCount> blogCounts = blogService.getAllReportedBlogs();
-//        for (BlogCount blogCount : blogCounts) {
-//            blogDTOS.add(blogService.getSimpleBlogDetail(blogCount.getBlog_id()));
-//        }
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getReportedBlogsPage(pageNum, pageSize,orderType)));
-//        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, blogDTOS);
     }
 
     @UserLoginToken

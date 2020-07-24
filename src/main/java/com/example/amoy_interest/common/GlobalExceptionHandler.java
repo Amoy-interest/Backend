@@ -49,6 +49,12 @@ public class GlobalExceptionHandler {
         return new Msg(DUPLICATE_KEY_CODE,"数据重复，请检查后提交");
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public Msg handleRuntimeException(RuntimeException e) {
+        log.error(e.getMessage(),e);
+        return new Msg(404,e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public Msg handleException(Exception e) {
         log.error(e.getMessage(),e);

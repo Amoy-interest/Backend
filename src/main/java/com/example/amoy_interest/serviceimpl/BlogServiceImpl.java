@@ -58,6 +58,7 @@ public class BlogServiceImpl implements BlogService {
         return new BlogDTO(blog);
     }
     @Override
+    @Transactional
     public BlogDTO forwardBlog(BlogForwardDTO blogForwardDTO) {
         Blog blog = new Blog();
 //        blog.setReplyBlogId(blogForwardDTO.getReply_blog_id());
@@ -71,6 +72,11 @@ public class BlogServiceImpl implements BlogService {
         Blog blogchild = blogDao.findBlogByBlog_id(blogForwardDTO.getReply_blog_id());
         blog.setReply(blogchild);
         blog = blogDao.saveBlog(blog);
+        //原博文转发数+1
+        BlogCount childCount = blogchild.getBlogCount();
+        childCount.setForward_count(childCount.getForward_count() + 1);
+        blogCountDao.saveBlogCount(childCount);
+
         BlogCount blogCount = new BlogCount(blog.getBlog_id(),0,0,0,0);
         blogCountDao.saveBlogCount(blogCount);
         List<BlogImage> blogImageList = null;
@@ -154,6 +160,10 @@ public class BlogServiceImpl implements BlogService {
         if(reply_user_id != 0) {
             reply_user_nickname = userDao.getById(reply_user_id).getNickname();
         }
+        //原博文评论数+1
+        BlogCount blogCount = blogCountDao.findBlogCountByBlog_id(blog_id);
+        blogCount.setComment_count(blogCount.getComment_count() + 1);
+        blogCountDao.saveBlogCount(blogCount);
         return new BlogCommentMultiLevelDTO(blogCommentDao.saveBlogComment(blogComment),nickname,reply_user_nickname,avatar_path);
     }
 
