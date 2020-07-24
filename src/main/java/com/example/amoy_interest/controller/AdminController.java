@@ -46,13 +46,14 @@ public class AdminController {
     @ApiOperation(value = "分页获取被举报的blog")
     @GetMapping(value = "/blogs/reported")
     public Msg<CommonPage<BlogDTO>> GetReportedBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                                     @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+                                                     @RequestParam(required = false, defaultValue = "5") Integer pageSize,
+                                                     @RequestParam(required = false, defaultValue = "1") Integer orderType) {
 //        List<BlogDTO> blogDTOS = new ArrayList<>();
 //        List<BlogCount> blogCounts = blogService.getAllReportedBlogs();
 //        for (BlogCount blogCount : blogCounts) {
 //            blogDTOS.add(blogService.getSimpleBlogDetail(blogCount.getBlog_id()));
 //        }
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getReportedBlogsPage(pageNum, pageSize)));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getReportedBlogsPage(pageNum, pageSize,orderType)));
 //        return new Msg(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, blogDTOS);
     }
 
@@ -64,8 +65,9 @@ public class AdminController {
                                                         @NotEmpty(message = "关键词不能为空字符串")
                                                         @Length(max = 40, message = "关键词不能大于40位") String keyword,
                                                         @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                                        @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.searchReportedBlogsPage(keyword,pageNum, pageSize)));
+                                                        @RequestParam(required = false, defaultValue = "5") Integer pageSize,
+                                                        @RequestParam(required = false, defaultValue = "1") Integer orderType) {
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.searchReportedBlogsPage(keyword, pageNum, pageSize,orderType)));
     }
 
     //一次审核一堆还是一次审核一个blog？效率？
@@ -81,8 +83,9 @@ public class AdminController {
     @ApiOperation(value = "分页获取被举报的话题")
     @GetMapping(value = "/topics/reported")
     public Msg<CommonPage<TopicReportDTO>> GetReportedTopics(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                                             @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(topicService.getReportedTopicsPage(pageNum, pageSize)));
+                                                             @RequestParam(required = false, defaultValue = "5") Integer pageSize,
+                                                             @RequestParam(required = false, defaultValue = "1") Integer orderType) {
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(topicService.getReportedTopicsPage(pageNum, pageSize,orderType)));
     }
 
     @UserLoginToken
@@ -93,8 +96,9 @@ public class AdminController {
                                                                 @NotEmpty(message = "关键词不能为空字符串")
                                                                 @Length(max = 40, message = "关键词不能大于40位") String keyword,
                                                                 @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                                                @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(topicService.searchReportedTopicsPage(keyword,pageNum, pageSize)));
+                                                                @RequestParam(required = false, defaultValue = "5") Integer pageSize,
+                                                                @RequestParam(required = false, defaultValue = "1") Integer orderType) {
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(topicService.searchReportedTopicsPage(keyword, pageNum, pageSize,orderType)));
     }
 
     @UserLoginToken
@@ -108,23 +112,24 @@ public class AdminController {
     @UserLoginToken
     @ApiOperation(value = "分页获取被举报用户", notes = "获取被举报用户")
     @RequestMapping(value = "/users/reported", method = RequestMethod.GET)
-    public Msg<CommonPage<UserReportDTO>> GetReportedUser
-            (@RequestParam(required = false, defaultValue = "0") Integer pageNum,
-             @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+    public Msg<CommonPage<UserReportDTO>> GetReportedUser(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                                          @RequestParam(required = false, defaultValue = "5") Integer pageSize,
+                                                          @RequestParam(required = false, defaultValue = "1") Integer orderType) {
 //        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, userService.getReportedUsers());
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.getReportedUsersPage(pageNum, pageSize)));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.getReportedUsersPage(pageNum, pageSize,orderType)));
     }
 
     @UserLoginToken
     @ApiOperation(value = "分页搜索被举报用户", notes = "搜索被举报用户")
     @RequestMapping(value = "/users/reported/search", method = RequestMethod.GET)
     public Msg<CommonPage<UserReportDTO>> SearchReportedUser(@RequestParam(required = true)
-                                                          @NotNull(message = "关键词不能为空")
-                                                          @NotEmpty(message = "关键词不能为空字符串")
-                                                          @Length(max = 40, message = "关键词不能大于40位") String keyword,
-                                                          @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                                          @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.searchReportedUsersPage(keyword,pageNum, pageSize)));
+                                                             @NotNull(message = "关键词不能为空")
+                                                             @NotEmpty(message = "关键词不能为空字符串")
+                                                             @Length(max = 40, message = "关键词不能大于40位") String keyword,
+                                                             @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                                             @RequestParam(required = false, defaultValue = "5") Integer pageSize,
+                                                             @RequestParam(required = false, defaultValue = "1") Integer orderType) {
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.searchReportedUsersPage(keyword, pageNum, pageSize,orderType)));
     }
 
     @UserLoginToken

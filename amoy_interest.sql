@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : dd
+Source Server         : mok
 Source Server Version : 80020
 Source Host           : localhost:3306
 Source Database       : amoy_interest
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-07-24 00:13:07
+Date: 2020-07-24 11:55:42
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -34,7 +34,7 @@ CREATE TABLE `blog` (
   KEY `FK_Reference_13` (`reply_blog_id`),
   CONSTRAINT `FK_Reference_13` FOREIGN KEY (`reply_blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE SET NULL ON UPDATE SET NULL,
   CONSTRAINT `FK_Reference_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for blog_comment
@@ -56,7 +56,7 @@ CREATE TABLE `blog_comment` (
   KEY `FK_Reference_10` (`user_id`),
   CONSTRAINT `FK_Reference_10` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_Reference_5` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for blog_count
@@ -190,7 +190,7 @@ CREATE TABLE `user_follow` (
 DROP TABLE IF EXISTS `user_info`;
 CREATE TABLE `user_info` (
   `user_id` int NOT NULL,
-  `email` varchar(20) NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `sex` smallint NOT NULL,
   `address` varchar(50) DEFAULT NULL,
   `credits` int DEFAULT NULL,

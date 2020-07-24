@@ -38,7 +38,6 @@ public class TopicController {
                                      @NotEmpty(message = "话题名不能为空字符串")
                                      @Length(max = 40, message = "话题名不能大于40位")
                                      @RequestParam(required = true) String topic_name) {
-        System.out.println(topic_name);
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.getTopicDTOByName(topic_name));
     }
 
@@ -66,8 +65,7 @@ public class TopicController {
 
     @ApiOperation(value = "新增话题")
     @PostMapping(value = "")
-    public Msg AddTopic(@RequestBody
-                        @NotNull(message = "话题名不能为空")
+    public Msg AddTopic(@NotNull(message = "话题名不能为空")
                         @NotEmpty(message = "话题名不能为空字符串")
                         @Length(max = 40, message = "话题名不能大于40位") String topic_name) {
         topicService.addTopic(topic_name);

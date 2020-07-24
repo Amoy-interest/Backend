@@ -138,7 +138,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Page<UserReportDTO> getReportedUsersPage(Integer pageNum, Integer pageSize) {
+    public Page<UserReportDTO> getReportedUsersPage(Integer pageNum, Integer pageSize,Integer orderType) {
+//        Sort sort = null;
+//        if(orderType == 1) {
+////            sort = Sort.by(Sort.Direction.DESC,"");
+//        }else if(orderType == 2){
+//            sort = Sort.by(Sort.Direction.ASC, "credits");
+//        }else {
+//            sort = Sort.by(Sort.Direction.DESC, "credits");
+//        }
+//        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<User> userPage = userDao.getReportedUsersPage(pageable);
         List<User> userList = userPage.getContent();
@@ -190,7 +199,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserReportDTO> searchReportedUsersPage(String keyword, Integer pageNum, Integer pageSize) {
+    public Page<UserReportDTO> searchReportedUsersPage(String keyword, Integer pageNum, Integer pageSize,Integer orderType) {
+//        Sort sort = null;
+//        if(orderType == 1) {
+////            sort = Sort.by(Sort.Direction.DESC,"");
+//        }else if(orderType == 2){
+//            sort = Sort.by(Sort.Direction.ASC, "credits");
+//        }else {
+//            sort = Sort.by(Sort.Direction.DESC, "credits");
+//        }
+//        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<User> userPage = userDao.searchReportedUsersPage(keyword,pageable);
         List<User> userList = userPage.getContent();
@@ -199,5 +217,15 @@ public class UserServiceImpl implements UserService {
             userReportDTOList.add(new UserReportDTO(user));
         }
         return new PageImpl<>(userReportDTOList,userPage.getPageable(),userPage.getTotalElements());
+    }
+
+    @Override
+    public UserInfoDTO getUserInfo(Integer user_id1, Integer user_id2) {
+        User user = userDao.getById(user_id2);
+        Optional<UserFollow> userFollow = userFollowDao.findByUser_idAndFollow_id(user_id1,user_id2);
+        if(userFollow.isPresent())
+            return new UserInfoDTO(user,true);
+        else
+            return new UserInfoDTO(user,false);
     }
 }

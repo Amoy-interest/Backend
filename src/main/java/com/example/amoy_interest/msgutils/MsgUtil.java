@@ -22,7 +22,7 @@ public class MsgUtil {
     public static final String ERROR_MSG = "错误！";
     public static final String LOGIN_USER_ERROR_MSG = "用户名或密码错误，请重新输入！";
     public static final String NOT_LOGGED_IN_ERROR_MSG = "登录失效，请重新登录！";
-    public static final String USER_BAN_MSG = "你已经被禁用，请与管理员联系解除! ";
+    public static final String USER_FORBIDDEN_MSG = "您的账号已被封禁，请联系管理员! ";
     public static final String USER_NOT_EXIST_MSG = "该用户不存在";
     public static final String IS_ADMIN_MSG = "该用户号为管理员,禁用失败";
     public static final String IS_ADMIN2_MSG = "该用户号为管理员,解禁失败";
@@ -34,13 +34,13 @@ public class MsgUtil {
     public static final String GET_BLOG_SUCCESS_MSG = "获取博文成功";
     public static final String CHECK_BLOG_SUCCESS_MSG = "审核博文成功";
     public static final String GET_REPORTED_BLOG_SUCCESS_MSG = "获取被举报博文成功";
-
+    public static final String USER_BAN_MSG = "您已被禁言，请联系管理员！";
     public static final String VOTE_SUCCESS_MSG = "点赞成功";
     public static final String CANCEL_VOTE_SUCCESS_MSG = "取消点赞成功";
     public static final String COMMENT_SUCCESS_MSG = "评论成功";
     public static final String DELETE_COMMENT_SUCCESS_MSG = "删除评论成功";
     public static final String FORWARD_SUCCESS_MSG = "转发成功";
-
+    public static final String NO_RIGHT_MSG = "无权做此操作";
     public static final String SEARCH_SUCCESS_MSG = "搜索成功";
 
 //    public static Msg makeMsg(MsgCode code, JSONObject data){

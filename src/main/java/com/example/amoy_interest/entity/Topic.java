@@ -34,6 +34,9 @@ public class Topic {
         this.logo_path = logo_path;
         this.topic_intro = topic_intro;
     }
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "topic_id",referencedColumnName = "topic_id")
+    private TopicHeat topicHeat;
 //    @OneToMany(fetch=FetchType.LAZY)
 //    @JoinColumn(name = "topic_id",referencedColumnName = "topic_id")
 //    private List<Blog> blogs;

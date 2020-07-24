@@ -43,13 +43,15 @@ public class UserController {
         String password = data.getPassword();
         //需要重写，用checkUser,检查用户是否被封号
         UserAuth userAuth = userService.findUserAuthByUsername(username);
-
         if (userAuth == null) {
             return new Msg<UserDTO>(MsgCode.USER_NOT_EXIST, MsgUtil.LOGIN_USER_ERROR_MSG, null);
         } else {
             if (!userAuth.getPassword().equals(password)) {
                 return new Msg<UserDTO>(MsgCode.ERROR, MsgUtil.LOGIN_USER_ERROR_MSG, null);
             } else {
+                if(userAuth.getIs_forbidden() == 1) {
+                    return new Msg<>(MsgCode.LOGIN_USER_ERROR,MsgUtil.USER_FORBIDDEN_MSG);
+                }
                 String token = tokenService.getToken(userAuth);
                 UserInfoDTO userInfoDTO = new UserInfoDTO(userAuth.getUser(), false);
                 UserDTO userDTO = new UserDTO(userInfoDTO, token);
@@ -89,9 +91,12 @@ public class UserController {
     @ApiOperation(value = "关注用户", notes = "关注")
     @PostMapping(value = "/follow")
     public Msg Follow(@NotNull(message = "关注id不能为空")
-                      @Min(value = 1, message = "关注id不能小于1") Integer follow_id,
+                      @Min(value = 1, message = "关注id不能小于1")
+                      @RequestParam Integer follow_id,
                       @RequestHeader(value = "token") String token) {
         Integer userId = JWT.decode(token).getClaim("user_id").asInt();
+        System.out.println(userId);
+        System.out.println(follow_id);
         userService.follow(userId, follow_id);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
@@ -126,5 +131,13 @@ public class UserController {
                                                @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         Integer userId = JWT.decode(token).getClaim("user_id").asInt();
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.getUserFanPage(userId, pageNum, pageSize)));
+    }
+
+    @UserLoginToken
+    @ApiOperation(value = "获取用户信息")
+    @GetMapping(value = "")
+    public Msg<UserInfoDTO> GetUserInfo(@RequestHeader(value = "token") String token,
+                                        @RequestParam(required = true) Integer user_id) {
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,userService.getUserInfo(JWT.decode(token).getClaim("user_id").asInt(),user_id));
     }
 }
