@@ -1,17 +1,19 @@
 package com.example.amoy_interest.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 
 import javax.persistence.*;
 
 @Data
+@AllArgsConstructor
 @Entity
 @Table(name = "blog_image")
 public class BlogImage {
     @Id
-    private int blog_id;
-
+    private int image_id;
+    private Integer blog_id;
     private String blog_image;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
