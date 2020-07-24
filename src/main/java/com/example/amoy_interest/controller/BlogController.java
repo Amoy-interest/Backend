@@ -6,10 +6,12 @@ import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.BlogComment;
 import com.example.amoy_interest.entity.BlogCount;
+import com.example.amoy_interest.entity.UserAuth;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
 import com.example.amoy_interest.service.BlogService;
+import com.example.amoy_interest.service.UserService;
 import com.example.amoy_interest.utils.CommonPage;
 //import com.github.pagehelper.Page;
 //import com.github.pagehelper.PageInfo;
@@ -33,12 +35,21 @@ import java.util.List;
 public class BlogController {
     @Autowired
     private BlogService blogService;
-
+    @Autowired
+    private UserService userService;
     @UserLoginToken
     @ApiOperation(value = "写博文")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Msg<BlogDTO> AddBlog(@RequestBody @Valid BlogAddDTO blogAddDTO, @RequestHeader(value = "token") String token) {
-        blogAddDTO.setUser_id(JWT.decode(token).getClaim("user_id").asInt());
+        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
+        UserAuth userAuth = userService.findUserAuthById(user_id);
+        if(userAuth == null) {
+            return new Msg<>(MsgCode.ERROR,MsgUtil.USER_NOT_EXIST_MSG);
+        }
+        if(userAuth.getIs_ban() == 1) {
+            return new Msg<>(MsgCode.ERROR,MsgUtil.USER_BAN_MSG);
+        }
+        blogAddDTO.setUser_id(user_id);
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.ADD_BLOG_SUCCESS_MSG, blogService.addBlog(blogAddDTO));
     }
 
@@ -54,8 +65,17 @@ public class BlogController {
     @UserLoginToken
     @ApiOperation(value = "编辑博文")
     @RequestMapping(value = "", method = RequestMethod.PUT)
-    public Msg<BlogDTO> PutBlog(@RequestBody @Valid BlogPutDTO blogPutDTO) {
+    public Msg<BlogDTO> PutBlog(@RequestHeader(value = "token") String token, @RequestBody @Valid BlogPutDTO blogPutDTO) {
         blogPutDTO.setImages(null);
+        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
+        UserAuth userAuth = userService.findUserAuthById(user_id);
+        if(userAuth == null) {
+            return new Msg<>(MsgCode.ERROR,MsgUtil.USER_NOT_EXIST_MSG);
+        }else if(userAuth.getUser_id() != user_id){
+            return new Msg<>(MsgCode.ERROR,MsgUtil.NO_RIGHT_MSG);
+        }else if (userAuth.getIs_ban() == 1){
+            return new Msg<>(MsgCode.ERROR,MsgUtil.USER_BAN_MSG);
+        }
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.PUT_BLOG_SUCCESS_MSG, blogService.updateBlog(blogPutDTO));
     }
 
@@ -63,7 +83,15 @@ public class BlogController {
     @ApiOperation(value = "转发")
     @PostMapping(value = "/forward")
     public Msg<BlogDTO> ForwardBlog(@RequestBody @Valid BlogForwardDTO blogForwardDTO,@RequestHeader(value = "token") String token) {
-        blogForwardDTO.setUser_id(JWT.decode(token).getClaim("user_id").asInt());
+        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
+        UserAuth userAuth = userService.findUserAuthById(user_id);
+        if(userAuth == null) {
+            return new Msg<>(MsgCode.ERROR,MsgUtil.USER_NOT_EXIST_MSG);
+        }
+        if(userAuth.getIs_ban() == 1) {
+            return new Msg<>(MsgCode.ERROR,MsgUtil.USER_BAN_MSG);
+        }
+        blogForwardDTO.setUser_id(user_id);
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,blogService.forwardBlog(blogForwardDTO));
     }
 
