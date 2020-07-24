@@ -109,6 +109,7 @@ public class BlogController {
     @ApiOperation(value = "进行评论")
     @RequestMapping(value = "/comments", method = RequestMethod.POST)
     public Msg<BlogCommentMultiLevelDTO> Comment(@RequestHeader(value = "token") String token, @RequestBody @Valid CommentPostDTO commentPostDTO) {
+        System.out.println(commentPostDTO.toString());
         commentPostDTO.setUser_id(JWT.decode(token).getClaim("user_id").asInt());
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.COMMENT_SUCCESS_MSG,blogService.addBlogComment(commentPostDTO));
     }
@@ -117,7 +118,8 @@ public class BlogController {
     @ApiOperation(value = "删除评论")
     @DeleteMapping(value = "/comments")
     public Msg DeleteComment(@NotNull(message = "评论id不能为空")
-                             @Min(value = 1, message = "评论id不能小于1") Integer comment_id) {
+                             @Min(value = 1, message = "评论id不能小于1")
+                             @RequestParam(required = true) Integer comment_id) {
         blogService.deleteCommentByComment_id(comment_id);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.DELETE_COMMENT_SUCCESS_MSG);
     }
