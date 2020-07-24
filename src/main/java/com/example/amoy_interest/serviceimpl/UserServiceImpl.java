@@ -217,4 +217,14 @@ public class UserServiceImpl implements UserService {
         }
         return new PageImpl<>(userReportDTOList,userPage.getPageable(),userPage.getTotalElements());
     }
+
+    @Override
+    public UserInfoDTO getUserInfo(Integer user_id1, Integer user_id2) {
+        User user = userDao.getById(user_id2);
+        Optional<UserFollow> userFollow = userFollowDao.findByUser_idAndFollow_id(user_id1,user_id2);
+        if(userFollow.isPresent())
+            return new UserInfoDTO(user,true);
+        else
+            return new UserInfoDTO(user,false);
+    }
 }

@@ -127,4 +127,12 @@ public class UserController {
         Integer userId = JWT.decode(token).getClaim("user_id").asInt();
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.getUserFanPage(userId, pageNum, pageSize)));
     }
+
+    @UserLoginToken
+    @ApiOperation(value = "获取用户信息")
+    @GetMapping(value = "")
+    public Msg<UserInfoDTO> GetUserInfo(@RequestHeader(value = "token") String token,
+                                        @RequestParam(required = true) Integer user_id) {
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,userService.getUserInfo(JWT.decode(token).getClaim("user_id").asInt(),user_id));
+    }
 }
