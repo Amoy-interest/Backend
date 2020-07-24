@@ -76,7 +76,7 @@ public class TopicController {
 
     @ApiOperation(value = "获取热榜(未实现)")
     @RequestMapping(value = "/hotList", method = RequestMethod.GET)
-    public Msg<List<String>> GetHotList(Integer count) {
+    public Msg<String> GetHotList(Integer count) {
         List<String> list = new ArrayList<>();
         list.add("高考加油");
         list.add("隐秘的角落大结局");

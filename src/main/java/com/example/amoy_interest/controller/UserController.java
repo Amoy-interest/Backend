@@ -103,7 +103,7 @@ public class UserController {
                         @Min(value = 1, message = "取关id不能小于1") Integer follow_id,
                         @RequestHeader(value = "token") String token) {
         Integer userId = JWT.decode(token).getClaim("user_id").asInt();
-        userService.follow(userId, follow_id);
+        userService.unfollow(userId, follow_id);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 

@@ -215,11 +215,13 @@ public class BlogController {
     @UserLoginToken
     @ApiOperation(value = "分页获取某人(可以是自己也可以是他人)blog")
     @GetMapping(value = "/users")
-    public Msg<CommonPage<BlogDTO>> GetUserBlogs(@RequestParam(required = true) Integer user_id,
+    public Msg<CommonPage<BlogDTO>> GetUserBlogs(@RequestHeader(value = "token") String token,
+                                                 @RequestParam(required = false) Integer user_id,
                                                  @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                  @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                                  @RequestParam(required = false, defaultValue = "0") Integer orderType) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getBlogPageByUser_idOrderByTime(user_id, pageNum, pageSize)));
+        Integer user_id1 = JWT.decode(token).getClaim("user_id").asInt();
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getBlogPageByUser_idOrderByTime(user_id1, pageNum, pageSize)));
     }
 
     @ApiOperation(value = "分页获取未登录前blog(未实现热度,暂时取最新的blog)")
