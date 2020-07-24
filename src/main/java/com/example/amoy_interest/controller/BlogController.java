@@ -200,8 +200,7 @@ public class BlogController {
                                                  @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                  @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                                  @RequestParam(required = false, defaultValue = "0") Integer orderType) {
-        Integer user_id1 = JWT.decode(token).getClaim("user_id").asInt();
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getBlogPageByUser_idOrderByTime(user_id1, pageNum, pageSize)));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getBlogPageByUser_idOrderByTime(user_id, pageNum, pageSize)));
     }
 
     @ApiOperation(value = "分页获取未登录前blog(未实现热度,暂时取最新的blog)")

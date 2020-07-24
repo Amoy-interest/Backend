@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-@Api(tags = "话题/热榜模块")
+@Api(tags = "话题or热榜模块")
 @RequestMapping("/topics")
 @RestController
 public class TopicController {
@@ -36,7 +36,9 @@ public class TopicController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Msg<TopicDTO> GetTopicAll(@NotNull(message = "话题名不能为空")
                                      @NotEmpty(message = "话题名不能为空字符串")
-                                     @Length(max = 40, message = "话题名不能大于40位") String topic_name) {
+                                     @Length(max = 40, message = "话题名不能大于40位")
+                                     @RequestParam(required = true) String topic_name) {
+        System.out.println(topic_name);
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.getTopicDTOByName(topic_name));
     }
 
@@ -44,11 +46,14 @@ public class TopicController {
     @RequestMapping(value = "/blogs", method = RequestMethod.GET)
     public Msg<CommonPage<BlogDTO>> GetBlogs(@NotNull(message = "话题名不能为空")
                                              @NotEmpty(message = "话题名不能为空字符串")
-                                             @Length(max = 40, message = "话题名不能大于40位") String topic_name,
+                                             @Length(max = 40, message = "话题名不能大于40位")
+                                             @RequestParam(required = true) String topic_name,
                                              @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                              @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                              @RequestParam(required = false, defaultValue = "0") Integer orderType) {
         Integer topic_id = topicService.getTopic_idByName(topic_name);
+        System.out.println(topic_name);
+        System.out.println(topic_id);
         return new Msg<CommonPage<BlogDTO>>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getListByTopic_id(topic_id, pageNum, pageSize)));
     }
 
