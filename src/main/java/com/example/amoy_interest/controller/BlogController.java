@@ -99,7 +99,8 @@ public class BlogController {
     @ApiOperation(value = "删除博文")
     @RequestMapping(value = "", method = RequestMethod.DELETE)
     public Msg DeleteBlog(@NotNull(message = "博文id不能为空")
-                          @Min(value = 1, message = "id不能小于1") Integer blog_id) {
+                          @Min(value = 1, message = "id不能小于1")
+                          @RequestParam Integer blog_id) {
         blogService.deleteByBlog_id(blog_id);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.DELETE_BLOG_SUCCESS_MSG);
     }

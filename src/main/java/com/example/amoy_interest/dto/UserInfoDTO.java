@@ -39,5 +39,6 @@ public class UserInfoDTO{
         this.introduction = user.getIntroduction();
         this.avatar = user.getAvatar_path();
         this.user_type = user.getUserAuth().getUser_type();
+        this.set_follow(is_follow);
     }
 }
