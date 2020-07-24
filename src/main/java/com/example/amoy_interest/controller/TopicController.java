@@ -1,6 +1,7 @@
 package com.example.amoy_interest.controller;
 
 import com.example.amoy_interest.dto.*;
+import com.example.amoy_interest.entity.TopicHeat;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
@@ -74,13 +75,11 @@ public class TopicController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,topicService.modifyTopicLogo(topicLogoDTO));
     }
 
-    @ApiOperation(value = "获取热榜(未实现)")
+    @ApiOperation(value = "获取热榜(按照reddit算法简单实现)")
     @RequestMapping(value = "/hotList", method = RequestMethod.GET)
-    public Msg<String> GetHotList(Integer count) {
-        List<String> list = new ArrayList<>();
-        list.add("高考加油");
-        list.add("隐秘的角落大结局");
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, list);
+    public Msg<CommonPage<TopicHeatResult>> GetHotList(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                                       @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(topicService.getHotList(pageNum, pageSize)));
     }
 
     @ApiOperation(value = "举报话题")
@@ -92,4 +91,9 @@ public class TopicController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 
+    @ApiOperation(value = "测试")
+    @GetMapping(value = "/test")
+    public void Test() {
+        topicService.updateTopicHeat();
+    }
 }

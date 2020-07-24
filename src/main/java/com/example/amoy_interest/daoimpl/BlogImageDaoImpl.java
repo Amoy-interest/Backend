@@ -17,4 +17,9 @@ public class BlogImageDaoImpl implements BlogImageDao {
     public List<BlogImage> findBlogImageByBlog_id(Integer blog_id) {
         return blogImageRepository.findBlogImageByBlog_id(blog_id);
     }
+
+    @Override
+    public BlogImage save(BlogImage blogImage) {
+        return blogImageRepository.saveAndFlush(blogImage);
+    }
 }

@@ -19,6 +19,8 @@ import javax.validation.constraints.NotNull;
 @Setter
 @ApiModel(value = "CommentPostDTO", description = "新建评论信息")
 public class CommentPostDTO {
+    @ApiModelProperty(value = "发评论的用户id(不用传，后端直接从token取)")
+    private Integer user_id;
     @NotNull(message = "博文id不能为空")
     @Min(value = 1,message = "博文id不能小于1")
     @ApiModelProperty(value = "评论所在的blog的id",required = true)

@@ -16,12 +16,12 @@ import java.util.List;
 public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int topic_id;
+    private Integer topic_id;
     private String topic_name;
     private Date topic_time;
-    private int check_status;
-    private int report_count;
-    private int host_id;
+    private Integer check_status;
+    private Integer report_count;
+    private Integer host_id;
     private String logo_path;
     private String topic_intro;
 
