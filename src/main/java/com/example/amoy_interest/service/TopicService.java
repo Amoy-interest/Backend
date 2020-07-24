@@ -12,8 +12,8 @@ public interface TopicService {
     List<TopicReportDTO> getReportedTopics();
     boolean checkReportedTopic(TopicCheckDTO topicCheckDTO);
     boolean reportTopicByName(String topic_name);
-    Page<TopicReportDTO> getReportedTopicsPage(Integer pageNum,Integer pageSize);
-    Page<TopicReportDTO> searchReportedTopicsPage(String keyword,Integer pageNum,Integer pageSize);
+    Page<TopicReportDTO> getReportedTopicsPage(Integer pageNum,Integer pageSize,Integer orderType);
+    Page<TopicReportDTO> searchReportedTopicsPage(String keyword,Integer pageNum,Integer pageSize,Integer orderType);
     TopicDTO addTopic(String topic_name);
     TopicDTO modifyTopicIntro(TopicIntroDTO topicIntroDTO);
     TopicDTO modifyTopicLogo(TopicLogoDTO topicLogoDTO);

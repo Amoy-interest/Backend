@@ -337,7 +337,14 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public Page<BlogDTO> getReportedBlogsPage(Integer pageNum, Integer pageSize) {
+    public Page<BlogDTO> getReportedBlogsPage(Integer pageNum, Integer pageSize,Integer orderType) {
+//        Sort sort = null;
+//        if(orderType == 1) {
+//            sort = Sort.by(Sort.Direction.DESC,"blog_time");
+//        }else {
+//            sort = Sort.by(Sort.Direction.DESC, "report_count");
+//        }
+//        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Blog> blogPage = blogDao.findReportedBlogsPage(pageable);
         List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
@@ -372,7 +379,14 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public Page<BlogDTO> searchReportedBlogsPage(String keyword, Integer pageNum, Integer pageSize) {
+    public Page<BlogDTO> searchReportedBlogsPage(String keyword, Integer pageNum, Integer pageSize,Integer orderType) {
+//        Sort sort = null;
+//        if(orderType == 1) {
+//            sort = Sort.by(Sort.Direction.DESC,"blog_time");
+//        }else {
+//            sort = Sort.by(Sort.Direction.DESC, "report_count");
+//        }
+//        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Blog> blogPage = blogDao.searchReportedBlogsPage(keyword,pageable);
         List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
