@@ -44,8 +44,8 @@ public interface BlogService {
 
     Page<BlogCommentLevel1DTO> getLevel1CommentPage(Integer blog_id,Integer pageNum,Integer pageSize);
     Page<BlogCommentMultiLevelDTO> getMultiLevelCommentPage(Integer root_comment_id,Integer pageNum,Integer pageSize);
-    Page<BlogDTO> getReportedBlogsPage(Integer pageNum,Integer pageSize);
-    Page<BlogDTO> searchReportedBlogsPage(String keyword,Integer pageNum,Integer pageSize);
+    Page<BlogDTO> getReportedBlogsPage(Integer pageNum,Integer pageSize,Integer orderType);
+    Page<BlogDTO> searchReportedBlogsPage(String keyword,Integer pageNum,Integer pageSize,Integer orderType);
 
     /**
      *

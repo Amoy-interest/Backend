@@ -11,6 +11,7 @@ import com.example.amoy_interest.service.BlogService;
 import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.utils.HotRank;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -100,7 +101,14 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public Page<TopicReportDTO> getReportedTopicsPage(Integer pageNum,Integer pageSize) {
+    public Page<TopicReportDTO> getReportedTopicsPage(Integer pageNum,Integer pageSize,Integer orderType) {
+//        Sort sort = null;
+//        if(orderType == 1) {
+//            sort = Sort.by(Sort.Direction.DESC,"topic_time");
+//        }else {
+//            sort = Sort.by(Sort.Direction.DESC, "report_count");
+//        }
+//        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Topic> topicPage = topicDao.getReportedTopicPage(pageable);
         List<Topic> topicList = topicPage.getContent();
@@ -112,7 +120,14 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public Page<TopicReportDTO> searchReportedTopicsPage(String keyword, Integer pageNum, Integer pageSize) {
+    public Page<TopicReportDTO> searchReportedTopicsPage(String keyword, Integer pageNum, Integer pageSize, Integer orderType) {
+//        Sort sort = null;
+//        if(orderType == 1) {
+//            sort = Sort.by(Sort.Direction.DESC,"topic_time");
+//        }else {
+//            sort = Sort.by(Sort.Direction.DESC, "report_count");
+//        }
+//        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Topic> topicPage = topicDao.searchReportedTopicPage(keyword,pageable);
         List<Topic> topicList = topicPage.getContent();
