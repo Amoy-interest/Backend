@@ -1,56 +1,60 @@
 package com.example.amoy_interest.jUnit5Test;
-
 import com.alibaba.fastjson.JSONObject;
-//import com.example.amoy_interest.DemoApplicationTests;
-import com.example.amoy_interest.controller.BlogController;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.BlogCount;
+import com.example.amoy_interest.msgutils.Msg;
+import com.example.amoy_interest.msgutils.MsgUtil;
+import com.example.amoy_interest.service.BlogService;
+import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.serviceimpl.BlogServiceImpl;
+import com.example.amoy_interest.serviceimpl.TopicServiceImpl;
+import com.example.amoy_interest.serviceimpl.UserServiceImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-//public class BlogControllerTest extends DemoApplicationTests {
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BlogControllerTest{
 
     private MockMvc mockMvc;
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
+    private WebApplicationContext context;
 
-    @Before
+    @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(blogController).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+//        MockitoAnnotations.initMocks(this);
+//        this.mockMvc = MockMvcBuilders.standaloneSetup(blogController).build();
     }
 
     @Mock
     private BlogServiceImpl blogService;
 
-    @InjectMocks
-    private BlogController blogController;
+//    @InjectMocks
+//    private BlogController blogController;
 
     @Test
     public void testGetBlog() throws Exception {
