@@ -57,6 +57,7 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public BlogDTO forwardBlog(BlogForwardDTO blogForwardDTO) {
         Blog blog = new Blog();
+//        blog.setReplyBlogId(blogForwardDTO.getReply_blog_id());
         blog.setUser_id(blogForwardDTO.getUser_id());
         blog.setBlog_type(1);
         blog.setBlog_time(new Date());
@@ -64,7 +65,16 @@ public class BlogServiceImpl implements BlogService {
         blog.set_deleted(false);
         blog.setCheck_status(0);
         blog.setTopic_id(blogForwardDTO.getTopic_id());
-        return new BlogDTO(blogDao.saveBlog(blog));
+        Blog blogchild = blogDao.findBlogByBlog_id(blogForwardDTO.getReply_blog_id());
+        blog.setReply(blogchild);
+        blog = blogDao.saveBlog(blog);
+        BlogCount blogCount = new BlogCount(blog.getBlog_id(),0,0,0,0);
+        blogCountDao.saveBlogCount(blogCount);
+        List<BlogImage> blogImageList = null;
+        blog.setBlogCount(blogCount);
+        blog.setBlogImages(blogImageList);
+        blog.setUser(userDao.getById(blogForwardDTO.getUser_id()));
+        return new BlogDTO(blog);
     }
 
 
@@ -111,9 +121,37 @@ public class BlogServiceImpl implements BlogService {
         blogCommentDao.decrCommentVoteCount(comment_id);
     }
 
+
     @Override
-    public BlogComment addBlogComment(BlogComment blogComment) {
-        return blogCommentDao.saveBlogComment(blogComment);
+    @Transactional
+    public BlogCommentMultiLevelDTO addBlogComment(CommentPostDTO commentPostDTO) {
+        Integer blog_id = commentPostDTO.getBlog_id();
+        Integer root_comment_id = commentPostDTO.getRoot_comment_id();
+        Integer reply_user_id = commentPostDTO.getReply_user_id();
+        String text = commentPostDTO.getText();
+        Integer user_id = commentPostDTO.getUser_id();
+        BlogComment blogComment = new BlogComment();
+        blogComment.setBlog_id(blog_id);
+        blogComment.setUser_id(user_id);
+        if (root_comment_id == 0) {
+            blogComment.setComment_level(1); //一级评论
+        } else {
+            blogComment.setComment_level(2); //二级评论
+        }
+        blogComment.setReply_user_id(reply_user_id);
+        blogComment.setComment_text(text);
+        blogComment.setComment_time(new Date());
+        blogComment.setVote_count(0);
+        blogComment.set_deleted(false);
+        blogComment.setRoot_comment_id(root_comment_id);
+        User user = userDao.getById(user_id);
+        String nickname = user.getNickname();
+        String avatar_path = user.getAvatar_path();
+        String reply_user_nickname = null;
+        if(reply_user_id != 0) {
+            reply_user_nickname = userDao.getById(reply_user_id).getNickname();
+        }
+        return new BlogCommentMultiLevelDTO(blogCommentDao.saveBlogComment(blogComment),nickname,reply_user_nickname,avatar_path);
     }
 
     @Override

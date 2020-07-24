@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-07-23 23:56:36
+Date: 2020-07-24 00:13:07
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -41,7 +41,7 @@ CREATE TABLE `blog` (
 -- ----------------------------
 DROP TABLE IF EXISTS `blog_comment`;
 CREATE TABLE `blog_comment` (
-  `comment_id` int NOT NULL,
+  `comment_id` int NOT NULL AUTO_INCREMENT,
   `blog_id` int DEFAULT NULL,
   `user_id` int DEFAULT NULL,
   `reply_user_id` int DEFAULT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE `blog_comment` (
   KEY `FK_Reference_10` (`user_id`),
   CONSTRAINT `FK_Reference_10` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_Reference_5` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for blog_count
