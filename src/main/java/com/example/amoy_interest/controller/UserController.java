@@ -43,13 +43,15 @@ public class UserController {
         String password = data.getPassword();
         //需要重写，用checkUser,检查用户是否被封号
         UserAuth userAuth = userService.findUserAuthByUsername(username);
-
         if (userAuth == null) {
             return new Msg<UserDTO>(MsgCode.USER_NOT_EXIST, MsgUtil.LOGIN_USER_ERROR_MSG, null);
         } else {
             if (!userAuth.getPassword().equals(password)) {
                 return new Msg<UserDTO>(MsgCode.ERROR, MsgUtil.LOGIN_USER_ERROR_MSG, null);
             } else {
+                if(userAuth.getIs_forbidden() == 1) {
+                    return new Msg<>(MsgCode.LOGIN_USER_ERROR,MsgUtil.USER_FORBIDDEN_MSG);
+                }
                 String token = tokenService.getToken(userAuth);
                 UserInfoDTO userInfoDTO = new UserInfoDTO(userAuth.getUser(), false);
                 UserDTO userDTO = new UserDTO(userInfoDTO, token);
