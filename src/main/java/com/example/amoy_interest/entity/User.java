@@ -13,15 +13,15 @@ import java.util.Objects;
 @Table(name = "user_info")
 public class User {
     @Id
-    private int user_id;
+    private Integer user_id;
     private String nickname;
     private String email;
-    private int sex;
+    private Integer sex;
     private String address;
-    private int credits;
+    private Integer credits;
     private String introduction;
     private String avatar_path;
-    public User(int user_id,String nickname,String email, int sex, String address, int credits, String introduction, String avatar_path) {
+    public User(Integer user_id,String nickname,String email, Integer sex, String address, Integer credits, String introduction, String avatar_path) {
         this.user_id = user_id;
         this.nickname = nickname;
         this.email = email;

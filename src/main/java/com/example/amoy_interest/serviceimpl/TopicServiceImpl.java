@@ -2,18 +2,19 @@ package com.example.amoy_interest.serviceimpl;
 
 import com.example.amoy_interest.dao.BlogDao;
 import com.example.amoy_interest.dao.TopicDao;
+import com.example.amoy_interest.dao.TopicHeatDao;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.Topic;
+import com.example.amoy_interest.entity.TopicHeat;
 import com.example.amoy_interest.service.BlogService;
 import com.example.amoy_interest.service.TopicService;
+import com.example.amoy_interest.utils.HotRank;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,7 +25,9 @@ public class TopicServiceImpl implements TopicService {
     @Autowired
     private TopicDao topicDao;
     @Autowired
-    private BlogDao blogDao;
+    private TopicHeatDao topicHeatDao;
+//    @Autowired
+//    private BlogDao blogDao;
 
     @Override
     public Integer getTopic_idByName(String topic_name) {
@@ -118,5 +121,34 @@ public class TopicServiceImpl implements TopicService {
             topicReportDTOList.add(new TopicReportDTO(topic));
         }
         return new PageImpl<>(topicReportDTOList,topicPage.getPageable(),topicPage.getTotalElements());
+    }
+
+    @Override
+    @Transactional
+    public void updateTopicHeat() {
+        List<TopicHeatParam> topicHeatParamList = topicDao.getAllTopicCount();
+        List<TopicHeat> topicHeatList = new ArrayList<>();
+        for(TopicHeatParam topicHeatParam:topicHeatParamList) {
+            Integer ups = topicHeatParam.getForward_count()*30 + topicHeatParam.getVote_count()*10 + topicHeatParam.getComment_count()*1;
+            int score = (int)HotRank.getHotVal(ups,0,topicHeatParam.getTopic_time());
+            TopicHeat topicHeat = new TopicHeat(topicHeatParam.getTopic_id(),score);
+            topicHeatList.add(topicHeat);
+        }
+        topicHeatDao.saveAll(topicHeatList);
+    }
+
+    @Override
+    public Page<TopicHeatResult> getHotList(Integer pageNum, Integer pageSize) {
+        Sort sort = Sort.by(Sort.Direction.DESC,"heat");
+        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
+        Page<TopicHeat> topicHeatPage = topicHeatDao.findByPage(pageable);
+        List<TopicHeat> topicHeatList = topicHeatPage.getContent();
+        List<TopicHeatResult> topicHeatResultList = new ArrayList<>();
+        for(TopicHeat topicHeat:topicHeatList) {
+            Topic topic = topicDao.getTopicById(topicHeat.getTopic_id());
+            TopicHeatResult topicHeatResult = new TopicHeatResult(topic.getTopic_name(),topicHeat.getHeat());
+            topicHeatResultList.add(topicHeatResult);
+        }
+        return new PageImpl<>(topicHeatResultList,topicHeatPage.getPageable(),topicHeatPage.getTotalElements());
     }
 }

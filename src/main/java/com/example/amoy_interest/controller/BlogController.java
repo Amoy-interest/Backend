@@ -80,28 +80,8 @@ public class BlogController {
     @ApiOperation(value = "进行评论")
     @RequestMapping(value = "/comments", method = RequestMethod.POST)
     public Msg<BlogCommentMultiLevelDTO> Comment(@RequestHeader(value = "token") String token, @RequestBody @Valid CommentPostDTO commentPostDTO) {
-        Integer blog_id = commentPostDTO.getBlog_id();
-        Integer root_comment_id = commentPostDTO.getRoot_comment_id();
-        Integer reply_user_id = commentPostDTO.getReply_user_id();
-        String text = commentPostDTO.getText();
-        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
-
-        BlogComment blogComment = new BlogComment();
-        blogComment.setBlog_id(blog_id);
-        blogComment.setUser_id(user_id);
-        if (root_comment_id == 0) {
-            blogComment.setComment_level(1); //一级评论
-        } else {
-            blogComment.setComment_level(2); //二级评论
-        }
-        blogComment.setReply_user_id(reply_user_id);
-        blogComment.setComment_text(text);
-        blogComment.setComment_time(new Date());
-        blogComment.setVote_count(0);
-        blogComment.set_deleted(false);
-        blogComment.setRoot_comment_id(root_comment_id);
-        blogService.addBlogComment(blogComment);
-        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.COMMENT_SUCCESS_MSG);
+        commentPostDTO.setUser_id(JWT.decode(token).getClaim("user_id").asInt());
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.COMMENT_SUCCESS_MSG,blogService.addBlogComment(commentPostDTO));
     }
 
     @UserLoginToken

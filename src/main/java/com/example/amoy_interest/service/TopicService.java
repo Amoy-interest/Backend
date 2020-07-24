@@ -17,4 +17,6 @@ public interface TopicService {
     TopicDTO addTopic(String topic_name);
     TopicDTO modifyTopicIntro(TopicIntroDTO topicIntroDTO);
     TopicDTO modifyTopicLogo(TopicLogoDTO topicLogoDTO);
+    void updateTopicHeat();
+    Page<TopicHeatResult> getHotList(Integer pageNum,Integer pageSize);
 }

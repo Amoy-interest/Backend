@@ -82,8 +82,6 @@ public class AdminController {
     @GetMapping(value = "/topics/reported")
     public Msg<CommonPage<TopicReportDTO>> GetReportedTopics(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                              @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-//        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.getReportedTopics());
-//        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,)
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(topicService.getReportedTopicsPage(pageNum, pageSize)));
     }
 
@@ -96,15 +94,12 @@ public class AdminController {
                                                                 @Length(max = 40, message = "关键词不能大于40位") String keyword,
                                                                 @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                                 @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-//        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.getReportedTopics());
-//        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,)
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(topicService.searchReportedTopicsPage(keyword,pageNum, pageSize)));
     }
 
     @UserLoginToken
     @ApiOperation(value = "审核话题")
     @PutMapping(value = "/topics/reported")
-//    @ResponseBody
     public Msg CheckReportedTopic(@RequestBody @Valid TopicCheckDTO topicCheckDTO) {
         topicService.checkReportedTopic(topicCheckDTO);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);

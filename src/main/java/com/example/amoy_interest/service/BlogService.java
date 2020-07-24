@@ -23,7 +23,7 @@ public interface BlogService {
     void decrCommentVoteCount(Integer comment_id);
 
 
-    BlogComment addBlogComment(BlogComment blogComment);
+    BlogCommentMultiLevelDTO addBlogComment(CommentPostDTO commentPostDTO);
     void deleteCommentByComment_id(Integer comment_id);
 
     BlogDTO getSimpleBlogDetail(Integer blog_id);

@@ -21,7 +21,8 @@ public class Blog {
     private String blog_text;
     private boolean is_deleted;
     private Integer check_status;
-//    private Integer reply_blog_id;
+//    @Column(name = "reply_blog_id")
+//    private Integer replyBlogId;
 
     public Blog(){}
 
@@ -34,7 +35,7 @@ public class Blog {
         this.blog_text = blog_text;
         this.is_deleted = is_deleted;
         this.check_status = check_status;
-//        this.reply_blog_id = reply_blog_id;
+//        this.replyBlogId = reply_blog_id;
     }
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id",insertable = false, updatable = false)

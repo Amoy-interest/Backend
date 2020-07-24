@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface BlogImageDao {
     List<BlogImage> findBlogImageByBlog_id(Integer blog_id);
+    BlogImage save(BlogImage blogImage);
 }
