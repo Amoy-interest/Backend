@@ -17,6 +17,7 @@ public interface UserService {
     UserAuth findUserAuthById(Integer id);
     UserAuth findUserAuthByUsername(String username);
     UserInfoDTO register(RegisterDTO registerDTO);
+    UserInfoDTO getUserInfo(Integer user_id1,Integer user_id2);
     boolean follow(Integer user_id,Integer follow_id);
     boolean unfollow(Integer user_id,Integer unfollow_id);
     boolean ban(UserCheckDTO userCheckDTO);

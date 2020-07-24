@@ -26,6 +26,8 @@ public class TopicDTO {
     private String logo_path;
     @ApiModelProperty(value = "话题简介")
     private String topic_intro;
+    @ApiModelProperty(value = "话题热度")
+    private Integer topic_heat;
 
     public TopicDTO(Topic topic) {
 //        BlogDTO convert = null;
@@ -34,6 +36,11 @@ public class TopicDTO {
         this.host_id = topic.getHost_id();
         this.logo_path = topic.getLogo_path();
         this.topic_intro = topic.getTopic_intro();
+        if(topic.getTopicHeat() == null) {
+            this.topic_heat = 0;
+        }else {
+            this.topic_heat = topic.getTopicHeat().getHeat();
+        }
 //        this.blogs = null;
 //        if(topic.getBlogs() != null) {
 //            this.blogs = new ArrayList<>();
