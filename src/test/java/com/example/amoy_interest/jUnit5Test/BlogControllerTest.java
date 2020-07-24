@@ -19,6 +19,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -50,8 +55,8 @@ public class BlogControllerTest{
 //        this.mockMvc = MockMvcBuilders.standaloneSetup(blogController).build();
     }
 
-    @Mock
-    private BlogServiceImpl blogService;
+    @MockBean
+    private BlogService blogService;
 
 //    @InjectMocks
 //    private BlogController blogController;
@@ -103,7 +108,7 @@ public class BlogControllerTest{
 
     @Test
     public void testDeleteComment() throws Exception {
-        doNothing().when(blogService).deleteCommentByComment_id(Mockito.any());
+        doNothing().when(blogService).deleteCommentByComment_id(any());
         mockMvc.perform(delete("/blogs/comments?comment_id=1")
                 .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
                 .andExpect(status().isOk()).andReturn();
@@ -114,7 +119,7 @@ public class BlogControllerTest{
     public void testVote() throws Exception {
         doNothing().when(blogService).incrVoteCount(Mockito.any());
         doNothing().when(blogService).incrCommentVoteCount(Mockito.any());
-        VoteDTO voteDTO = new VoteDTO(1,-1);
+        VoteDTO voteDTO = new VoteDTO(1,0);
         String requestJson = JSONObject.toJSONString(voteDTO);
         mockMvc.perform(post("/blogs/vote")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -136,7 +141,7 @@ public class BlogControllerTest{
     public void testCancelVote() throws Exception {
         doNothing().when(blogService).decrVoteCount(Mockito.any());
         doNothing().when(blogService).decrCommentVoteCount(Mockito.any());
-        VoteDTO voteDTO = new VoteDTO(1,-1);
+        VoteDTO voteDTO = new VoteDTO(1,0);
         String requestJson = JSONObject.toJSONString(voteDTO);
         mockMvc.perform(delete("/blogs/vote")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -156,7 +161,7 @@ public class BlogControllerTest{
 
     @Test
     public void testComment() throws Exception {
-        Mockito.when(blogService.addBlogComment(Mockito.any())).thenReturn(null);
+        when(blogService.addBlogComment(Mockito.any())).thenReturn(null);
 //        CommentPostDTO commentPostDTO = new CommentPostDTO(1, 1, "dd", "ddd", "test");
 //        String requestJson = JSONObject.toJSONString(commentPostDTO);
 //        mockMvc.perform(post("/blogs/comments")
@@ -169,14 +174,15 @@ public class BlogControllerTest{
 
     @Test
     public void testSearch() throws Exception {
-        List<Blog> blogList = new ArrayList<>();
-        blogList.add(new Blog(1, 1, 0, 0,null, "abbcdde",  false, 1, -1));
-        blogList.add(new Blog(2, 1, 0, 0,null, "abcdde",  false, 1, -1));
-        Mockito.when(blogService.getAllBlogs()).thenReturn(blogList);
-        Mockito.when(blogService.getSimpleBlogDetail(1)).thenReturn(null);
-        mockMvc.perform(get("/blogs/searchAll?keyword=abbc"))
+        List<BlogDTO> blogList = new ArrayList<>();
+//        blogList.add(new Blog(1, 1, 0, 0,null, "abbcdde",  false, 1, 0));
+//        blogList.add(new Blog(2, 1, 0, 0,null, "abcdde",  false, 1, 0));
+        Pageable pageable = PageRequest.of(0,5);
+        Page<BlogDTO> page = new PageImpl<>(blogList,pageable,0);
+        Mockito.when(blogService.getSearchListByBlog_text("abbc",0,5)).thenReturn(page);
+        mockMvc.perform(get("/blogs/search?keyword=abbc")
+                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
                 .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).getAllBlogs();
-        verify(blogService, times(1)).getSimpleBlogDetail(Mockito.any());
+        verify(blogService,times(1)).getSearchListByBlog_text("abbc",0,5);
     }
 }
