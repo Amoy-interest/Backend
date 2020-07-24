@@ -49,8 +49,8 @@ public class UserController {
             if (!userAuth.getPassword().equals(password)) {
                 return new Msg<UserDTO>(MsgCode.ERROR, MsgUtil.LOGIN_USER_ERROR_MSG, null);
             } else {
-                if(userAuth.getIs_forbidden() == 1) {
-                    return new Msg<>(MsgCode.LOGIN_USER_ERROR,MsgUtil.USER_FORBIDDEN_MSG);
+                if (userAuth.getIs_forbidden() == 1) {
+                    return new Msg<>(MsgCode.LOGIN_USER_ERROR, MsgUtil.USER_FORBIDDEN_MSG);
                 }
                 String token = tokenService.getToken(userAuth);
                 UserInfoDTO userInfoDTO = new UserInfoDTO(userAuth.getUser(), false);
@@ -76,7 +76,6 @@ public class UserController {
         if (userAuth != null) {
             return new Msg<UserDTO>(MsgCode.USER_EXIST, MsgUtil.USER_EXIST_MSG, null);
         }
-        //服务层验证密码和邮箱格式？
         UserInfoDTO userInfoDTO = userService.register(registerDTO);
         userAuth = userService.findUserAuthByUsername(username);
         if (userInfoDTO == null) {
@@ -92,7 +91,7 @@ public class UserController {
     @PostMapping(value = "/follow")
     public Msg Follow(@NotNull(message = "关注id不能为空")
                       @Min(value = 1, message = "关注id不能小于1")
-                      @RequestParam Integer follow_id,
+                      @RequestParam(required = true) Integer follow_id,
                       @RequestHeader(value = "token") String token) {
         Integer userId = JWT.decode(token).getClaim("user_id").asInt();
         System.out.println(userId);
@@ -139,6 +138,6 @@ public class UserController {
     @GetMapping(value = "")
     public Msg<UserInfoDTO> GetUserInfo(@RequestHeader(value = "token") String token,
                                         @RequestParam(required = true) Integer user_id) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,userService.getUserInfo(JWT.decode(token).getClaim("user_id").asInt(),user_id));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, userService.getUserInfo(JWT.decode(token).getClaim("user_id").asInt(), user_id));
     }
 }

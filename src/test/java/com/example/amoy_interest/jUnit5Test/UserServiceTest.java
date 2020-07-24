@@ -1,43 +1,57 @@
 package com.example.amoy_interest.jUnit5Test;
-
-import com.example.amoy_interest.dao.UserCountDao;
-import com.example.amoy_interest.dao.UserAuthDao;
-import com.example.amoy_interest.dao.UserFollowDao;
-import com.example.amoy_interest.dao.UserDao;
-import com.example.amoy_interest.dto.RegisterDTO;
-import com.example.amoy_interest.dto.UserInfoDTO;
-import com.example.amoy_interest.entity.UserAuth;
-import com.example.amoy_interest.entity.UserCount;
-import com.example.amoy_interest.entity.UserFollow;
-import com.example.amoy_interest.entity.User;
+import com.alibaba.fastjson.JSONObject;
+import com.example.amoy_interest.dao.*;
+import com.example.amoy_interest.daoimpl.UserAuthDaoImpl;
+import com.example.amoy_interest.daoimpl.UserCountDaoImpl;
+import com.example.amoy_interest.daoimpl.UserDaoImpl;
+import com.example.amoy_interest.daoimpl.UserFollowDaoImpl;
+import com.example.amoy_interest.dto.*;
+import com.example.amoy_interest.entity.*;
+import com.example.amoy_interest.msgutils.Msg;
+import com.example.amoy_interest.msgutils.MsgUtil;
+import com.example.amoy_interest.service.BlogService;
+import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.service.UserService;
-import junit.framework.TestCase;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.example.amoy_interest.serviceimpl.BlogServiceImpl;
+import com.example.amoy_interest.serviceimpl.TopicServiceImpl;
+import com.example.amoy_interest.serviceimpl.UserServiceImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
-import static com.example.amoy_interest.constant.SecurityConstants.EXPIRATION_TIME;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
-
-@RunWith(SpringRunner.class)
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @SpringBootTest
 public class UserServiceTest {
-    @Autowired
-    private UserService userService;
-    @MockBean
-    private UserAuthDao userAuthDao;
-    @MockBean
-    private UserCountDao userCountDao;
-    @MockBean
-    private UserDao userDao;
-    @MockBean
-    private UserFollowDao userFollowDao;
+    @InjectMocks
+    private UserServiceImpl userService;
+    @Mock
+    private UserAuthDaoImpl userAuthDao;
+    @Mock
+    private UserCountDaoImpl userCountDao;
+    @Mock
+    private UserDaoImpl userDao;
+    @Mock
+    private UserFollowDaoImpl userFollowDao;
     @Test
     public void TestRegister() {
         RegisterDTO registerDTO = new RegisterDTO("admin","mok","123456",0,"上海市闵行区","mokkkkk@sjtu.edu.cn");
@@ -56,8 +70,8 @@ public class UserServiceTest {
     }
     @Test
     public void TestFollow() {
-        UserFollow userFollow = new UserFollow(1,4);
-        userService.follow(1,4);
+        UserFollow userFollow = new UserFollow(2,4);
+        userService.follow(2,4);
         verify(userFollowDao,times(1)).insert(userFollow);
     }
     @Test

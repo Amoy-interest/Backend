@@ -21,7 +21,7 @@ public class TopicDTO {
     @ApiModelProperty(value = "话题创建时间", required = true)
     private Date time;
     @ApiModelProperty(value = "主持人id")
-    private int host_id;
+    private Integer host_id;
     @ApiModelProperty(value = "话题logo")
     private String logo_path;
     @ApiModelProperty(value = "话题简介")
