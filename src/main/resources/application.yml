@@ -5,9 +5,11 @@ spring:
   datasource:
     url: jdbc:mysql://localhost/amoy_interest
     username: root
-    password:
+    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
-
+#jackson:
+    ##    serialization:
+    ##      indent_output: true #返回josn格式化，用来显示？
 # OSS相关配置信息
 aliyun:
   oss:
@@ -22,3 +24,13 @@ aliyun:
     dir:
       prefix: amoy-interest/images/ # 上传文件夹路径前缀
 
+management:
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
