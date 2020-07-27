@@ -223,7 +223,8 @@ public class BlogController {
     @UserLoginToken
     @ApiOperation(value = "分页获取某人(可以是自己也可以是他人)blog")
     @GetMapping(value = "/users")
-    public Msg<CommonPage<BlogDTO>> GetUserBlogs(@RequestParam(required = true) Integer user_id,
+    public Msg<CommonPage<BlogDTO>> GetUserBlogs(@RequestHeader(value = "token") String token,
+                                                 @RequestParam(required = false) Integer user_id,
                                                  @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                  @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                                  @RequestParam(required = false, defaultValue = "0") Integer orderType) {
@@ -240,10 +241,9 @@ public class BlogController {
     @ApiOperation(value = "举报博文")
     @PostMapping(value = "/report")
     public Msg ReportBlog(@NotNull(message = "博文id不能为空")
-                          @Min(value = 1, message = "id不能小于1") Integer blog_id) {
+                          @Min(value = 1, message = "id不能小于1")
+                          @RequestParam(required = true) Integer blog_id) {
         blogService.reportBlogByBlog_id(blog_id);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
-
-
 }

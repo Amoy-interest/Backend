@@ -102,7 +102,8 @@ public class UserController {
     @ApiOperation(value = "取关用户", notes = "取关")
     @PostMapping(value = "/unfollow")
     public Msg UnFollow(@NotNull(message = "取关id不能为空")
-                        @Min(value = 1, message = "取关id不能小于1") Integer follow_id,
+                        @Min(value = 1, message = "取关id不能小于1")
+                        @RequestParam Integer follow_id,
                         @RequestHeader(value = "token") String token) {
         Integer userId = JWT.decode(token).getClaim("user_id").asInt();
         userService.unfollow(userId, follow_id);

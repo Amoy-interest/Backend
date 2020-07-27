@@ -10,14 +10,15 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-    @Query(value = "from User where credits < 60")
+    @Query(value = "from User where credits < 150")
     List<User> getReportedUsers();
     @Query(value = "SELECT * FROM user_info WHERE credits < 60",
             countQuery = "SELECT count(*) From user_info WHERE credits < 60",
             nativeQuery = true)
     Page<User> findReportedUsersPage(Pageable pageable);
-    @Query(value = "SELECT * FROM user_info WHERE credits < 60 and nickname like ?1",
-            countQuery = "SELECT count(*) From user_info WHERE credits < 60 and nickname like ?1",
+
+    @Query(value = "SELECT * FROM user_info WHERE credits < 60 and nickname like %?1%",
+            countQuery = "SELECT count(*) From user_info WHERE credits < 60 and nickname like %?1%",
             nativeQuery = true)
     Page<User> searchReportedUsersPage(String keyword,Pageable pageable);
 }
