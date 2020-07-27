@@ -45,7 +45,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserInfoDTO register(RegisterDTO registerDTO) {
-        System.out.println(registerDTO.getPassword());
         UserAuth userAuth = new UserAuth(registerDTO.getUsername(),registerDTO.getPassword(),0,0,0);
         userAuth = userAuthDao.insert(userAuth);
         Integer user_id = userAuth.getUser_id();

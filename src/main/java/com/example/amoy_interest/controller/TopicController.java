@@ -51,8 +51,6 @@ public class TopicController {
                                              @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                              @RequestParam(required = false, defaultValue = "0") Integer orderType) {
         Integer topic_id = topicService.getTopic_idByName(topic_name);
-        System.out.println(topic_name);
-        System.out.println(topic_id);
         return new Msg<CommonPage<BlogDTO>>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getListByTopic_id(topic_id, pageNum, pageSize)));
     }
 

@@ -109,7 +109,6 @@ public class BlogController {
     @ApiOperation(value = "进行评论")
     @RequestMapping(value = "/comments", method = RequestMethod.POST)
     public Msg<BlogCommentMultiLevelDTO> Comment(@RequestHeader(value = "token") String token, @RequestBody @Valid CommentPostDTO commentPostDTO) {
-        System.out.println(commentPostDTO.toString());
         commentPostDTO.setUser_id(JWT.decode(token).getClaim("user_id").asInt());
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.COMMENT_SUCCESS_MSG,blogService.addBlogComment(commentPostDTO));
     }
@@ -149,7 +148,6 @@ public class BlogController {
     @ApiOperation(value = "点赞")
     @RequestMapping(value = "/vote", method = RequestMethod.POST)
     public Msg Vote(@RequestBody @Valid VoteDTO voteDTO) {
-        System.out.println(voteDTO.toString());
         Integer comment_id = voteDTO.getComment_id();
         Integer blog_id = voteDTO.getBlog_id();
         if (comment_id == 0) {
@@ -218,7 +216,6 @@ public class BlogController {
                                                    @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                    @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
-        System.out.println(user_id);
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getFollowBlogPageByUser_idOrderByTime(user_id, pageNum, pageSize)));
     }
 
@@ -243,7 +240,8 @@ public class BlogController {
     @ApiOperation(value = "举报博文")
     @PostMapping(value = "/report")
     public Msg ReportBlog(@NotNull(message = "博文id不能为空")
-                          @Min(value = 1, message = "id不能小于1") Integer blog_id) {
+                          @Min(value = 1, message = "id不能小于1")
+                          @RequestParam(required = true) Integer blog_id) {
         blogService.reportBlogByBlog_id(blog_id);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }

@@ -94,8 +94,6 @@ public class UserController {
                       @RequestParam(required = true) Integer follow_id,
                       @RequestHeader(value = "token") String token) {
         Integer userId = JWT.decode(token).getClaim("user_id").asInt();
-        System.out.println(userId);
-        System.out.println(follow_id);
         userService.follow(userId, follow_id);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }

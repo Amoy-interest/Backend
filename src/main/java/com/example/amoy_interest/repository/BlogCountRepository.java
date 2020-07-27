@@ -16,12 +16,10 @@ public interface BlogCountRepository extends JpaRepository<BlogCount,Integer> {
     List<BlogCount> findReportedBlogs();
 
     @Modifying
-    @Transactional
     @Query(value = "update BlogCount bc set bc.vote_count = bc.vote_count + 1 where bc.blog_id = :blog_id")
     void incrVoteCount(Integer blog_id);
 
     @Modifying
-    @Transactional
     @Query(value = "update BlogCount bc set bc.vote_count = bc.vote_count - 1 where bc.blog_id = :blog_id")
     void decrVoteCount(Integer blog_id);
 }
