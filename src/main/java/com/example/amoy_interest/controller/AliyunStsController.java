@@ -12,6 +12,7 @@ import com.example.amoy_interest.dto.OssTokenDTO;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ import static com.example.amoy_interest.constant.StsSecurityConstants.*;
 public class AliyunStsController {
 
     @GetMapping("/oss/tokens")
+    @ApiOperation(value = "获取OssToken")
     public Msg<OssTokenDTO> getOssToken() {
         // 创建阿里云 OSS 临时token
         AssumeRoleResponse ossToken = createOssToken();
@@ -45,7 +47,7 @@ public class AliyunStsController {
                 .securityToken(credentials.getSecurityToken())
                 .expiration(credentials.getExpiration())
                 // OSS bucket名称
-                .bucket("leigq-bucket")
+                .bucket("amoy-interest-oss")
                 .build();
         return MsgUtil.ok(ossTokenVO);
     }
