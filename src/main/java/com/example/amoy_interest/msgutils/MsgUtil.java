@@ -1,7 +1,7 @@
 package com.example.amoy_interest.msgutils;
 
 
-public class MsgUtil {
+public class MsgUtil<T> {
 
     public static final int SUCCESS = 0;
     public static final int ERROR = -1;
@@ -62,7 +62,12 @@ public class MsgUtil {
 //    public static Msg makeMsg(int status, String msg, JSONObject data){
 //        return new Msg(status, msg, data);
 //    }
-
+    public static <T> Msg<T> ok(T data) {
+        return new Msg(SUCCESS,SUCCESS_MSG,data);
+    }
+    public static Msg error(String error) {
+        return new Msg(ERROR,error);
+    }
     public static Msg makeMsg(int status, String msg){
         return new Msg(status, msg);
     }

@@ -143,30 +143,6 @@
             <version>5.5.2</version>
             <scope>test</scope>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.junit.platform</groupId>-->
-        <!--            <artifactId>junit-platform-launcher</artifactId>-->
-        <!--            <version>1.3.1</version>-->
-        <!--            <scope>test</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.junit.jupiter</groupId>    &lt;!&ndash; 提供assertEquals等断言方法、@Test等测试注解 &ndash;&gt;-->
-        <!--            <artifactId>junit-jupiter-engine</artifactId>-->
-        <!--            <version>5.3.1</version>-->
-        <!--            <scope>test</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.junit.jupiter</groupId>   &lt;!&ndash; 提供@ParameterizedTest、@ValueSource、@CsvSource等 &ndash;&gt;-->
-        <!--            <artifactId>junit-jupiter-params</artifactId>-->
-        <!--            <version>5.3.1</version>-->
-        <!--            <scope>test</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.junit.vintage</groupId>-->
-        <!--            <artifactId>junit-vintage-engine</artifactId>-->
-        <!--            <version>5.3.1</version>-->
-        <!--            <scope>test</scope>-->
-        <!--        </dependency>-->
 
         <!--  用来转换成json      -->
         <dependency>
@@ -192,6 +168,18 @@
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
             <version>2.5.0</version>
+        </dependency>
+        <!--     阿里云sts   -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>3.2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-sts</artifactId>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
