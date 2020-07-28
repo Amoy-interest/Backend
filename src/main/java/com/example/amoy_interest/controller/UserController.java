@@ -62,7 +62,7 @@ public class UserController {
             String currentTimeMillis = String.valueOf(System.currentTimeMillis());
             JedisUtil.setObject(Constant.PREFIX_SHIRO_REFRESH_TOKEN + data.getUsername(), currentTimeMillis, Integer.parseInt(refreshTokenExpireTime));
             // 从Header中Authorization返回AccessToken，时间戳为当前时间戳
-            String token = JwtUtil.sign(userAuth.getUser_id(),data.getUsername(), currentTimeMillis);
+            String token = JwtUtil.sign(userAuth.getUser_id(), data.getUsername(), currentTimeMillis);
             httpServletResponse.setHeader("Authorization", token);
             httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
             return new Msg(HttpStatus.OK.value(), "登录成功(Login Success.)", null);
@@ -100,7 +100,7 @@ public class UserController {
 
     @ApiOperation(value = "注册", notes = "注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public Msg<UserInfoDTO> Register(@RequestBody @Valid RegisterDTO registerDTO,HttpServletResponse httpServletResponse) {
+    public Msg<UserInfoDTO> Register(@RequestBody @Valid RegisterDTO registerDTO, HttpServletResponse httpServletResponse) {
 //        UserDto userDtoTemp = new UserDto();
 //        userDtoTemp.setAccount(userDto.getAccount());
 //        userDtoTemp = userService.selectOne(userDtoTemp);
@@ -123,7 +123,7 @@ public class UserController {
         String currentTimeMillis = String.valueOf(System.currentTimeMillis());
         JedisUtil.setObject(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username, currentTimeMillis, Integer.parseInt(refreshTokenExpireTime));
         // 从Header中Authorization返回AccessToken，时间戳为当前时间戳
-        String token = JwtUtil.sign(userInfoDTO.getUser_id(),username, currentTimeMillis);
+        String token = JwtUtil.sign(userInfoDTO.getUser_id(), username, currentTimeMillis);
         httpServletResponse.setHeader("Authorization", token);
         httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
         return new Msg(HttpStatus.OK.value(), "注册成功(Insert Success)", userInfoDTO);
@@ -157,7 +157,8 @@ public class UserController {
     @ApiOperation(value = "取关用户", notes = "取关")
     @PostMapping(value = "/unfollow")
     public Msg UnFollow(@NotNull(message = "取关id不能为空")
-                        @Min(value = 1, message = "取关id不能小于1") Integer follow_id) {
+                        @Min(value = 1, message = "取关id不能小于1")
+                        @RequestParam Integer follow_id) {
         Integer userId = userUtil.getUserId();
         userService.unfollow(userId, follow_id);
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
