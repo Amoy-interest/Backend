@@ -43,10 +43,7 @@ public class UserController {
 
     @ApiOperation(value = "登录", notes = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public Msg Login(@RequestBody @Valid LoginDTO data, HttpServletResponse httpServletResponse) {
-//        UserDto userDtoTemp = new UserDto();
-//        userDtoTemp.setAccount(userDto.getAccount());
-//        userDtoTemp = userService.selectOne(userDtoTemp);
+    public Msg<UserInfoDTO> Login(@RequestBody @Valid LoginDTO data, HttpServletResponse httpServletResponse) {
         UserAuth userAuth = userService.findUserAuthByUsername(data.getUsername());
         if (userAuth == null) {
             throw new CustomUnauthorizedException("该帐号不存在(The account does not exist.)");
@@ -66,7 +63,7 @@ public class UserController {
             String token = JwtUtil.sign(userAuth.getUser_id(), data.getUsername(), currentTimeMillis);
             httpServletResponse.setHeader("Authorization", token);
             httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
-            return new Msg(HttpStatus.OK.value(), "登录成功(Login Success.)", null);
+            return new Msg(HttpStatus.OK.value(), "登录成功(Login Success.)", new UserInfoDTO(userAuth.getUser(),false));
         } else {
             throw new CustomUnauthorizedException("帐号或密码错误(Account or Password Error.)");
         }
