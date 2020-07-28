@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-07-09 11:30:26
+Date: 2020-07-28 14:55:29
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,39 +20,43 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `blog`;
 CREATE TABLE `blog` (
-  `blog_id` int NOT NULL,
-  `user_id` int DEFAULT NULL,
+  `blog_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
   `blog_type` smallint DEFAULT NULL,
   `blog_time` datetime DEFAULT NULL,
   `blog_text` varchar(140) DEFAULT NULL,
   `is_deleted` smallint DEFAULT NULL,
-  `blog_image` varchar(1024) DEFAULT NULL,
+  `check_status` smallint DEFAULT NULL,
+  `topic_id` int DEFAULT NULL,
+  `reply_blog_id` int DEFAULT NULL,
   PRIMARY KEY (`blog_id`),
   KEY `FK_Reference_4` (`user_id`),
-  CONSTRAINT `FK_Reference_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `FK_Reference_13` (`reply_blog_id`),
+  CONSTRAINT `FK_Reference_13` FOREIGN KEY (`reply_blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE SET NULL ON UPDATE SET NULL,
+  CONSTRAINT `FK_Reference_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for blog_comment
 -- ----------------------------
 DROP TABLE IF EXISTS `blog_comment`;
 CREATE TABLE `blog_comment` (
-  `comment_id` int NOT NULL,
+  `comment_id` int NOT NULL AUTO_INCREMENT,
   `blog_id` int DEFAULT NULL,
-  `username` varchar(15) DEFAULT NULL,
-  `reply_comment_username` varchar(15) DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `reply_user_id` int DEFAULT NULL,
   `comment_level` smallint DEFAULT NULL,
   `comment_text` varchar(140) DEFAULT NULL,
   `comment_time` datetime DEFAULT NULL,
   `vote_count` int DEFAULT NULL,
   `is_deleted` smallint DEFAULT NULL,
-  `parent_comment_id` int DEFAULT NULL,
+  `root_comment_id` int DEFAULT NULL,
   PRIMARY KEY (`comment_id`),
   KEY `FK_Reference_5` (`blog_id`),
-  KEY `FK_Reference_10` (`username`),
-  CONSTRAINT `FK_Reference_10` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
+  KEY `FK_Reference_10` (`user_id`),
+  CONSTRAINT `FK_Reference_10` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_Reference_5` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for blog_count
@@ -63,8 +67,33 @@ CREATE TABLE `blog_count` (
   `forward_count` int DEFAULT NULL,
   `comment_count` int DEFAULT NULL,
   `vote_count` int DEFAULT NULL,
+  `report_count` int DEFAULT NULL,
   PRIMARY KEY (`blog_id`),
   CONSTRAINT `FK_Reference_9` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for blog_image
+-- ----------------------------
+DROP TABLE IF EXISTS `blog_image`;
+CREATE TABLE `blog_image` (
+  `image_id` int NOT NULL AUTO_INCREMENT,
+  `blog_id` int NOT NULL,
+  `blog_image` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`image_id`),
+  KEY `FK_Reference_15` (`blog_id`),
+  CONSTRAINT `FK_Reference_15` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for role_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `role_permission`;
+CREATE TABLE `role_permission` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(100) NOT NULL,
+  `permission` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -72,7 +101,8 @@ CREATE TABLE `blog_count` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sensitive_words`;
 CREATE TABLE `sensitive_words` (
-  `keyword` varchar(15) DEFAULT NULL
+  `keyword` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`keyword`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -80,11 +110,16 @@ CREATE TABLE `sensitive_words` (
 -- ----------------------------
 DROP TABLE IF EXISTS `topic`;
 CREATE TABLE `topic` (
-  `topic_id` int NOT NULL,
+  `topic_id` int NOT NULL AUTO_INCREMENT,
   `topic_name` varchar(50) DEFAULT NULL,
   `topic_time` datetime DEFAULT NULL,
+  `check_status` smallint DEFAULT NULL,
+  `report_count` int DEFAULT NULL,
+  `host_id` int DEFAULT NULL,
+  `logo_path` varchar(1024) DEFAULT NULL,
+  `topic_intro` varchar(140) DEFAULT NULL,
   PRIMARY KEY (`topic_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for topic_blog
@@ -100,16 +135,40 @@ CREATE TABLE `topic_blog` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
+-- Table structure for topic_heat
+-- ----------------------------
+DROP TABLE IF EXISTS `topic_heat`;
+CREATE TABLE `topic_heat` (
+  `topic_id` int NOT NULL,
+  `heat` int DEFAULT NULL,
+  PRIMARY KEY (`topic_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
 -- Table structure for user
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `user_id` int NOT NULL,
+  `user_id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(15) NOT NULL,
-  `password` varchar(15) NOT NULL,
-  `user_type` int NOT NULL,
+  `password` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `user_type` smallint NOT NULL,
+  `is_ban` smallint DEFAULT NULL,
+  `is_forbidden` smallint DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for user_ban
+-- ----------------------------
+DROP TABLE IF EXISTS `user_ban`;
+CREATE TABLE `user_ban` (
+  `user_id` int NOT NULL,
+  `ban_time` datetime DEFAULT NULL,
+  `forbidden_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  CONSTRAINT `FK_Reference_12` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -122,7 +181,7 @@ CREATE TABLE `user_count` (
   `fan_count` int DEFAULT NULL,
   `blog_count` int DEFAULT NULL,
   PRIMARY KEY (`user_id`),
-  CONSTRAINT `FK_Reference_8` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `FK_Reference_8` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -134,8 +193,8 @@ CREATE TABLE `user_follow` (
   `follow_id` int NOT NULL,
   PRIMARY KEY (`user_id`,`follow_id`),
   KEY `FK_Reference_3` (`follow_id`),
-  CONSTRAINT `FK_Reference_3` FOREIGN KEY (`follow_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `FK_Relationship_3` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `FK_Reference_3` FOREIGN KEY (`follow_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_Relationship_3` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -144,12 +203,25 @@ CREATE TABLE `user_follow` (
 DROP TABLE IF EXISTS `user_info`;
 CREATE TABLE `user_info` (
   `user_id` int NOT NULL,
-  `email` varchar(20) NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `sex` smallint NOT NULL,
   `address` varchar(50) DEFAULT NULL,
   `credits` int DEFAULT NULL,
   `introduction` varchar(50) DEFAULT NULL,
   `avatar_path` varchar(1024) DEFAULT NULL,
+  `nickname` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
-  CONSTRAINT `FK_Relationship_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `FK_Relationship_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `user_role`;
+CREATE TABLE `user_role` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) NOT NULL,
+  `role_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `User_id` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
