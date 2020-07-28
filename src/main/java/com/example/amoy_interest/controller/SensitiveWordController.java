@@ -9,6 +9,8 @@ import com.example.amoy_interest.service.SensitiveWordService;
 import com.example.amoy_interest.utils.CommonPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ public class SensitiveWordController {
     @Autowired
     private SensitiveWordService sensitiveWordService;
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "以分页的方式获取敏感词列表")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Msg<CommonPage<SensitiveWord>> GetSensitiveWords(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
@@ -37,7 +39,7 @@ public class SensitiveWordController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(sws));
     }
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "以分页的方式搜索敏感词列表")
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public Msg<CommonPage<SensitiveWord>> GetSensitiveWords(@RequestParam(required = true)
@@ -49,7 +51,7 @@ public class SensitiveWordController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(sensitiveWordService.findSensitiveWordsPageByKeyword(keyword, pageNum, pageSize)));
     }
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "添加敏感词")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Msg AddSensitiveWord(
@@ -60,8 +62,7 @@ public class SensitiveWordController {
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 
-    //有bug，不能修改主键？
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "编辑敏感词")
     @RequestMapping(value = "", method = RequestMethod.PUT)
     public Msg PutSensitiveWord(@NotNull(message = "旧敏感词不能为空")
@@ -74,7 +75,7 @@ public class SensitiveWordController {
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "删除敏感词")
     @RequestMapping(value = "", method = RequestMethod.DELETE)
     public Msg DeleteSensitiveWord(@NotNull(message = "敏感词不能为空")

@@ -92,7 +92,7 @@ public class JwtUtil {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             // 附带username信息
             return JWT.create()
-                    .withClaim("user_id",user_id)
+                    .withClaim("user_id",user_id.toString())
                     .withClaim("username", username)
                     .withClaim("currentTimeMillis", currentTimeMillis)
                     .withExpiresAt(date)

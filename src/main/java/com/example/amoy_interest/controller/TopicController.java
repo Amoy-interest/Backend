@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class TopicController {
     @Autowired
     private BlogService blogService;
 
+    @RequiresAuthentication
     @ApiOperation(value = "查看话题基本内容")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Msg<TopicDTO> GetTopicAll(@NotNull(message = "话题名不能为空")
@@ -41,6 +43,7 @@ public class TopicController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.getTopicDTOByName(topic_name));
     }
 
+    @RequiresAuthentication
     @ApiOperation(value = "按照分页形式查看话题的博文")
     @RequestMapping(value = "/blogs", method = RequestMethod.GET)
     public Msg<CommonPage<BlogDTO>> GetBlogs(@NotNull(message = "话题名不能为空")
@@ -54,13 +57,14 @@ public class TopicController {
         return new Msg<CommonPage<BlogDTO>>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getListByTopic_id(topic_id, pageNum, pageSize)));
     }
 
-
+    @RequiresAuthentication
     @ApiOperation(value = "编辑话题简介")
     @PutMapping(value = "/intro")
     public Msg<TopicDTO> ModifyTopicIntro(@RequestBody @Valid TopicIntroDTO topicIntroDTO) {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,topicService.modifyTopicIntro(topicIntroDTO));
     }
 
+    @RequiresAuthentication
     @ApiOperation(value = "新增话题")
     @PostMapping(value = "")
     public Msg AddTopic(@NotNull(message = "话题名不能为空")
@@ -70,6 +74,7 @@ public class TopicController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 
+    @RequiresAuthentication
     @ApiOperation(value = "编辑话题logo")
     @PutMapping(value = "/logo")
     public Msg<TopicDTO> ModifyTopicLogo(@RequestBody @Valid TopicLogoDTO topicLogoDTO) {
@@ -83,6 +88,7 @@ public class TopicController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(topicService.getHotList(pageNum, pageSize)));
     }
 
+    @RequiresAuthentication
     @ApiOperation(value = "举报话题")
     @PostMapping(value = "/report")
     public Msg ReportTopic(@NotNull(message = "话题名不能为空")

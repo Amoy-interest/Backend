@@ -12,6 +12,8 @@ import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.service.UserService;
 import com.example.amoy_interest.utils.CommonPage;
 import io.swagger.annotations.*;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,16 +42,16 @@ public class AdminController {
     @Autowired
     TopicService topicService;
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "分页获取被举报的blog")
     @GetMapping(value = "/blogs/reported")
     public Msg<CommonPage<BlogDTO>> GetReportedBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                      @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                                      @RequestParam(required = false, defaultValue = "1") Integer orderType) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getReportedBlogsPage(pageNum, pageSize,orderType)));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getReportedBlogsPage(pageNum, pageSize, orderType)));
     }
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "分页搜索被举报的blog")
     @GetMapping(value = "/blogs/reported/search")
     public Msg<CommonPage<BlogDTO>> SearchReportedBlogs(@RequestParam(required = true)
@@ -59,11 +61,11 @@ public class AdminController {
                                                         @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                         @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                                         @RequestParam(required = false, defaultValue = "1") Integer orderType) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.searchReportedBlogsPage(keyword, pageNum, pageSize,orderType)));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.searchReportedBlogsPage(keyword, pageNum, pageSize, orderType)));
     }
 
     //一次审核一堆还是一次审核一个blog？效率？
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "审核blog")
     @PutMapping(value = "/blogs/reported")
     public Msg CheckReportedBlog(@RequestBody @Valid BlogCheckDTO blogCheckDTO) {
@@ -71,16 +73,16 @@ public class AdminController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.CHECK_BLOG_SUCCESS_MSG);
     }
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "分页获取被举报的话题")
     @GetMapping(value = "/topics/reported")
     public Msg<CommonPage<TopicReportDTO>> GetReportedTopics(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                              @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                                              @RequestParam(required = false, defaultValue = "1") Integer orderType) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(topicService.getReportedTopicsPage(pageNum, pageSize,orderType)));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(topicService.getReportedTopicsPage(pageNum, pageSize, orderType)));
     }
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "分页搜索被举报的话题")
     @GetMapping(value = "/topics/reported/search")
     public Msg<CommonPage<TopicReportDTO>> SearchReportedTopics(@RequestParam(required = true)
@@ -90,10 +92,10 @@ public class AdminController {
                                                                 @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                                 @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                                                 @RequestParam(required = false, defaultValue = "1") Integer orderType) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(topicService.searchReportedTopicsPage(keyword, pageNum, pageSize,orderType)));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(topicService.searchReportedTopicsPage(keyword, pageNum, pageSize, orderType)));
     }
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "审核话题")
     @PutMapping(value = "/topics/reported")
     public Msg CheckReportedTopic(@RequestBody @Valid TopicCheckDTO topicCheckDTO) {
@@ -101,17 +103,17 @@ public class AdminController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "分页获取被举报用户", notes = "获取被举报用户")
     @RequestMapping(value = "/users/reported", method = RequestMethod.GET)
     public Msg<CommonPage<UserReportDTO>> GetReportedUser(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                           @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                                           @RequestParam(required = false, defaultValue = "1") Integer orderType) {
 //        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, userService.getReportedUsers());
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.getReportedUsersPage(pageNum, pageSize,orderType)));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.getReportedUsersPage(pageNum, pageSize, orderType)));
     }
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "分页搜索被举报用户", notes = "搜索被举报用户")
     @RequestMapping(value = "/users/reported/search", method = RequestMethod.GET)
     public Msg<CommonPage<UserReportDTO>> SearchReportedUser(@RequestParam(required = true)
@@ -121,10 +123,10 @@ public class AdminController {
                                                              @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                              @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                                              @RequestParam(required = false, defaultValue = "1") Integer orderType) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.searchReportedUsersPage(keyword, pageNum, pageSize,orderType)));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.searchReportedUsersPage(keyword, pageNum, pageSize, orderType)));
     }
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "用户禁言", notes = "对用户禁言")
     @RequestMapping(value = "/users/ban", method = RequestMethod.PUT)
     public Msg Ban(@RequestBody @Valid UserCheckDTO userCheckDTO) {
@@ -132,16 +134,17 @@ public class AdminController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "用户解禁", notes = "对用户解除禁言")
     @RequestMapping(value = "/users/unban", method = RequestMethod.PUT)
-    public Msg Unban(@RequestBody @NotNull(message = "用户id不能为空") @Min(value = 1, message = "用户id不能小于1") Integer
-                             user_id) {
+    public Msg Unban(@RequestBody
+                     @NotNull(message = "用户id不能为空")
+                     @Min(value = 1, message = "用户id不能小于1") Integer user_id) {
         userService.unban(user_id);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "用户封号", notes = "对用户封号")
     @RequestMapping(value = "/users/forbid", method = RequestMethod.PUT)
     public Msg Forbid(@RequestBody @Valid UserCheckDTO userCheckDTO) {
@@ -149,11 +152,12 @@ public class AdminController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 
-    @UserLoginToken
+    @RequiresRoles(logical = Logical.AND,value = {"admin"})
     @ApiOperation(value = "用户解封", notes = "对用户解除封号")
     @RequestMapping(value = "/users/permit", method = RequestMethod.PUT)
-    public Msg Permit(@RequestBody @NotNull(message = "用户id不能为空") @Min(value = 1, message = "用户id不能小于1") Integer
-                              user_id) {
+    public Msg Permit(@RequestBody
+                      @NotNull(message = "用户id不能为空")
+                      @Min(value = 1, message = "用户id不能小于1") Integer user_id) {
         userService.permit(user_id);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }

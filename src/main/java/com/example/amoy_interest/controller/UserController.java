@@ -5,6 +5,7 @@ import com.example.amoy_interest.annotation.UserLoginToken;
 import com.example.amoy_interest.constant.Constant;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.UserAuth;
+import com.example.amoy_interest.exception.CustomException;
 import com.example.amoy_interest.exception.CustomUnauthorizedException;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
@@ -13,6 +14,7 @@ import com.example.amoy_interest.service.UserService;
 import com.example.amoy_interest.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -51,7 +53,6 @@ public class UserController {
         }
         // 密码进行AES解密
         String key = AesCipherUtil.deCrypto(userAuth.getPassword());
-        System.out.println(key);
         // 因为密码加密是以帐号+密码的形式进行加密的，所以解密后的对比是帐号+密码
         if (key.equals(data.getUsername() + data.getPassword())) {
             // 清除可能存在的Shiro权限信息缓存
@@ -91,11 +92,17 @@ public class UserController {
     }
 
 
-    //登出后台不需要做什么，直接前台把token删掉就好了
+    @RequiresAuthentication
     @ApiOperation(value = "登出", notes = "登出")
     @GetMapping(value = "/logout")
     public Msg Logout() {
-        return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.LOGOUT_SUCCESS_MSG);
+        String username = userUtil.getUsername();
+        if (JedisUtil.exists(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username)) {
+            if (JedisUtil.delKey(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username) > 0) {
+                return new Msg(HttpStatus.OK.value(), "登出成功(Logout Success)", null);
+            }
+        }
+        throw new CustomException("登出失败，Username不存在(Logout Failed. Username does not exist.)");
     }
 
     @ApiOperation(value = "注册", notes = "注册")
@@ -142,7 +149,7 @@ public class UserController {
 //        return new Msg<UserDTO>(MsgCode.SUCCESS, MsgUtil.REGISTER_SUCCESS_MSG, userDTO);
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "关注用户", notes = "关注")
     @PostMapping(value = "/follow")
     public Msg Follow(@NotNull(message = "关注id不能为空")
@@ -153,7 +160,7 @@ public class UserController {
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "取关用户", notes = "取关")
     @PostMapping(value = "/unfollow")
     public Msg UnFollow(@NotNull(message = "取关id不能为空")
@@ -165,7 +172,7 @@ public class UserController {
     }
 
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "分页获取关注列表")
     @GetMapping(value = "/follow")
     public Msg<CommonPage<UserInfoDTO>> GetFollow(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
@@ -174,7 +181,7 @@ public class UserController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.getUserFollowPage(userId, pageNum, pageSize)));
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "分页获取粉丝列表")
     @GetMapping(value = "/fans")
     public Msg<CommonPage<UserInfoDTO>> GetFan(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
@@ -183,10 +190,17 @@ public class UserController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.getUserFanPage(userId, pageNum, pageSize)));
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "获取用户信息")
     @GetMapping(value = "")
     public Msg<UserInfoDTO> GetUserInfo(@RequestParam(required = true) Integer user_id) {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, userService.getUserInfo(userUtil.getUserId(), user_id));
+    }
+
+    @ApiOperation(value = "根据账号密码计算出加密的密码（手动存入数据库）")
+    @GetMapping(value = "/cal")
+    public Msg<String> CalculatePassword(@RequestParam(required = true) String username,
+                                         @RequestParam(required = true) String password) {
+        return new Msg(HttpStatus.OK.value(),"计算成功",AesCipherUtil.enCrypto(username + password));
     }
 }

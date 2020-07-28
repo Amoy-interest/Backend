@@ -14,6 +14,7 @@ import com.example.amoy_interest.msgutils.MsgUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +29,7 @@ import static com.example.amoy_interest.constant.StsSecurityConstants.*;
 @RequestMapping("/aliyun/sts")
 public class AliyunStsController {
 
+    @RequiresAuthentication
     @GetMapping("/oss/tokens")
     @ApiOperation(value = "获取OssToken")
     public Msg<OssTokenDTO> getOssToken() {

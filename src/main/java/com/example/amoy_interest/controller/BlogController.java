@@ -18,6 +18,7 @@ import com.example.amoy_interest.utils.CommonPage;
 import com.example.amoy_interest.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class BlogController {
     @Autowired
     private UserUtil userUtil;
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "写博文")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Msg<BlogDTO> AddBlog(@RequestBody @Valid BlogAddDTO blogAddDTO) {
@@ -58,7 +59,7 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.ADD_BLOG_SUCCESS_MSG, blogService.addBlog(blogAddDTO));
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "获取博文基本内容(不包括评论)")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Msg<BlogDTO> GetBlog(@NotNull(message = "博文id不能为空")
@@ -68,7 +69,7 @@ public class BlogController {
     }
 
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "编辑博文")
     @RequestMapping(value = "", method = RequestMethod.PUT)
     public Msg<BlogDTO> PutBlog(@RequestBody @Valid BlogPutDTO blogPutDTO) {
@@ -80,7 +81,7 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.PUT_BLOG_SUCCESS_MSG, blogService.updateBlog(blogPutDTO));
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "转发")
     @PostMapping(value = "/forward")
     public Msg<BlogDTO> ForwardBlog(@RequestBody @Valid BlogForwardDTO blogForwardDTO) {
@@ -92,7 +93,7 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, blogService.forwardBlog(blogForwardDTO));
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "删除博文")
     @RequestMapping(value = "", method = RequestMethod.DELETE)
     public Msg DeleteBlog(@NotNull(message = "博文id不能为空")
@@ -102,7 +103,7 @@ public class BlogController {
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.DELETE_BLOG_SUCCESS_MSG);
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "进行评论")
     @RequestMapping(value = "/comments", method = RequestMethod.POST)
     public Msg<BlogCommentMultiLevelDTO> Comment(@RequestBody @Valid CommentPostDTO commentPostDTO) {
@@ -110,7 +111,7 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.COMMENT_SUCCESS_MSG, blogService.addBlogComment(commentPostDTO));
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "删除评论")
     @DeleteMapping(value = "/comments")
     public Msg DeleteComment(@NotNull(message = "评论id不能为空")
@@ -120,7 +121,7 @@ public class BlogController {
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.DELETE_COMMENT_SUCCESS_MSG);
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "以分页的形式获取一级评论")
     @GetMapping(value = "/comments/level1")
     public Msg<CommonPage<BlogCommentLevel1DTO>> GetLevel1Comments(@NotNull(message = "博文id不能为空")
@@ -131,7 +132,7 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getLevel1CommentPage(blog_id, pageNum, pageSize)));
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "以分页的形式获取多级评论")
     @GetMapping(value = "/comments/multilevel")
     public Msg<CommonPage<BlogCommentMultiLevelDTO>> GetMultiComments(@NotNull(message = "根评论id不能为空")
@@ -143,7 +144,7 @@ public class BlogController {
     }
 
     //不支持修改评论
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "点赞")
     @RequestMapping(value = "/vote", method = RequestMethod.POST)
     public Msg Vote(@RequestBody @Valid VoteDTO voteDTO) {
@@ -157,7 +158,7 @@ public class BlogController {
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.VOTE_SUCCESS_MSG);
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "取消点赞")
     @DeleteMapping(value = "/vote")
     public Msg CancelVote(@RequestBody @Valid VoteDTO voteDTO) { //用body还是在url上？
@@ -171,22 +172,8 @@ public class BlogController {
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.CANCEL_VOTE_SUCCESS_MSG);
     }
 
-//    //删除该api?
-//    @UserLoginToken
-//    @ApiOperation(value = "搜索全部内容(应该不会用到这个api)")
-//    @RequestMapping(value = "/searchAll", method = RequestMethod.GET)
-//    public Msg<List<BlogDTO>> SearchAll(String keyword) {
-//        List<BlogDTO> blogDTOS = new ArrayList<>();
-//        List<Blog> blogs = blogService.getAllBlogs();
-//        for (Blog blog : blogs) {
-//            if (blog.getBlog_text().contains(keyword)) {
-//                blogDTOS.add(blogService.getSimpleBlogDetail(blog.getBlog_id()));
-//            }
-//        }
-//        return new Msg(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, blogDTOS);
-//    }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "搜索以分页的形式展示")
     @GetMapping(value = "/search")//Msg<CommonPage<BlogDTO>
     public Msg<CommonPage<BlogDTO>> Search(@RequestParam(required = true)
@@ -198,7 +185,7 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, CommonPage.restPage(blogService.getSearchListByBlog_text(keyword, pageNum, pageSize)));
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "分页获取推荐blog（未实现热度,现在等于未登录前的blog）")
     @GetMapping(value = "/recommend")
     public Msg<CommonPage<BlogDTO>> GetRecommendBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
@@ -207,7 +194,7 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getAllBlogPageOrderByTime(pageNum, pageSize)));
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "分页获取关注blog")
     @GetMapping(value = "/follow")
     public Msg<CommonPage<BlogDTO>> GetFollowBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
@@ -216,11 +203,10 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getFollowBlogPageByUser_idOrderByTime(user_id, pageNum, pageSize)));
     }
 
-    @UserLoginToken
+    @RequiresAuthentication
     @ApiOperation(value = "分页获取某人(可以是自己也可以是他人)blog")
     @GetMapping(value = "/users")
-    public Msg<CommonPage<BlogDTO>> GetUserBlogs(@RequestHeader(value = "token") String token,
-                                                 @RequestParam(required = false) Integer user_id,
+    public Msg<CommonPage<BlogDTO>> GetUserBlogs(@RequestParam(required = false) Integer user_id,
                                                  @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                  @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                                  @RequestParam(required = false, defaultValue = "0") Integer orderType) {
@@ -234,6 +220,7 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getAllBlogPageOrderByTime(pageNum, pageSize)));
     }
 
+    @RequiresAuthentication
     @ApiOperation(value = "举报博文")
     @PostMapping(value = "/report")
     public Msg ReportBlog(@NotNull(message = "博文id不能为空")
