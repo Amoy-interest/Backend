@@ -40,7 +40,8 @@ public class SensitiveWordController {
     @UserLoginToken
     @ApiOperation(value = "以分页的方式搜索敏感词列表")
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public Msg<CommonPage<SensitiveWord>> GetSensitiveWords(@NotNull(message = "关键词不能为空")
+    public Msg<CommonPage<SensitiveWord>> GetSensitiveWords(@RequestParam(required = true)
+                                                            @NotNull(message = "关键词不能为空")
                                                             @NotEmpty(message = "关键词不能为空字符串")
                                                             @Length(max = 40, message = "关键词不能大于40位") String keyword,
                                                             @RequestParam(required = false, defaultValue = "0") Integer pageNum,
@@ -51,7 +52,8 @@ public class SensitiveWordController {
     @UserLoginToken
     @ApiOperation(value = "添加敏感词")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Msg AddSensitiveWord(@NotNull(message = "敏感词不能为空")
+    public Msg AddSensitiveWord(
+                                @NotNull(message = "敏感词不能为空")
                                 @NotEmpty(message = "敏感词不能为空字符串")
                                 @Length(max = 40, message = "敏感词不能大于40位") String keyword) {
         sensitiveWordService.addSensitiveWord(new SensitiveWord(keyword));

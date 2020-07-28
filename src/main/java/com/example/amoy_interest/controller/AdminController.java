@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.example.amoy_interest.constant.SecurityConstants.EXPIRATION_TIME;
-
 @RequestMapping("/admins")
 @Api(tags = "管理员模块")
 @RestController

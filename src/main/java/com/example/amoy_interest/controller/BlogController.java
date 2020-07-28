@@ -15,6 +15,7 @@ import com.example.amoy_interest.service.UserService;
 import com.example.amoy_interest.utils.CommonPage;
 //import com.github.pagehelper.Page;
 //import com.github.pagehelper.PageInfo;
+import com.example.amoy_interest.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.hibernate.validator.constraints.Length;
@@ -37,20 +38,23 @@ public class BlogController {
     private BlogService blogService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserUtil userUtil;
 
     @UserLoginToken
     @ApiOperation(value = "写博文")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Msg<BlogDTO> AddBlog(@RequestBody @Valid BlogAddDTO blogAddDTO, @RequestHeader(value = "token") String token) {
-        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
-        UserAuth userAuth = userService.findUserAuthById(user_id);
-        if (userAuth == null) {
-            return new Msg<>(MsgCode.ERROR, MsgUtil.USER_NOT_EXIST_MSG);
-        }
-        if (userAuth.getIs_ban() == 1) {
+    public Msg<BlogDTO> AddBlog(@RequestBody @Valid BlogAddDTO blogAddDTO) {
+//        Integer user_id = userUtil.getUserId();
+//        UserAuth userAuth = userService.findUserAuthById(user_id);
+        UserAuth userAuth = userUtil.getUser();//已经做了判断是否为空的处理
+//        if (userAuth == null) {
+//            return new Msg<>(MsgCode.ERROR, MsgUtil.USER_NOT_EXIST_MSG);
+//        }
+        if (userAuth.getIs_ban() == 1) {//应该先去判断封号时间是否结束
             return new Msg<>(MsgCode.ERROR, MsgUtil.USER_BAN_MSG);
         }
-        blogAddDTO.setUser_id(user_id);
+        blogAddDTO.setUser_id(userAuth.getUser_id());
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.ADD_BLOG_SUCCESS_MSG, blogService.addBlog(blogAddDTO));
     }
 
@@ -58,7 +62,8 @@ public class BlogController {
     @ApiOperation(value = "获取博文基本内容(不包括评论)")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Msg<BlogDTO> GetBlog(@NotNull(message = "博文id不能为空")
-                                @Min(value = 1, message = "id不能小于1") Integer blog_id) {
+                                @Min(value = 1, message = "id不能小于1")
+                                @RequestParam(required = true) Integer blog_id) {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, blogService.getAllBlogDetail(blog_id));
     }
 
@@ -66,15 +71,10 @@ public class BlogController {
     @UserLoginToken
     @ApiOperation(value = "编辑博文")
     @RequestMapping(value = "", method = RequestMethod.PUT)
-    public Msg<BlogDTO> PutBlog(@RequestHeader(value = "token") String token, @RequestBody @Valid BlogPutDTO blogPutDTO) {
+    public Msg<BlogDTO> PutBlog(@RequestBody @Valid BlogPutDTO blogPutDTO) {
         blogPutDTO.setImages(null);
-        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
-        UserAuth userAuth = userService.findUserAuthById(user_id);
-        if (userAuth == null) {
-            return new Msg<>(MsgCode.ERROR, MsgUtil.USER_NOT_EXIST_MSG);
-        } else if (userAuth.getUser_id() != user_id) {
-            return new Msg<>(MsgCode.ERROR, MsgUtil.NO_RIGHT_MSG);
-        } else if (userAuth.getIs_ban() == 1) {
+        UserAuth userAuth = userUtil.getUser();
+        if (userAuth.getIs_ban() == 1) {
             return new Msg<>(MsgCode.ERROR, MsgUtil.USER_BAN_MSG);
         }
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.PUT_BLOG_SUCCESS_MSG, blogService.updateBlog(blogPutDTO));
@@ -83,16 +83,12 @@ public class BlogController {
     @UserLoginToken
     @ApiOperation(value = "转发")
     @PostMapping(value = "/forward")
-    public Msg<BlogDTO> ForwardBlog(@RequestBody @Valid BlogForwardDTO blogForwardDTO, @RequestHeader(value = "token") String token) {
-        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
-        UserAuth userAuth = userService.findUserAuthById(user_id);
-        if (userAuth == null) {
-            return new Msg<>(MsgCode.ERROR, MsgUtil.USER_NOT_EXIST_MSG);
-        }
+    public Msg<BlogDTO> ForwardBlog(@RequestBody @Valid BlogForwardDTO blogForwardDTO) {
+        UserAuth userAuth = userUtil.getUser();
         if (userAuth.getIs_ban() == 1) {
             return new Msg<>(MsgCode.ERROR, MsgUtil.USER_BAN_MSG);
         }
-        blogForwardDTO.setUser_id(user_id);
+        blogForwardDTO.setUser_id(userAuth.getUser_id());
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, blogService.forwardBlog(blogForwardDTO));
     }
 
@@ -109,8 +105,8 @@ public class BlogController {
     @UserLoginToken
     @ApiOperation(value = "进行评论")
     @RequestMapping(value = "/comments", method = RequestMethod.POST)
-    public Msg<BlogCommentMultiLevelDTO> Comment(@RequestHeader(value = "token") String token, @RequestBody @Valid CommentPostDTO commentPostDTO) {
-        commentPostDTO.setUser_id(JWT.decode(token).getClaim("user_id").asInt());
+    public Msg<BlogCommentMultiLevelDTO> Comment(@RequestBody @Valid CommentPostDTO commentPostDTO) {
+        commentPostDTO.setUser_id(userUtil.getUserId());
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.COMMENT_SUCCESS_MSG, blogService.addBlogComment(commentPostDTO));
     }
 
@@ -128,7 +124,8 @@ public class BlogController {
     @ApiOperation(value = "以分页的形式获取一级评论")
     @GetMapping(value = "/comments/level1")
     public Msg<CommonPage<BlogCommentLevel1DTO>> GetLevel1Comments(@NotNull(message = "博文id不能为空")
-                                                                   @Min(value = 1, message = "id不能小于1") Integer blog_id,
+                                                                   @Min(value = 1, message = "id不能小于1")
+                                                                   @RequestParam(required = true) Integer blog_id,
                                                                    @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                                    @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getLevel1CommentPage(blog_id, pageNum, pageSize)));
@@ -138,7 +135,8 @@ public class BlogController {
     @ApiOperation(value = "以分页的形式获取多级评论")
     @GetMapping(value = "/comments/multilevel")
     public Msg<CommonPage<BlogCommentMultiLevelDTO>> GetMultiComments(@NotNull(message = "根评论id不能为空")
-                                                                      @Min(value = 1, message = "根评论id不能小于1") Integer root_comment_id,
+                                                                      @Min(value = 1, message = "根评论id不能小于1")
+                                                                      @RequestParam(required = true) Integer root_comment_id,
                                                                       @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                                       @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getMultiLevelCommentPage(root_comment_id, pageNum, pageSize)));
@@ -203,20 +201,18 @@ public class BlogController {
     @UserLoginToken
     @ApiOperation(value = "分页获取推荐blog（未实现热度,现在等于未登录前的blog）")
     @GetMapping(value = "/recommend")
-    public Msg<CommonPage<BlogDTO>> GetRecommendBlogs(@RequestHeader(value = "token") String token,
-                                                      @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+    public Msg<CommonPage<BlogDTO>> GetRecommendBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                       @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
+        Integer user_id = userUtil.getUserId();
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getAllBlogPageOrderByTime(pageNum, pageSize)));
     }
 
     @UserLoginToken
     @ApiOperation(value = "分页获取关注blog")
     @GetMapping(value = "/follow")
-    public Msg<CommonPage<BlogDTO>> GetFollowBlogs(@RequestHeader(value = "token") String token,
-                                                   @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+    public Msg<CommonPage<BlogDTO>> GetFollowBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                    @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        Integer user_id = JWT.decode(token).getClaim("user_id").asInt();
+        Integer user_id = userUtil.getUserId();
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getFollowBlogPageByUser_idOrderByTime(user_id, pageNum, pageSize)));
     }
 
@@ -240,7 +236,8 @@ public class BlogController {
     @ApiOperation(value = "举报博文")
     @PostMapping(value = "/report")
     public Msg ReportBlog(@NotNull(message = "博文id不能为空")
-                          @Min(value = 1, message = "id不能小于1") Integer blog_id) {
+                          @Min(value = 1, message = "id不能小于1")
+                          @RequestParam(required = true) Integer blog_id) {
         blogService.reportBlogByBlog_id(blog_id);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }

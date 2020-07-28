@@ -4,21 +4,15 @@ import com.example.amoy_interest.dao.*;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.service.UserService;
-//import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.Transient;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import static com.example.amoy_interest.constant.SecurityConstants.EXPIRATION_TIME;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,6 +26,8 @@ public class UserServiceImpl implements UserService {
     private UserFollowDao userFollowDao;
     @Autowired
     private UserBanDao userBanDao;
+    @Autowired
+    private RoleDao roleDao;
     @Override
     public UserAuth findUserAuthById(Integer id) {
         return userAuthDao.findUserById(id);
@@ -55,6 +51,10 @@ public class UserServiceImpl implements UserService {
         UserCount userCount = new UserCount(user_id,0,0,0);
         userCountDao.insert(userCount);
         user.setUserAuth(userAuth);
+        UserRole userRole = new UserRole();
+        userRole.setRole_name("user");
+        userRole.setUsername(registerDTO.getUsername());
+        roleDao.insert(userRole);
         return new UserInfoDTO(user,false);
     }
 
