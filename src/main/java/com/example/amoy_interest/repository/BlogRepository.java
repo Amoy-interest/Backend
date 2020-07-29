@@ -50,8 +50,8 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
     Page<Blog> getBlogPageByUser_id(Integer user_id, Pageable pageable);
 
     //需要优化？
-    @Query(value = "SELECT * From blog b where b.user_id = ?1 and b.is_deleted = false or b.user_id in (SELECT follow_id from user_follow u where user_id = ?1)",
-            countQuery = "SELECT count(*) From blog b where b.user_id = ?1 and b.is_deleted = false or b.user_id in (SELECT follow_id from user_follow u where user_id = ?1)",
+    @Query(value = "SELECT * From blog b where b.is_deleted = false and (b.user_id = ?1 or b.user_id in (SELECT follow_id from user_follow u where user_id = ?1))",
+            countQuery = "SELECT count(*) From blog b where b.is_deleted = false and (b.user_id = ?1 or b.user_id in (SELECT follow_id from user_follow u where user_id = ?1))",
             nativeQuery = true)
     Page<Blog> getFollowBlogPageByUser_id(Integer user_id, Pageable pageable);
 

@@ -19,6 +19,7 @@ import java.util.List;
 @Setter
 @ApiModel(value = "BlogDto", description = "博文信息")
 public class BlogDTO {
+
     @ApiModelProperty(value = "发博文的用户id", required = true)
     private Integer user_id;
     @ApiModelProperty(value = "发此博文的用户的昵称",example = "mok")
@@ -37,6 +38,8 @@ public class BlogDTO {
     private BlogCountDTO blog_count;
     @ApiModelProperty(value = "用户头像")
     private String avatar_path;
+    @ApiModelProperty(value = "是否点赞过")
+    private boolean is_vote;
     //该方法需要删除
     public BlogDTO(Blog blog, List<BlogComment> blogComments, BlogCount blogCount, List<BlogImage> blogImages , Blog blogChild, List<BlogImage> blogChildImages) {
         if (blog.getUser() != null) this.setNickname(blog.getUser().getNickname());
@@ -92,6 +95,28 @@ public class BlogDTO {
         }
     }
 
+    public BlogDTO(Blog blog,boolean is_vote) {
+        User user = blog.getUser();
+        this.setUser_id(user.getUser_id());
+        this.setNickname(user.getNickname());
+        this.setAvatar_path(user.getAvatar_path());
+        this.setBlog_id(blog.getBlog_id());
+        this.setBlog_time(blog.getBlog_time());
+        this.setBlog_type(blog.getBlog_type());
+        List<String> imagesList = null;
+        if (blog.getBlogImages() != null) {
+            imagesList = new ArrayList<>();
+            for (BlogImage blogImage : blog.getBlogImages()) {
+                imagesList.add(blogImage.getBlog_image());
+            }
+        }
+        this.blog_content = new BlogContentDTO(blog.getBlog_text(),imagesList);
+        this.blog_count = new BlogCountDTO(blog.getBlogCount());
+        if (blog.getBlog_type() > 0) {
+            this.blog_child = new BlogChildDTO(blog.getReply());
+        }
+        this.is_vote = is_vote;
+    }
 //    public List<BlogDTO> convertToList(List<Blog> blogs) {
 //        List<BlogDTO> blogDTOList = new ArrayList<>();
 //        int i = 0;

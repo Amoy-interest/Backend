@@ -1,6 +1,5 @@
 package com.example.amoy_interest.controller;
 
-import com.example.amoy_interest.annotation.UserLoginToken;
 import com.example.amoy_interest.entity.SensitiveWord;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;

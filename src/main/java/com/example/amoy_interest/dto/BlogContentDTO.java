@@ -31,7 +31,7 @@ public class BlogContentDTO {
 
     public BlogContentDTO(Blog blog) {
         this.images = null;
-        if (blog.getBlogImages()!= null) {
+        if (blog.getBlogImages() != null) {
             this.images = new ArrayList<>();
             for (BlogImage blogImage : blog.getBlogImages()) {
                 images.add(blogImage.getBlog_image());

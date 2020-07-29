@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Table(name = "blog_image")
 public class BlogImage {
     @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int image_id;
     private Integer blog_id;
     private String blog_image;
