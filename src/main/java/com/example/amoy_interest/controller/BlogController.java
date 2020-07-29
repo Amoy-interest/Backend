@@ -1,7 +1,6 @@
 package com.example.amoy_interest.controller;
 
 import com.auth0.jwt.JWT;
-import com.example.amoy_interest.annotation.UserLoginToken;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.BlogComment;
@@ -11,7 +10,9 @@ import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
 import com.example.amoy_interest.service.BlogService;
+import com.example.amoy_interest.service.RedisService;
 import com.example.amoy_interest.service.UserService;
+import com.example.amoy_interest.service.VoteService;
 import com.example.amoy_interest.utils.CommonPage;
 //import com.github.pagehelper.Page;
 //import com.github.pagehelper.PageInfo;
@@ -41,6 +42,8 @@ public class BlogController {
     private UserService userService;
     @Autowired
     private UserUtil userUtil;
+    @Autowired
+    private RedisService redisService;
 
     @RequiresAuthentication
     @ApiOperation(value = "写博文")
@@ -150,8 +153,16 @@ public class BlogController {
     public Msg Vote(@RequestBody @Valid VoteDTO voteDTO) {
         Integer comment_id = voteDTO.getComment_id();
         Integer blog_id = voteDTO.getBlog_id();
+        Integer user_id = userUtil.getUserId();
         if (comment_id == 0) {
-            blogService.incrVoteCount(blog_id);
+//            blogService.incrVoteCount(blog_id);
+            Integer status = redisService.findStatusFromRedis(blog_id,user_id);
+            if(status == 1) {//已经赞过，什么都不做(现在没有去查数据库，可能会有问题，是否需要查数据库？)
+                return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.VOTE_SUCCESS_MSG);
+            }else {
+                redisService.saveVote2Redis(blog_id,user_id);
+                redisService.incrementVoteCount(blog_id);
+            }
         } else {
             blogService.incrCommentVoteCount(comment_id);
         }
@@ -164,8 +175,16 @@ public class BlogController {
     public Msg CancelVote(@RequestBody @Valid VoteDTO voteDTO) { //用body还是在url上？
         Integer comment_id = voteDTO.getComment_id();
         Integer blog_id = voteDTO.getBlog_id();
+        Integer user_id = userUtil.getUserId();
         if (comment_id == 0) {
-            blogService.decrVoteCount(blog_id);
+//            blogService.decrVoteCount(blog_id);
+            Integer status = redisService.findStatusFromRedis(blog_id,user_id);
+            if(status == 0) {//已经取消点赞过，什么都不做(现在没有去查数据库，可能会有问题，是否需要查数据库？)
+                return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.CANCEL_VOTE_SUCCESS_MSG);
+            }else {
+                redisService.cancelVoteFromRedis(blog_id,user_id);
+                redisService.decrementVoteCount(blog_id);
+            }
         } else {
             blogService.decrCommentVoteCount(comment_id);
         }
@@ -228,5 +247,13 @@ public class BlogController {
                           @RequestParam(required = true) Integer blog_id) {
         blogService.reportBlogByBlog_id(blog_id);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
+    }
+    @GetMapping(value = "/test")
+    public void test(Integer blog_id,Integer user_id){
+//        redisService.saveVote2Redis(blog_id,user_id);
+//        redisService.cancelVoteFromRedis(blog_id, user_id);
+//        redisService.incrementVoteCount(blog_id);
+//        redisService.findVoteFromRedis(blog_id,user_id);
+//        redisService.deleteVoteFromRedis(blog_id, user_id);
     }
 }

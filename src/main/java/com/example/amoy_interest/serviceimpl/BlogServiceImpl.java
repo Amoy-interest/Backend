@@ -5,6 +5,8 @@ import com.example.amoy_interest.dao.*;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.service.BlogService;
+import com.example.amoy_interest.service.RedisService;
+import com.example.amoy_interest.utils.UserUtil;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -19,6 +21,8 @@ import java.util.List;
 public class BlogServiceImpl implements BlogService {
 
     @Autowired
+    private UserUtil userUtil;
+    @Autowired
     private BlogDao blogDao;
     @Autowired
     private BlogCommentDao blogCommentDao;
@@ -28,6 +32,11 @@ public class BlogServiceImpl implements BlogService {
     private BlogImageDao blogImageDao;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private RedisService redisService;
+    @Autowired
+    private BlogVoteDao blogVoteDao;
+
 
     @Override
     @Transactional
@@ -55,7 +64,7 @@ public class BlogServiceImpl implements BlogService {
         blog.setBlogCount(blogCount);
         blog.setBlogImages(blogImageList);
         blog.setUser(userDao.getById(blogAddDTO.getUser_id()));
-        return new BlogDTO(blog);
+        return new BlogDTO(blog,false);
     }
     @Override
     @Transactional
@@ -83,7 +92,7 @@ public class BlogServiceImpl implements BlogService {
         blog.setBlogCount(blogCount);
         blog.setBlogImages(blogImageList);
         blog.setUser(userDao.getById(blogForwardDTO.getUser_id()));
-        return new BlogDTO(blog);
+        return new BlogDTO(blog,false);
     }
 
 
@@ -93,6 +102,9 @@ public class BlogServiceImpl implements BlogService {
         String text = blogPutDTO.getText();
         Blog blog = blogDao.findBlogByBlog_id(blog_id);
         blog.setBlog_text(text);
+
+        //判断有无点赞
+//        redisService.findStatusFromRedis(blog_id,)
         return new BlogDTO(blogDao.saveBlog(blog));
     }
 
@@ -369,7 +381,13 @@ public class BlogServiceImpl implements BlogService {
         Sort sort = Sort.by(Sort.Direction.DESC,"blog_time");
         Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Page<Blog> blogPage = blogDao.getAllBlogPage(pageable);
-        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
+//        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
+        //没有token，获取不了user_id
+        List<Blog> blogList = blogPage.getContent();
+        List<BlogDTO> blogDTOList = new ArrayList<>();
+        for(Blog blog:blogList) {
+            blogDTOList.add(new BlogDTO(blog));
+        }
         return new PageImpl<>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
     }
 
@@ -408,10 +426,30 @@ public class BlogServiceImpl implements BlogService {
 
 
 
+
     private List<BlogDTO> convertToBlogDTOList(List<Blog> blogList) {
         List<BlogDTO> blogDTOList = new ArrayList<>();
+        Integer user_id = userUtil.getUserId();
         for(Blog blog:blogList) {
-            blogDTOList.add(new BlogDTO(blog));
+            Integer blog_id = blog.getBlog_id();
+            Integer result = redisService.findStatusFromRedis(blog_id,user_id);
+            if(result == 1) {
+                blogDTOList.add(new BlogDTO(blog,true));
+            }else if(result == 0) {
+                blogDTOList.add(new BlogDTO(blog,false));
+            }else {//redis里没有数据,去数据库拿
+                BlogVote blogVote = blogVoteDao.getByBlogIdAndUserId(blog_id,user_id);
+                if(blogVote == null) {
+                    blogDTOList.add(new BlogDTO(blog,false));
+                }else {
+                    if(blogVote.getStatus() == 0) {
+                        blogDTOList.add(new BlogDTO(blog,false));
+                    }else {
+                        blogDTOList.add(new BlogDTO(blog,true));
+                    }
+                }
+            }
+//            blogDTOList.add(new BlogDTO(blog));
         }
         return blogDTOList;
     }
