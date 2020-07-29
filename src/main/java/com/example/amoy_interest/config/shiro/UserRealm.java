@@ -22,6 +22,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.Role;
 import java.util.List;
 
 /**
@@ -32,19 +33,19 @@ import java.util.List;
 @Service
 public class UserRealm extends AuthorizingRealm {
 
-    @Autowired
-    private UserAuthDao userAuthDao;
-    @Autowired
-    private RoleDao roleDao;
-    @Autowired
-    private PermissionDao permissionDao;
-
 //    @Autowired
-//    public UserRealm(UserMapper userMapper, RoleMapper roleMapper, PermissionMapper permissionMapper) {
-//        this.userMapper = userMapper;
-//        this.roleMapper = roleMapper;
-//        this.permissionMapper = permissionMapper;
-//    }
+    private final UserAuthDao userAuthDao;
+//    @Autowired
+    private final RoleDao roleDao;
+//    @Autowired
+    private final PermissionDao permissionDao;
+
+    @Autowired
+    public UserRealm(UserAuthDao userAuthDao, RoleDao roleDao,PermissionDao permissionDao) {
+        this.userAuthDao = userAuthDao;
+        this.roleDao = roleDao;
+        this.permissionDao = permissionDao;
+    }
 
     /**
      * 大坑，必须重写此方法，不然Shiro会报错

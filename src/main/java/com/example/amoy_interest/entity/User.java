@@ -53,9 +53,9 @@ public class User {
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id",referencedColumnName = "user_id")
     private UserAuth userAuth;
-    @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
-    private UserCount userCount;
+//    @OneToOne(fetch=FetchType.LAZY)
+//    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
+//    private UserCount userCount;
     //一般用分页，不再关联
 //    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 //    private List<Blog> blogs;

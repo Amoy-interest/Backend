@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-07-28 14:55:29
+Date: 2020-07-29 20:41:52
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,7 +32,6 @@ CREATE TABLE `blog` (
   PRIMARY KEY (`blog_id`),
   KEY `FK_Reference_4` (`user_id`),
   KEY `FK_Reference_13` (`reply_blog_id`),
-  CONSTRAINT `FK_Reference_13` FOREIGN KEY (`reply_blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE SET NULL ON UPDATE SET NULL,
   CONSTRAINT `FK_Reference_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -84,6 +83,24 @@ CREATE TABLE `blog_image` (
   KEY `FK_Reference_15` (`blog_id`),
   CONSTRAINT `FK_Reference_15` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for blog_vote
+-- ----------------------------
+DROP TABLE IF EXISTS `blog_vote`;
+CREATE TABLE `blog_vote` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `blog_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `blog_id` (`blog_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `blog_id` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `blog` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for role_permission
