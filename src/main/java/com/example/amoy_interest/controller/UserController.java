@@ -61,8 +61,8 @@ public class UserController {
             JedisUtil.setObject(Constant.PREFIX_SHIRO_REFRESH_TOKEN + data.getUsername(), currentTimeMillis, Integer.parseInt(refreshTokenExpireTime));
             // 从Header中Authorization返回AccessToken，时间戳为当前时间戳
             String token = JwtUtil.sign(userAuth.getUser_id(), data.getUsername(), currentTimeMillis);
-            httpServletResponse.setHeader("Authorization", token);
             httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
+            httpServletResponse.setHeader("Authorization", token);
             return new Msg(HttpStatus.OK.value(), "登录成功(Login Success.)", new UserInfoDTO(userAuth.getUser(),false));
         } else {
             throw new CustomUnauthorizedException("帐号或密码错误(Account or Password Error.)");

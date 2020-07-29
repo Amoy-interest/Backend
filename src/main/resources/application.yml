@@ -3,9 +3,9 @@ server:
     context-path: /
 spring:
   datasource:
-    url: jdbc:mysql://localhost/amoy_interest
+    url: jdbc:mysql://localhost/Amoy
     username: root
-    password: 459049053
+    password: rootybw
     driver-class-name: com.mysql.cj.jdbc.Driver
 #jackson:
     ##    serialization:
