@@ -386,7 +386,7 @@ public class BlogServiceImpl implements BlogService {
         List<Blog> blogList = blogPage.getContent();
         List<BlogDTO> blogDTOList = new ArrayList<>();
         for(Blog blog:blogList) {
-            blogDTOList.add(new BlogDTO(blog));
+            blogDTOList.add(new BlogDTO(blog,false));
         }
         return new PageImpl<>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
     }
