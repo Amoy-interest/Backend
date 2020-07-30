@@ -16,6 +16,8 @@ import java.util.List;
 public class TopicDTO {
 //    @ApiModelProperty(value = "该话题的所有博文", required = false)
 //    private List<BlogDTO> blogs;
+    @ApiModelProperty(value = "话题id")
+    private Integer topic_id;
     @ApiModelProperty(value = "话题的标题", required = true)
     private String name;
     @ApiModelProperty(value = "话题创建时间", required = true)
@@ -31,6 +33,7 @@ public class TopicDTO {
 
     public TopicDTO(Topic topic) {
 //        BlogDTO convert = null;
+        this.topic_id = topic.getTopic_id();
         this.name = topic.getTopic_name();
         this.time = topic.getTopic_time();
         this.host_id = topic.getHost_id();

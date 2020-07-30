@@ -12,6 +12,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Integer> {
     @Query(value = "from User where credits < 150")
     List<User> getReportedUsers();
+
     @Query(value = "SELECT * FROM user_info WHERE credits < 60",
             countQuery = "SELECT count(*) From user_info WHERE credits < 60",
             nativeQuery = true)
@@ -20,5 +21,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query(value = "SELECT * FROM user_info WHERE credits < 60 and nickname like %?1%",
             countQuery = "SELECT count(*) From user_info WHERE credits < 60 and nickname like %?1%",
             nativeQuery = true)
-    Page<User> searchReportedUsersPage(String keyword,Pageable pageable);
+    Page<User> searchReportedUsersPage(String keyword, Pageable pageable);
+
+    @Query(value = "SELECT * FROM user_info WHERE nickname like %?1%",
+            countQuery = "SELECT count(*) From user_info WHERE nickname like %?1%",
+            nativeQuery = true)
+    Page<User> searchUsersPage(String keyword, Pageable pageable);
 }

@@ -20,4 +20,9 @@ public class UserCountDaoImpl implements UserCountDao {
     public void update(UserCount userCount) {
         userCountRepository.save(userCount);
     }
+
+    @Override
+    public UserCount getByUserID(Integer user_id) {
+        return userCountRepository.getOne(user_id);
+    }
 }

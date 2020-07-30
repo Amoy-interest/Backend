@@ -112,4 +112,13 @@ public class RedisServiceImpl implements RedisService {
             return (Integer) obj;
         }
     }
+
+    @Override
+    public Integer getCountFromRedis(Integer blog_id) {
+        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_BLOG_VOTE_COUNT,blog_id);
+        if(obj == null) {
+            return 0;
+        }else
+            return (Integer)obj;
+    }
 }

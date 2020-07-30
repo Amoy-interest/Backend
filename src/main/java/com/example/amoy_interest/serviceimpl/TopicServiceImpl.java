@@ -32,8 +32,14 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public Integer getTopic_idByName(String topic_name) {
-        return topicDao.getTopicByName(topic_name).getTopic_id();
+        Topic topic = topicDao.getTopicByName(topic_name);
+        if(topic == null)
+            return null;
+        else
+            return topic.getTopic_id();
     }
+
+
 
     @Override
     public TopicDTO getTopicDTOByName(String topic_name) {
@@ -46,6 +52,7 @@ public class TopicServiceImpl implements TopicService {
         if(topicDao.getTopicByName(topic_name) == null) {
             Topic topic = new Topic(topic_name,new Date(),0,0,null,null,null);
             topic = topicDao.insert(topic);
+            System.out.println(topic.getTopic_id());
             return new TopicDTO(topic);
         }
         return null;

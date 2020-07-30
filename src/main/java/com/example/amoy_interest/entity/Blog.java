@@ -13,10 +13,10 @@ import java.util.List;
 public class Blog {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int blog_id;
-    private int user_id;
-    private int topic_id;
-    private int blog_type;
+    private Integer blog_id;
+    private Integer user_id;
+    private Integer topic_id;
+    private Integer blog_type;
     private Date blog_time;
     private String blog_text;
     private boolean is_deleted;
@@ -26,6 +26,9 @@ public class Blog {
 
     public Blog(){}
 
+    public Blog(Integer blog_id) {
+        this.blog_id = blog_id;
+    }
     public Blog(int blog_id, int user_id, int topic_id, int blog_type, Date blog_time, String blog_text, boolean is_deleted, Integer check_status, Integer reply_blog_id) {
         this.blog_id = blog_id;
         this.user_id = user_id;
