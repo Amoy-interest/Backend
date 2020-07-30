@@ -166,6 +166,7 @@ public class BlogController {
         } else {
             blogService.incrCommentVoteCount(comment_id);
         }
+        System.out.println("vote");
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.VOTE_SUCCESS_MSG);
     }
 
