@@ -64,4 +64,10 @@ public interface RedisService {
      */
     List<BlogVoteCountDTO> getVoteCountFromRedis();
 
+    /**
+     * 获取Redis中存储的点赞数量
+     * @param blog_id
+     * @return
+     */
+    Integer getCountFromRedis(Integer blog_id);
 }

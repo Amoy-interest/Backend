@@ -13,4 +13,5 @@ public interface UserDao {
     List<User> getReportedUsers();
     Page<User> getReportedUsersPage(Pageable pageable);
     Page<User> searchReportedUsersPage(String keyword,Pageable pageable);
+    Page<User> searchUsersPage(String keyword,Pageable pageable);
 }
