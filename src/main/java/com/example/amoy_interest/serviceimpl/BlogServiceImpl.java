@@ -33,6 +33,8 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     private UserDao userDao;
     @Autowired
+    private TopicDao topicDao;
+    @Autowired
     private RedisService redisService;
     @Autowired
     private BlogVoteDao blogVoteDao;
@@ -79,8 +81,8 @@ public class BlogServiceImpl implements BlogService {
         blog.setBlog_text(blogForwardDTO.getText());
         blog.set_deleted(false);
         blog.setCheck_status(0);
-        blog.setTopic_id(blogForwardDTO.getTopic_id());
         Blog blogchild = blogDao.findBlogByBlog_id(blogForwardDTO.getReply_blog_id());
+        blog.setTopic_id(blogchild.getTopic_id());
         blog.setReply(blogchild);
         blog = blogDao.saveBlog(blog);
         //原博文转发数+1

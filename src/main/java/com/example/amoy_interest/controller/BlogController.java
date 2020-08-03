@@ -98,7 +98,7 @@ public class BlogController {
     @PostMapping(value = "/forward")
     public Msg<BlogDTO> ForwardBlog(@RequestBody @Valid BlogForwardDTO blogForwardDTO) {
         UserAuth userAuth = userUtil.getUser();
-        if (userAuth.getIs_ban() == 1) {
+        if (userAuth.getIs_ban() == 1 ) {
             return new Msg<>(MsgCode.ERROR, MsgUtil.USER_BAN_MSG);
         }
         blogForwardDTO.setUser_id(userAuth.getUser_id());

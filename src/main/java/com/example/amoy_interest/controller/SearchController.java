@@ -30,15 +30,16 @@ import javax.validation.constraints.NotNull;
 public class SearchController {
     @Autowired
     private UserService userService;
+
     @RequiresAuthentication
     @ApiOperation(value = "预搜索")
     @RequestMapping(value = "/pre", method = RequestMethod.GET)
     public Msg<CommonPage<UserDTO>> PreSearch(@RequestParam(required = true)
-                                      @NotNull(message = "关键词不能为空")
-                                      @NotEmpty(message = "关键词不能为空字符串")
-                                      @Length(max = 40, message = "关键词不能大于40位") String keyword,
-                                  @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                  @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+                                              @NotNull(message = "关键词不能为空")
+                                              @NotEmpty(message = "关键词不能为空字符串")
+                                              @Length(max = 40, message = "关键词不能大于40位") String keyword,
+                                              @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                              @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, CommonPage.restPage(userService.searchUsersPage(keyword, pageNum, pageSize)));
     }
 }
