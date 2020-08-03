@@ -164,12 +164,12 @@ public class UserServiceImpl implements UserService {
         Page<UserFollow> userFollowPage = userFollowDao.findFollowPageByUser_id(user_id, pageable);
         List<UserFollow> userFollowList = userFollowPage.getContent();
         List<UserInfoDTO> userInfoDTOList = new ArrayList<>();
-        if(my_user_id == user_id) {
+        if (my_user_id == user_id) {
             for (UserFollow userFollow : userFollowList) {
                 User user = userDao.getById(userFollow.getFollow_id());
                 userInfoDTOList.add(new UserInfoDTO(user, true));
             }
-        }else {
+        } else {
             for (UserFollow userFollow : userFollowList) {
                 Integer follow_id = userFollow.getFollow_id();
                 User follow = userDao.getById(follow_id);
@@ -186,7 +186,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Page<UserInfoDTO> getUserFanPage(Integer my_user_id,Integer user_id, Integer pageNum, Integer pageSize) {
+    public Page<UserInfoDTO> getUserFanPage(Integer my_user_id, Integer user_id, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<UserFollow> userFanPage = userFollowDao.findFollowPageByFollow_id(user_id, pageable);
         List<UserFollow> userFollowList = userFanPage.getContent();
@@ -252,7 +252,7 @@ public class UserServiceImpl implements UserService {
         else
             userInfoDTO = new UserInfoDTO(user, false);
         UserCountDTO userCountDTO = new UserCountDTO(userCountDao.getByUserID(user_id2));
-        return new UserDTO(userInfoDTO,userCountDTO);
+        return new UserDTO(userInfoDTO, userCountDTO);
     }
 
     @Override
@@ -261,11 +261,50 @@ public class UserServiceImpl implements UserService {
         Page<User> userPage = userDao.searchUsersPage(keyword, pageable);
         List<User> userList = userPage.getContent();
         List<UserDTO> userDTOList = new ArrayList<>();
-        for(User user:userList) {
-            UserInfoDTO userInfoDTO = new UserInfoDTO(user,false);
+        for (User user : userList) {
+            UserInfoDTO userInfoDTO = new UserInfoDTO(user, false);
             UserCountDTO userCountDTO = new UserCountDTO(userCountDao.getByUserID(user.getUser_id()));
-            userDTOList.add(new UserDTO(userInfoDTO,userCountDTO));
+            userDTOList.add(new UserDTO(userInfoDTO, userCountDTO));
         }
         return new PageImpl<>(userDTOList, userPage.getPageable(), userPage.getTotalElements());
+    }
+
+    @Override
+    public Page<UserBanResult> getUserBanPage(Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        return userBanDao.getUserBanPage(pageable, new Date());
+    }
+
+    @Override
+    public Page<UserForbiddenResult> getUserForbidPage(Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        return userBanDao.getUserForbidPage(pageable, new Date());
+    }
+
+    @Override
+    public Page<UserBanResult> searchUserBanPage(String keyword, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        return userBanDao.searchUserBanPage(keyword, pageable, new Date());
+    }
+
+    @Override
+    public Page<UserForbiddenResult> searchUserForbidPage(String keyword, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        return userBanDao.searchUserForbidPage(keyword, pageable, new Date());
+    }
+
+    @Override
+    @Transactional
+    public boolean modifyUser(UserModifyParam userModifyParam) {
+        User user = userDao.getById(userModifyParam.getUser_id());
+        if(user == null) {
+            return false;
+        }
+        user.setAddress(userModifyParam.getAddress());
+        user.setAvatar_path(userModifyParam.getAvatar());
+        user.setIntroduction(userModifyParam.getIntroduction());
+        user.setSex(userModifyParam.getSex());
+        userDao.update(user);
+        return true;
     }
 }

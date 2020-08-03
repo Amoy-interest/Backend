@@ -44,9 +44,9 @@ public class Blog {
     @JoinColumn(name="user_id",insertable = false, updatable = false)
     private User user;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="topic_id",insertable = false, updatable = false)
-//    private Topic topic;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="topic_id",insertable = false, updatable = false)
+    private Topic topic;
 
 //    @OneToMany(fetch=FetchType.LAZY)
 //    @JoinColumn(name = "blog_id",referencedColumnName = "blog_id")

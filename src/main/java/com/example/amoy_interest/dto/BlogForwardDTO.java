@@ -25,9 +25,9 @@ public class BlogForwardDTO {
     @Length(max = 140, message = "博文内容不能大于140位")
     @ApiModelProperty(value = "博文文字", required = true)
     private String text;
-    @Min(value = 0)
-    @ApiModelProperty(value = "所在话题的id(没有则设为0)",required = true)
-    private Integer topic_id;
+//    @Min(value = 0)
+//    @ApiModelProperty(value = "所在话题名(没有则设为0)",required = true)
+//    private Integer topic_id;
     @NotNull(message = "转发的博文id不能为空")
     @Min(value = 0,message = "转发的博文id不能小于0")
     @ApiModelProperty(value = "转发的博文id")

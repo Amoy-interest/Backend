@@ -12,6 +12,8 @@ import java.util.List;
 public interface UserService {
     User findUserById(Integer user_id);
 
+    boolean modifyUser(UserModifyParam userModifyParam);
+
     UserAuth findUserAuthById(Integer id);
 
     UserAuth findUserAuthByUsername(String username);
@@ -20,7 +22,7 @@ public interface UserService {
 
     UserInfoDTO getUserInfo(Integer user_id1, Integer user_id2);
 
-    UserDTO getUserDTO(Integer user_id1,Integer user_id2);
+    UserDTO getUserDTO(Integer user_id1, Integer user_id2);
 
     boolean follow(Integer user_id, Integer follow_id);
 
@@ -40,9 +42,19 @@ public interface UserService {
 
     Page<UserReportDTO> searchReportedUsersPage(String keyword, Integer pageNum, Integer pageSize, Integer orderType);
 
-    Page<UserDTO> searchUsersPage(String keyword,Integer pageNum,Integer pageSize);
+    Page<UserDTO> searchUsersPage(String keyword, Integer pageNum, Integer pageSize);
 
     Page<UserInfoDTO> getUserFollowPage(Integer my_user_id, Integer user_id, Integer pageNum, Integer pageSize);
 
     Page<UserInfoDTO> getUserFanPage(Integer my_user_id, Integer user_id, Integer pageNum, Integer pageSize);
+
+    Page<UserBanResult> getUserBanPage(Integer pageNum, Integer pageSize);
+
+    Page<UserForbiddenResult> getUserForbidPage(Integer pageNum, Integer pageSize);
+
+    Page<UserBanResult> searchUserBanPage(String keyword, Integer pageNum, Integer pageSize);
+
+    Page<UserForbiddenResult> searchUserForbidPage(String keyword, Integer pageNum, Integer pageSize);
+
+
 }

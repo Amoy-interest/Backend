@@ -38,6 +38,8 @@ public class BlogDTO {
     private BlogCountDTO blog_count;
     @ApiModelProperty(value = "用户头像")
     private String avatar_path;
+    @ApiModelProperty(value = "topic名")
+    private String topic_name;
     @ApiModelProperty(value = "是否点赞过")
     private boolean is_vote;
     //该方法需要删除
@@ -98,6 +100,8 @@ public class BlogDTO {
                 this.blog_child = new BlogChildDTO(blog.getReply());
             }
         }
+        Topic topic = blog.getTopic();
+        this.topic_name = topic == null? null:topic.getTopic_name();
     }
 
     public BlogDTO(Blog blog,boolean is_vote) {
@@ -125,6 +129,8 @@ public class BlogDTO {
                 this.blog_child = new BlogChildDTO(blog.getReply());
             }
         }
+        Topic topic = blog.getTopic();
+        this.topic_name = topic == null? null:topic.getTopic_name();
         this.is_vote = is_vote;
     }
 //    public List<BlogDTO> convertToList(List<Blog> blogs) {
