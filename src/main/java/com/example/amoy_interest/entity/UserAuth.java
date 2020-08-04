@@ -47,4 +47,7 @@ public class UserAuth {
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id",referencedColumnName = "user_id")
     private User user;
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
+    private UserBan userBan;
 }
