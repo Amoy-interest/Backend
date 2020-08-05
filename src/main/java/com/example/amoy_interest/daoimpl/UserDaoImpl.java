@@ -45,4 +45,9 @@ public class UserDaoImpl implements UserDao {
     public Page<User> searchReportedUsersPage(String keyword, Pageable pageable) {
         return userRepository.searchReportedUsersPage(keyword,pageable);
     }
+
+    @Override
+    public Page<User> searchUsersPage(String keyword, Pageable pageable) {
+        return userRepository.searchUsersPage(keyword, pageable);
+    }
 }

@@ -91,7 +91,12 @@ public class BlogDTO {
         this.blog_content = new BlogContentDTO(blog.getBlog_text(),imagesList);
         this.blog_count = new BlogCountDTO(blog.getBlogCount());
         if (blog.getBlog_type() > 0) {
-            this.blog_child = new BlogChildDTO(blog.getReply());
+            Blog blog1 = blog.getReply();
+            if(blog1.getCheck_status() == 2 || blog1.is_deleted()) { //转发的内容被删
+                this.blog_child = null;
+            }else {
+                this.blog_child = new BlogChildDTO(blog.getReply());
+            }
         }
     }
 
@@ -113,7 +118,12 @@ public class BlogDTO {
         this.blog_content = new BlogContentDTO(blog.getBlog_text(),imagesList);
         this.blog_count = new BlogCountDTO(blog.getBlogCount());
         if (blog.getBlog_type() > 0) {
-            this.blog_child = new BlogChildDTO(blog.getReply());
+            Blog blog1 = blog.getReply();
+            if(blog1.getCheck_status() == 2 || blog1.is_deleted()) { //转发的内容被删
+                this.blog_child = null;
+            }else {
+                this.blog_child = new BlogChildDTO(blog.getReply());
+            }
         }
         this.is_vote = is_vote;
     }

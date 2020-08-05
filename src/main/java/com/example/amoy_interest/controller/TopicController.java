@@ -61,7 +61,7 @@ public class TopicController {
     @ApiOperation(value = "编辑话题简介")
     @PutMapping(value = "/intro")
     public Msg<TopicDTO> ModifyTopicIntro(@RequestBody @Valid TopicIntroDTO topicIntroDTO) {
-        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,topicService.modifyTopicIntro(topicIntroDTO));
+        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.modifyTopicIntro(topicIntroDTO));
     }
 
     @RequiresAuthentication
@@ -78,7 +78,7 @@ public class TopicController {
     @ApiOperation(value = "编辑话题logo")
     @PutMapping(value = "/logo")
     public Msg<TopicDTO> ModifyTopicLogo(@RequestBody @Valid TopicLogoDTO topicLogoDTO) {
-        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG,topicService.modifyTopicLogo(topicLogoDTO));
+        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.modifyTopicLogo(topicLogoDTO));
     }
 
     @ApiOperation(value = "获取热榜(按照reddit算法简单实现)")
@@ -91,7 +91,8 @@ public class TopicController {
     @RequiresAuthentication
     @ApiOperation(value = "举报话题")
     @PostMapping(value = "/report")
-    public Msg ReportTopic(@NotNull(message = "话题名不能为空")
+    public Msg ReportTopic(@RequestParam(required = true)
+                           @NotNull(message = "话题名不能为空")
                            @NotEmpty(message = "话题名不能为空字符串")
                            @Length(max = 40, message = "话题名不能大于40位") String topic_name) {
         topicService.reportTopicByName(topic_name);

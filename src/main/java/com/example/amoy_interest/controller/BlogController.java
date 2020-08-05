@@ -9,10 +9,7 @@ import com.example.amoy_interest.entity.UserAuth;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
-import com.example.amoy_interest.service.BlogService;
-import com.example.amoy_interest.service.RedisService;
-import com.example.amoy_interest.service.UserService;
-import com.example.amoy_interest.service.VoteService;
+import com.example.amoy_interest.service.*;
 import com.example.amoy_interest.utils.CommonPage;
 //import com.github.pagehelper.Page;
 //import com.github.pagehelper.PageInfo;
@@ -43,6 +40,8 @@ public class BlogController {
     @Autowired
     private UserUtil userUtil;
     @Autowired
+    private TopicService topicService;
+    @Autowired
     private RedisService redisService;
 
     @RequiresAuthentication
@@ -59,6 +58,16 @@ public class BlogController {
             return new Msg<>(MsgCode.ERROR, MsgUtil.USER_BAN_MSG);
         }
         blogAddDTO.setUser_id(userAuth.getUser_id());
+        if(blogAddDTO.getTopic_name() != null) {
+            String topic_name = blogAddDTO.getTopic_name();
+            Integer topic_id = topicService.getTopic_idByName(topic_name);
+            if(topic_id == null) {
+                topic_id = topicService.addTopic(topic_name).getTopic_id();
+            }
+            blogAddDTO.setTopic_id(topic_id);
+        }else {
+            blogAddDTO.setTopic_id(0);
+        }
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.ADD_BLOG_SUCCESS_MSG, blogService.addBlog(blogAddDTO));
     }
 

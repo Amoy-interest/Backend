@@ -49,6 +49,8 @@ public class BlogServiceImpl implements BlogService {
         blog.set_deleted(false);
         blog.setCheck_status(0);
         blog.setTopic_id(blogAddDTO.getTopic_id());
+
+        blog.setReply(new Blog(0));
         blog = blogDao.saveBlog(blog);
         BlogCount blogCount = new BlogCount(blog.getBlog_id(),0,0,0,0);
         blogCountDao.saveBlogCount(blogCount);
@@ -433,6 +435,12 @@ public class BlogServiceImpl implements BlogService {
         for(Blog blog:blogList) {
             Integer blog_id = blog.getBlog_id();
             Integer result = redisService.findStatusFromRedis(blog_id,user_id);
+
+            //统计点赞数
+            BlogCount blogCount = blog.getBlogCount();
+            blogCount.setVote_count(blogCount.getVote_count() + redisService.getCountFromRedis(blog_id));
+            blog.setBlogCount(blogCount);
+
             if(result == 1) {
                 blogDTOList.add(new BlogDTO(blog,true));
             }else if(result == 0) {

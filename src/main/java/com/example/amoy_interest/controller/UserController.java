@@ -60,9 +60,9 @@ public class UserController {
             JedisUtil.setObject(Constant.PREFIX_SHIRO_REFRESH_TOKEN + data.getUsername(), currentTimeMillis, Integer.parseInt(refreshTokenExpireTime));
             // 从Header中Authorization返回AccessToken，时间戳为当前时间戳
             String token = JwtUtil.sign(userAuth.getUser_id(), data.getUsername(), currentTimeMillis);
-            httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
             httpServletResponse.setHeader("Authorization", token);
-            return new Msg(HttpStatus.OK.value(), "登录成功(Login Success.)", new UserInfoDTO(userAuth.getUser(),false));
+            httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
+            return new Msg(HttpStatus.OK.value(), "登录成功(Login Success.)", new UserInfoDTO(userAuth.getUser(), false));
         } else {
             throw new CustomUnauthorizedException("帐号或密码错误(Account or Password Error.)");
         }
@@ -169,34 +169,40 @@ public class UserController {
 
 
     @RequiresAuthentication
-    @ApiOperation(value = "分页获取关注列表")
+    @ApiOperation(value = "分页获取（自己或他人）关注列表")
     @GetMapping(value = "/follow")
-    public Msg<CommonPage<UserInfoDTO>> GetFollow(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+    public Msg<CommonPage<UserInfoDTO>> GetFollow(@NotNull(message = "id不能为空")
+                                                  @Min(value = 1, message = "id不能小于1")
+                                                  @RequestParam(required = true) Integer user_id,
+                                                  @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                   @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        Integer userId = userUtil.getUserId();
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.getUserFollowPage(userId, pageNum, pageSize)));
+        Integer my_user_id = userUtil.getUserId();
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.getUserFollowPage(my_user_id, user_id, pageNum, pageSize)));
     }
 
     @RequiresAuthentication
-    @ApiOperation(value = "分页获取粉丝列表")
+    @ApiOperation(value = "分页获取(自己或他人)粉丝列表")
     @GetMapping(value = "/fans")
-    public Msg<CommonPage<UserInfoDTO>> GetFan(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+    public Msg<CommonPage<UserInfoDTO>> GetFan(@NotNull(message = "id不能为空")
+                                               @Min(value = 1, message = "id不能小于1")
+                                               @RequestParam(required = true) Integer user_id,
+                                               @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        Integer userId = userUtil.getUserId();
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.getUserFanPage(userId, pageNum, pageSize)));
+        Integer my_user_id = userUtil.getUserId();
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.getUserFanPage(my_user_id, user_id, pageNum, pageSize)));
     }
 
     @RequiresAuthentication
     @ApiOperation(value = "获取用户信息")
     @GetMapping(value = "")
-    public Msg<UserInfoDTO> GetUserInfo(@RequestParam(required = true) Integer user_id) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, userService.getUserInfo(userUtil.getUserId(), user_id));
+    public Msg<UserDTO> GetUserInfo(@RequestParam(required = true) Integer user_id) {
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, userService.getUserDTO(userUtil.getUserId(), user_id));
     }
 
     @ApiOperation(value = "根据账号密码计算出加密的密码（手动存入数据库）")
     @GetMapping(value = "/cal")
     public Msg<String> CalculatePassword(@RequestParam(required = true) String username,
                                          @RequestParam(required = true) String password) {
-        return new Msg(HttpStatus.OK.value(),"计算成功",AesCipherUtil.enCrypto(username + password));
+        return new Msg(HttpStatus.OK.value(), "计算成功", AesCipherUtil.enCrypto(username + password));
     }
 }
