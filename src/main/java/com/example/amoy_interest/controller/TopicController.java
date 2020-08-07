@@ -61,6 +61,7 @@ public class TopicController {
     @ApiOperation(value = "编辑话题简介")
     @PutMapping(value = "/intro")
     public Msg<TopicDTO> ModifyTopicIntro(@RequestBody @Valid TopicIntroDTO topicIntroDTO) {
+        System.out.println(topicIntroDTO.getTopic_name());
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.modifyTopicIntro(topicIntroDTO));
     }
 

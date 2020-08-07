@@ -12,6 +12,7 @@ import com.example.amoy_interest.msgutils.MsgUtil;
 import com.example.amoy_interest.service.UserService;
 import com.example.amoy_interest.utils.*;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,5 +205,16 @@ public class UserController {
     public Msg<String> CalculatePassword(@RequestParam(required = true) String username,
                                          @RequestParam(required = true) String password) {
         return new Msg(HttpStatus.OK.value(), "计算成功", AesCipherUtil.enCrypto(username + password));
+    }
+
+    @RequiresAuthentication
+    @ApiModelProperty(value = "用户编辑")
+    @PutMapping(value = "")
+    public Msg ModifyUser(@RequestBody @Valid UserModifyParam userModifyParam) {
+        userModifyParam.setUser_id(userUtil.getUserId());
+        if(!userService.modifyUser(userModifyParam)) {
+            return new Msg(404,"编辑失败");
+        }
+        return new Msg(HttpStatus.OK.value(),"编辑成功");
     }
 }

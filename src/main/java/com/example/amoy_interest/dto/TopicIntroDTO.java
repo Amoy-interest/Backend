@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ApiModel(value = "TopicIntroDTO", description = "话题logo信息")
+@ApiModel(value = "TopicIntroDTO", description = "话题简介信息")
 public class TopicIntroDTO {
     @NotNull(message = "话题名不能为空")
     @NotBlank(message = "话题名不能为空白")

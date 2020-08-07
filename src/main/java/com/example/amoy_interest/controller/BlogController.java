@@ -14,6 +14,8 @@ import com.example.amoy_interest.utils.CommonPage;
 //import com.github.pagehelper.Page;
 //import com.github.pagehelper.PageInfo;
 import com.example.amoy_interest.utils.UserUtil;
+import com.example.amoy_interest.utils.sensitivefilter.WordFilter;
+import com.example.amoy_interest.utils.sensitivefilter2.FinderUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -28,6 +30,7 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @RequestMapping("/blogs")
 @Api(tags = "博文模块")
@@ -47,16 +50,23 @@ public class BlogController {
     @RequiresAuthentication
     @ApiOperation(value = "写博文")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Msg<BlogDTO> AddBlog(@RequestBody @Valid BlogAddDTO blogAddDTO) {
+//    public Msg<BlogDTO> AddBlog(@RequestBody @Valid BlogAddDTO blogAddDTO) {
+    public Msg AddBlog(@RequestBody @Valid BlogAddDTO blogAddDTO) {
 //        Integer user_id = userUtil.getUserId();
 //        UserAuth userAuth = userService.findUserAuthById(user_id);
         UserAuth userAuth = userUtil.getUser();//已经做了判断是否为空的处理
 //        if (userAuth == null) {
 //            return new Msg<>(MsgCode.ERROR, MsgUtil.USER_NOT_EXIST_MSG);
 //        }
-        if (userAuth.getIs_ban() == 1) {//应该先去判断封号时间是否结束
-            return new Msg<>(MsgCode.ERROR, MsgUtil.USER_BAN_MSG);
+        if (userAuth.getIs_ban() == 1 && userAuth.getUserBan().getBan_time().after(new Date())) {//应该先去判断封号时间是否结束
+            return new Msg<>(403, MsgUtil.USER_BAN_MSG);
         }
+        //测试一下两种方法哪个更高效
+//        if(WordFilter.isContains(blogAddDTO.getText()))
+//            return new Msg<>(403,"内容含有敏感词，请修改");
+        Set<String> stringSet = FinderUtil.find(blogAddDTO.getText());
+        if(!stringSet.isEmpty())
+            return new Msg<>(403,"内容含有敏感词",stringSet);
         blogAddDTO.setUser_id(userAuth.getUser_id());
         if(blogAddDTO.getTopic_name() != null) {
             String topic_name = blogAddDTO.getTopic_name();
@@ -84,23 +94,35 @@ public class BlogController {
     @RequiresAuthentication
     @ApiOperation(value = "编辑博文")
     @RequestMapping(value = "", method = RequestMethod.PUT)
-    public Msg<BlogDTO> PutBlog(@RequestBody @Valid BlogPutDTO blogPutDTO) {
-        blogPutDTO.setImages(null);
+//    public Msg<BlogDTO> PutBlog(@RequestBody @Valid BlogPutDTO blogPutDTO) {
+    public Msg PutBlog(@RequestBody @Valid BlogPutDTO blogPutDTO) {
+            blogPutDTO.setImages(null);
         UserAuth userAuth = userUtil.getUser();
-        if (userAuth.getIs_ban() == 1) {
-            return new Msg<>(MsgCode.ERROR, MsgUtil.USER_BAN_MSG);
+        if (userAuth.getIs_ban() == 1 && userAuth.getUserBan().getBan_time().after(new Date())) {//应该先去判断封号时间是否结束
+            return new Msg<>(403, MsgUtil.USER_BAN_MSG);
         }
+        Set<String> stringSet = FinderUtil.find(blogPutDTO.getText());
+        if(!stringSet.isEmpty())
+            return new Msg<>(403,"内容含有敏感词",stringSet);
+//        if(WordFilter.isContains(blogPutDTO.getText()))
+//            return new Msg<>(403,"内容含有敏感词，请修改");
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.PUT_BLOG_SUCCESS_MSG, blogService.updateBlog(blogPutDTO));
     }
 
     @RequiresAuthentication
     @ApiOperation(value = "转发")
     @PostMapping(value = "/forward")
-    public Msg<BlogDTO> ForwardBlog(@RequestBody @Valid BlogForwardDTO blogForwardDTO) {
+//    public Msg<BlogDTO> ForwardBlog(@RequestBody @Valid BlogForwardDTO blogForwardDTO) {
+    public Msg ForwardBlog(@RequestBody @Valid BlogForwardDTO blogForwardDTO) {
         UserAuth userAuth = userUtil.getUser();
-        if (userAuth.getIs_ban() == 1) {
+        if (userAuth.getIs_ban() == 1 && userAuth.getUserBan().getBan_time().after(new Date())) {
             return new Msg<>(MsgCode.ERROR, MsgUtil.USER_BAN_MSG);
         }
+        Set<String> stringSet = FinderUtil.find(blogForwardDTO.getText());
+        if(!stringSet.isEmpty())
+            return new Msg<>(403,"内容含有敏感词",stringSet);
+//        if(WordFilter.isContains(blogForwardDTO.getText()))
+//            return new Msg<>(403,"内容含有敏感词，请修改");
         blogForwardDTO.setUser_id(userAuth.getUser_id());
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, blogService.forwardBlog(blogForwardDTO));
     }

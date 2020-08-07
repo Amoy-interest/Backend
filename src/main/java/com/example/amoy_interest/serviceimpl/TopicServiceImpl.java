@@ -15,6 +15,7 @@ import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -51,8 +52,8 @@ public class TopicServiceImpl implements TopicService {
     public TopicDTO addTopic(String topic_name) {
         if(topicDao.getTopicByName(topic_name) == null) {
             Topic topic = new Topic(topic_name,new Date(),0,0,null,null,null);
+            topic.setLogo_path("https://amoy-interest-oss.oss-cn-shenzhen.aliyuncs.com/amoy-interest/images/common/topic_logo.jpg");
             topic = topicDao.insert(topic);
-            System.out.println(topic.getTopic_id());
             return new TopicDTO(topic);
         }
         return null;
@@ -100,6 +101,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public boolean reportTopicByName(String topic_name) {
         Topic topic = topicDao.getTopicByName(topic_name);
         topic.setReport_count(topic.getReport_count()+1);

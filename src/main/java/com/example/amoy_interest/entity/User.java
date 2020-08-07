@@ -59,9 +59,9 @@ public class User {
     //一般用分页，不再关联
 //    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 //    private List<Blog> blogs;
-    @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
-    private UserBan userBan;
+//    @OneToOne(fetch=FetchType.LAZY)
+//    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
+//    private UserBan userBan;
     //这个是不是也得不再关联？
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id",referencedColumnName = "user_id")
