@@ -12,6 +12,8 @@ File Encoding         : 65001
 
 Date: 2020-07-29 20:41:52
 */
+DROP DATABASE IF EXISTS `amoy`;
+CREATE DATABASE `amoy`;
 
 SET FOREIGN_KEY_CHECKS=0;
 
