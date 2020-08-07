@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   mysql:
-    image: mysql:8.0
+    image: my_mysql
     container_name: amoy_mysql
     volumes:
       - db_data:/var/lib/mysql
@@ -19,14 +19,15 @@ services:
     container_name: amoy_redis
     command: redis-server
     #    command: redis-server --requirepass redis123
-    ports:
-      - "6379:6379"
+    # ports:
+    #   - "6379:6379"
 
   amoy_interest:
     image: amoy_dev3
+    container_name: amoy_dev3
     # build: .
-    # ports:
-    #   - "10101:10101"
+    ports:
+      - "8082:8082"
     expose:
       - "8082"
     restart: always
@@ -37,3 +38,4 @@ services:
 
 volumes:
   db_data:
+
