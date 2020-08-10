@@ -11,6 +11,8 @@ services:
       MYSQL_ROOT_HOST: '%'
       MYSQL_ROOT_PASSWORD: amoy123
       MYSQL_DATABASE: amoy
+    ports:
+      - "3306:3306"
   #      MYSQL_USER: boot
   #      MYSQL_PASSWORD: boot123
 
@@ -19,8 +21,8 @@ services:
     container_name: amoy_redis
     #command: redis-server
     command: redis-server --requirepass amoy123
-#    ports:
-#       - "6379:6379"
+    ports:
+       - "6379:6379"
 
   amoy_interest:
     image: amoy_dev3
