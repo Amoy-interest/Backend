@@ -17,10 +17,10 @@ services:
   redis:
     image: redis
     container_name: amoy_redis
-    command: redis-server
-    #    command: redis-server --requirepass redis123
-    # ports:
-    #   - "6379:6379"
+    #command: redis-server
+    command: redis-server --requirepass amoy123
+#    ports:
+#       - "6379:6379"
 
   amoy_interest:
     image: amoy_dev3
