@@ -21,6 +21,8 @@ services:
     container_name: amoy_redis
     #command: redis-server
     command: redis-server --requirepass amoy123
+    volumes:
+      - db_data:/var/lib/redis
     ports:
        - "6379:6379"
 
