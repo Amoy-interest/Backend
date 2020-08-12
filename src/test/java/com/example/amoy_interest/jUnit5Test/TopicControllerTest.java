@@ -59,33 +59,33 @@ public class TopicControllerTest {
     private TopicService topicService;
 
     private ObjectMapper om = new ObjectMapper();
-    @BeforeEach
-    public void setUp() {mockMvc = MockMvcBuilders.webAppContextSetup(context).build();}
-
-    @Test
-    public void testGetTopic() throws Exception{
-        when(topicService.getTopicDTOByName("高考加油")).thenReturn(null);
-        MvcResult result = mockMvc.perform(get("/topics?topic_name=高考加油"))
-                .andExpect(status().isOk()).andReturn();
-        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
-        String resultContent = result.getResponse().getContentAsString();
-        Msg<TopicDTO> msg = om.readValue(resultContent,new TypeReference<Msg<TopicDTO>>() {});
-        verify(topicService,times(1)).getTopicDTOByName("高考加油");
-        assertEquals(0,msg.getStatus());
-        assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
-    }
-    @Test
-    public void testGetHotList() throws Exception{
-        Pageable pageable = PageRequest.of(0,10);
-        List<TopicHeatResult> topicHeatResultList = new ArrayList<>();
-        topicHeatResultList.add(new TopicHeatResult("高考加油",100));
-        when(topicService.getHotList(0,10)).thenReturn(new PageImpl<>(topicHeatResultList,pageable,1));
-        MvcResult result = mockMvc.perform(get("/topics/hotList"))
-                .andExpect(status().isOk()).andReturn();
-        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
-        String resultContent = result.getResponse().getContentAsString();
-        Msg<CommonPage<TopicHeatResult>> msg = om.readValue(resultContent,new TypeReference<Msg<CommonPage<TopicHeatResult>>>() {});
-        assertEquals(0,msg.getStatus());
-        assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
-    }
+//    @BeforeEach
+//    public void setUp() {mockMvc = MockMvcBuilders.webAppContextSetup(context).build();}
+//
+//    @Test
+//    public void testGetTopic() throws Exception{
+//        when(topicService.getTopicDTOByName("高考加油")).thenReturn(null);
+//        MvcResult result = mockMvc.perform(get("/topics?topic_name=高考加油"))
+//                .andExpect(status().isOk()).andReturn();
+//        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+//        String resultContent = result.getResponse().getContentAsString();
+//        Msg<TopicDTO> msg = om.readValue(resultContent,new TypeReference<Msg<TopicDTO>>() {});
+//        verify(topicService,times(1)).getTopicDTOByName("高考加油");
+//        assertEquals(0,msg.getStatus());
+//        assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
+//    }
+//    @Test
+//    public void testGetHotList() throws Exception{
+//        Pageable pageable = PageRequest.of(0,10);
+//        List<TopicHeatResult> topicHeatResultList = new ArrayList<>();
+//        topicHeatResultList.add(new TopicHeatResult("高考加油",100));
+//        when(topicService.getHotList(0,10)).thenReturn(new PageImpl<>(topicHeatResultList,pageable,1));
+//        MvcResult result = mockMvc.perform(get("/topics/hotList"))
+//                .andExpect(status().isOk()).andReturn();
+//        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+//        String resultContent = result.getResponse().getContentAsString();
+//        Msg<CommonPage<TopicHeatResult>> msg = om.readValue(resultContent,new TypeReference<Msg<CommonPage<TopicHeatResult>>>() {});
+//        assertEquals(0,msg.getStatus());
+//        assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
+//    }
 }

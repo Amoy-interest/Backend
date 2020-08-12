@@ -33,7 +33,7 @@ import java.util.List;
 @RequestMapping("/admins")
 @Api(tags = "管理员模块")
 @RestController
-public class AdminController {
+public class  AdminController {
     @Autowired
     BlogService blogService;
     @Autowired
