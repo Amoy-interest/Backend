@@ -1,5 +1,9 @@
 package com.example.amoy_interest.utils.sensitivefilter2;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +29,7 @@ public class DBWordProvider {
 		this.user = user;
 		this.password = password;
 	}
+
 
 	public String[] loadWords() {
 		List<String> list = null;

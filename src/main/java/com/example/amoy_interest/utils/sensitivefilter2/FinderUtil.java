@@ -2,8 +2,10 @@ package com.example.amoy_interest.utils.sensitivefilter2;
 
 import com.example.amoy_interest.utils.common.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Set;
 
 
@@ -20,7 +22,19 @@ public class FinderUtil {
 	public static final char ADD_FLAG = '+'; // 新增标记
 	public static final char REMOVE_FLAG = '-'; // 删除标记
 
-	static {
+	private static DBProperties config;
+	@Autowired
+	private DBProperties config0;
+//	static {
+//		try {
+//			initialize();
+//		} catch (Exception e) {
+//			log.error(e.getMessage(),e);
+//		}
+//	}
+	@PostConstruct
+	public void init() {
+		FinderUtil.config = config0;
 		try {
 			initialize();
 		} catch (Exception e) {
@@ -31,12 +45,18 @@ public class FinderUtil {
 	 * 初始化敏感词
 	 */
 	public static void initialize() {
-		PropertiesUtil.readProperties("config.properties");
-		String className = PropertiesUtil.getProperty("jdbcDriverClassName");
-		String url = PropertiesUtil.getProperty("jdbcUrl");
-		String username = PropertiesUtil.getProperty("jdbcUsername");
-		String password = PropertiesUtil.getProperty("jdbcPassword");
+//		PropertiesUtil.readProperties("config.properties");
+//		String className = PropertiesUtil.getProperty("jdbcDriverClassName");
+//		String url = PropertiesUtil.getProperty("jdbcUrl");
+//		String username = PropertiesUtil.getProperty("jdbcUsername");
+//		String password = PropertiesUtil.getProperty("jdbcPassword");
+		String url = config.getUrl();
+		String username = config.getUsername();
+		String password = config.getPassword();
+		String className = config.getClassName();
+		System.out.println(className+url+username+password);
 		DBWordProvider p = new DBWordProvider(className, url, username, password);
+//		DBWordProvider p = new DBWordProvider();
 		String[] words = p.loadWords();
 		// 初始导入
 		Finder.addSensitiveWords(words);

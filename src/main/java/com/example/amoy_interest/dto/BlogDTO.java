@@ -133,14 +133,33 @@ public class BlogDTO {
         this.topic_name = topic == null? null:topic.getTopic_name();
         this.is_vote = is_vote;
     }
-//    public List<BlogDTO> convertToList(List<Blog> blogs) {
-//        List<BlogDTO> blogDTOList = new ArrayList<>();
-//        int i = 0;
-//        for(Blog blog: blogs) {
-//            System.out.println(i);
-//            blogDTOList.add(new BlogDTO(blog));
-//        }
-//        return blogDTOList;
-//    }
+    public BlogDTO(ESBlog blog,User user,List<BlogImage> blogImageList,BlogCount blogCount,Blog reply,Topic topic,boolean is_vote) {
+        this.setUser_id(user.getUser_id());
+        this.setNickname(user.getNickname());
+        this.setAvatar_path(user.getAvatar_path());
+        this.setBlog_id(blog.getId());
+        this.setBlog_time(blog.getBlog_time());
+        this.setBlog_type(blog.getBlog_type());
+        List<String> imagesList = null;
+        if (blogImageList != null) {
+            imagesList = new ArrayList<>();
+            for (BlogImage blogImage : blogImageList) {
+                imagesList.add(blogImage.getBlog_image());
+            }
+        }
+        this.blog_content = new BlogContentDTO(blog.getBlog_text(),imagesList);
+        this.blog_count = new BlogCountDTO(blogCount);
+        if (blog.getBlog_type() > 0) {
+//            Blog blog1 = reply;
+            if(reply.getCheck_status() == 2 || reply.is_deleted()) { //转发的内容被删
+                this.blog_child = null;
+            }else {
+                this.blog_child = new BlogChildDTO(reply);
+            }
+        }
+//        Topic topic = blog.getTopic();
+        this.topic_name = topic == null? null:topic.getTopic_name();
+        this.is_vote = is_vote;
+    }
 }
 

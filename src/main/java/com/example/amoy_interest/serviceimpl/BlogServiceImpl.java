@@ -10,6 +10,7 @@ import com.example.amoy_interest.utils.UserUtil;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -306,8 +307,45 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public Page<BlogDTO> getSearchListByBlog_text(String keyword, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
-        Page<Blog> blogPage = blogDao.findBlogListByBlog_text(keyword,pageable);
-        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
+        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+        //分页
+        nativeSearchQueryBuilder.withPageable(pageable);
+        Page<ESBlog> blogPage = blogDao.findBlogListByBlog_text(keyword,pageable);
+//        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
+        List<BlogDTO> blogDTOList = new ArrayList<>();
+        List<ESBlog> esBlogList = blogPage.getContent();
+        Integer user_id = userUtil.getUserId();
+        for(ESBlog esBlog:esBlogList) {
+            Integer blog_id = esBlog.getId();
+            Integer result = redisService.findStatusFromRedis(blog_id,user_id);
+            //统计点赞数
+            BlogCount blogCount = blogCountDao.findBlogCountByBlog_id(blog_id);
+            blogCount.setVote_count(blogCount.getVote_count() + redisService.getCountFromRedis(blog_id));
+
+            //得优化
+            Topic topic = topicDao.getTopicById(esBlog.getTopic_id());
+            User user = userDao.getById(esBlog.getUser_id());
+            List<BlogImage> blogImageList = blogImageDao.findBlogImageByBlog_id(esBlog.getId());
+            Blog reply = blogDao.findBlogByBlog_id(esBlog.getReply_blog_id());
+            if(result == 1) {
+                blogDTOList.add(new BlogDTO(esBlog,user,blogImageList,blogCount,reply,topic,true));
+            }else if(result == 0) {
+                blogDTOList.add(new BlogDTO(esBlog,user,blogImageList,blogCount,reply,topic,false));
+            }else {//redis里没有数据,去数据库拿
+                BlogVote blogVote = blogVoteDao.getByBlogIdAndUserId(blog_id,user_id);
+                if(blogVote == null) {
+                    blogDTOList.add(new BlogDTO(esBlog,user,blogImageList,blogCount,reply,topic,false));
+                }else {
+                    if(blogVote.getStatus() == 0) {
+                        blogDTOList.add(new BlogDTO(esBlog,user,blogImageList,blogCount,reply,topic,false));
+
+                    }else {
+                        blogDTOList.add(new BlogDTO(esBlog,user,blogImageList,blogCount,reply,topic,true));
+                    }
+                }
+            }
+//            blogDTOList.add(new BlogDTO(blog));
+        }
         return new PageImpl<BlogDTO>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
     }
 

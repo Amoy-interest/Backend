@@ -2,8 +2,9 @@ package com.example.amoy_interest.daoimpl;
 
 import com.example.amoy_interest.dao.BlogDao;
 import com.example.amoy_interest.entity.Blog;
+import com.example.amoy_interest.entity.ESBlog;
 import com.example.amoy_interest.repository.BlogRepository;
-import io.swagger.annotations.ApiOperation;
+import com.example.amoy_interest.repository.ESBlogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,8 @@ public class BlogDaoImpl implements BlogDao {
     @Autowired
     private BlogRepository blogRepository;
 
+    @Autowired
+    private ESBlogRepository esBlogRepository;
     @Override
     public Blog saveBlog(Blog blog) {
         return blogRepository.saveAndFlush(blog);
@@ -45,8 +48,9 @@ public class BlogDaoImpl implements BlogDao {
     }
 
     @Override
-    public Page<Blog> findBlogListByBlog_text(String keyword, Pageable pageable) {
-        return blogRepository.findListByBlog_textLike(keyword,pageable);
+    public Page<ESBlog> findBlogListByBlog_text(String keyword, Pageable pageable) {
+//        return blogRepository.findListByBlog_textLike(keyword,pageable);
+        return esBlogRepository.findAll(pageable);
     }
 
     @Override

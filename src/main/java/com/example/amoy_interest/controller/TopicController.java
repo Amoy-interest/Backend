@@ -8,6 +8,7 @@ import com.example.amoy_interest.msgutils.MsgUtil;
 import com.example.amoy_interest.service.BlogService;
 import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.utils.CommonPage;
+import com.example.amoy_interest.utils.sensitivefilter2.DBProperties;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -32,6 +33,8 @@ public class TopicController {
 
     @Autowired
     private BlogService blogService;
+    @Autowired
+    private DBProperties config;
 
     @RequiresAuthentication
     @ApiOperation(value = "查看话题基本内容")
@@ -103,6 +106,6 @@ public class TopicController {
     @ApiOperation(value = "测试")
     @GetMapping(value = "/test")
     public void Test() {
-        topicService.updateTopicHeat();
+        System.out.println(config.getClassName());
     }
 }

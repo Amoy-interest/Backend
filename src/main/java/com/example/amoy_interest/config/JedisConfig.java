@@ -28,7 +28,7 @@ public class JedisConfig {
      * logger
      */
     private static final Logger logger = LoggerFactory.getLogger(JedisConfig.class);
-
+//    @Value("${redis.host}")
     private String host;
 
     private int port;
