@@ -28,13 +28,17 @@ public class JedisConfig {
      * logger
      */
     private static final Logger logger = LoggerFactory.getLogger(JedisConfig.class);
-//    @Value("${redis.host}")
+
+    @Value("${redis.host}")
     private String host;
 
+    @Value("${redis.port}")
     private int port;
 
+    @Value("${redis.password}")
     private String password;
 
+    @Value("${redis.timeout}")
     private int timeout;
 
     @Value("${redis.pool.max-active}")

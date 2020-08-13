@@ -1,0 +1,45 @@
+version: '2.0'
+
+services:
+  mysql:
+    image: my_mysql
+    container_name: amoy_mysql
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: amoy123
+      MYSQL_DATABASE: amoy
+    ports:
+      - "3306:3306"
+  #      MYSQL_USER: boot
+  #      MYSQL_PASSWORD: boot123
+
+  redis:
+    image: redis
+    container_name: amoy_redis
+    #command: redis-server
+    command: redis-server --requirepass amoy123
+    volumes:
+      - db_data:/var/lib/redis
+    ports:
+       - "6379:6379"
+
+  amoy_interest:
+    image: amoy_dev3
+    container_name: amoy_dev3
+    # build: .
+    ports:
+      - "8082:8082"
+    expose:
+      - "8082"
+    restart: always
+
+    depends_on:
+      - mysql
+      - redis
+
+volumes:
+  db_data:
+
