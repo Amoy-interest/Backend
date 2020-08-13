@@ -14,7 +14,7 @@ import com.example.amoy_interest.utils.CommonPage;
 //import com.github.pagehelper.Page;
 //import com.github.pagehelper.PageInfo;
 import com.example.amoy_interest.utils.UserUtil;
-import com.example.amoy_interest.utils.sensitivefilter.WordFilter;
+//import com.example.amoy_interest.utils.sensitivefilter.WordFilter;
 import com.example.amoy_interest.utils.sensitivefilter2.FinderUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -281,11 +281,7 @@ public class BlogController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
     @GetMapping(value = "/test")
-    public void test(Integer blog_id,Integer user_id){
-//        redisService.saveVote2Redis(blog_id,user_id);
-//        redisService.cancelVoteFromRedis(blog_id, user_id);
-//        redisService.incrementVoteCount(blog_id);
-//        redisService.findVoteFromRedis(blog_id,user_id);
-//        redisService.deleteVoteFromRedis(blog_id, user_id);
+    public void test(){
+        blogService.insertToES();
     }
 }

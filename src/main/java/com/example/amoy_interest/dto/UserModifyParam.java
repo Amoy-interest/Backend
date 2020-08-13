@@ -38,7 +38,7 @@ public class UserModifyParam {
     @Length(max = 20,message = "个人不能超过50位")
     @ApiModelProperty(value = "个人简介", required = true)
     private String introduction;
-    @Max(value = 1024)
+    @Length(max = 1024,message = "头像url不能超过1024位")
     @ApiModelProperty(value = "个人头像", required = false)
     private String avatar;
 }

@@ -33,8 +33,6 @@ public class TopicController {
 
     @Autowired
     private BlogService blogService;
-    @Autowired
-    private DBProperties config;
 
     @RequiresAuthentication
     @ApiOperation(value = "查看话题基本内容")
@@ -106,6 +104,6 @@ public class TopicController {
     @ApiOperation(value = "测试")
     @GetMapping(value = "/test")
     public void Test() {
-        System.out.println(config.getClassName());
+
     }
 }

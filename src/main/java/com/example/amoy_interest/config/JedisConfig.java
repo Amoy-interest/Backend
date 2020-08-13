@@ -20,8 +20,8 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 @Configuration
 @EnableAutoConfiguration
-@PropertySource("classpath:config.properties")
-@ConfigurationProperties(prefix = "redis")
+//@PropertySource("classpath:config.properties")
+//@ConfigurationProperties(prefix = "spring.redis")
 public class JedisConfig {
 
     /**
@@ -29,28 +29,28 @@ public class JedisConfig {
      */
     private static final Logger logger = LoggerFactory.getLogger(JedisConfig.class);
 
-    @Value("${redis.host}")
+    @Value("${spring.redis.host}")
     private String host;
 
-    @Value("${redis.port}")
+    @Value("${spring.redis.port}")
     private int port;
 
-    @Value("${redis.password}")
+    @Value("${spring.redis.password}")
     private String password;
 
-    @Value("${redis.timeout}")
+    @Value("${spring.redis.timeout}")
     private int timeout;
 
-    @Value("${redis.pool.max-active}")
+    @Value("${spring.redis.jedis.pool.max-active}")
     private int maxActive;
 
-    @Value("${redis.pool.max-wait}")
+    @Value("${spring.redis.jedis.pool.max-wait}")
     private int maxWait;
 
-    @Value("${redis.pool.max-idle}")
+    @Value("${spring.redis.jedis.pool.max-idle}")
     private int maxIdle;
 
-    @Value("${redis.pool.min-idle}")
+    @Value("${spring.redis.jedis.pool.min-idle}")
     private int minIdle;
 
     @Bean
@@ -74,67 +74,67 @@ public class JedisConfig {
         return null;
     }
 
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getTimeout() {
-        return timeout;
-    }
-
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
-    }
-
-    public int getMaxActive() {
-        return maxActive;
-    }
-
-    public void setMaxActive(int maxActive) {
-        this.maxActive = maxActive;
-    }
-
-    public int getMaxWait() {
-        return maxWait;
-    }
-
-    public void setMaxWait(int maxWait) {
-        this.maxWait = maxWait;
-    }
-
-    public int getMaxIdle() {
-        return maxIdle;
-    }
-
-    public void setMaxIdle(int maxIdle) {
-        this.maxIdle = maxIdle;
-    }
-
-    public int getMinIdle() {
-        return minIdle;
-    }
-
-    public void setMinIdle(int minIdle) {
-        this.minIdle = minIdle;
-    }
+//    public String getHost() {
+//        return host;
+//    }
+//
+//    public void setHost(String host) {
+//        this.host = host;
+//    }
+//
+//    public int getPort() {
+//        return port;
+//    }
+//
+//    public void setPort(int port) {
+//        this.port = port;
+//    }
+//
+//    public String getPassword() {
+//        return password;
+//    }
+//
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
+//
+//    public int getTimeout() {
+//        return timeout;
+//    }
+//
+//    public void setTimeout(int timeout) {
+//        this.timeout = timeout;
+//    }
+//
+//    public int getMaxActive() {
+//        return maxActive;
+//    }
+//
+//    public void setMaxActive(int maxActive) {
+//        this.maxActive = maxActive;
+//    }
+//
+//    public int getMaxWait() {
+//        return maxWait;
+//    }
+//
+//    public void setMaxWait(int maxWait) {
+//        this.maxWait = maxWait;
+//    }
+//
+//    public int getMaxIdle() {
+//        return maxIdle;
+//    }
+//
+//    public void setMaxIdle(int maxIdle) {
+//        this.maxIdle = maxIdle;
+//    }
+//
+//    public int getMinIdle() {
+//        return minIdle;
+//    }
+//
+//    public void setMinIdle(int minIdle) {
+//        this.minIdle = minIdle;
+//    }
 }

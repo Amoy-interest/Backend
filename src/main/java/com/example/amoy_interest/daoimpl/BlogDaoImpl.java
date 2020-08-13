@@ -8,6 +8,8 @@ import com.example.amoy_interest.repository.ESBlogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,6 +21,7 @@ public class BlogDaoImpl implements BlogDao {
 
     @Autowired
     private ESBlogRepository esBlogRepository;
+
     @Override
     public Blog saveBlog(Blog blog) {
         return blogRepository.saveAndFlush(blog);
@@ -47,11 +50,6 @@ public class BlogDaoImpl implements BlogDao {
         return blogRepository.findBlogsByUser_id(user_id);
     }
 
-    @Override
-    public Page<ESBlog> findBlogListByBlog_text(String keyword, Pageable pageable) {
-//        return blogRepository.findListByBlog_textLike(keyword,pageable);
-        return esBlogRepository.findAll(pageable);
-    }
 
     @Override
     public Page<Blog> findBlogListByUser_id(Integer user_id, Pageable pageable) {

@@ -4,12 +4,24 @@ import com.auth0.jwt.JWT;
 import com.example.amoy_interest.dao.*;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.*;
+import com.example.amoy_interest.repository.ESBlogRepository;
 import com.example.amoy_interest.service.BlogService;
 import com.example.amoy_interest.service.RedisService;
 import com.example.amoy_interest.utils.UserUtil;
 import io.swagger.models.auth.In;
+import org.elasticsearch.common.lucene.search.function.FunctionScoreQuery;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BlogServiceImpl implements BlogService {
@@ -39,6 +52,10 @@ public class BlogServiceImpl implements BlogService {
     private RedisService redisService;
     @Autowired
     private BlogVoteDao blogVoteDao;
+    @Autowired
+    private ESBlogRepository esBlogRepository;
+    @Autowired
+    private ElasticsearchRestTemplate elasticsearchRestTemplate;
 
 
     @Override
@@ -100,6 +117,20 @@ public class BlogServiceImpl implements BlogService {
         return new BlogDTO(blog,false);
     }
 
+    @Override
+    public int insertToES() {
+        Pageable pageable = PageRequest.of(1,10);
+        Page<Blog> blogPage = blogDao.getAllBlogPage(pageable);
+        List<ESBlog> esBlogList = new ArrayList<>();
+        List<Blog> blogList = blogPage.getContent();
+        int ret = 0;
+        for(Blog blog:blogList) {
+            ret++;
+            esBlogList.add(new ESBlog(blog));
+        }
+        esBlogRepository.saveAll(esBlogList);
+        return ret;
+    }
 
     @Override
     public BlogDTO updateBlog(BlogPutDTO blogPutDTO) {
@@ -310,10 +341,26 @@ public class BlogServiceImpl implements BlogService {
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
         //分页
         nativeSearchQueryBuilder.withPageable(pageable);
-        Page<ESBlog> blogPage = blogDao.findBlogListByBlog_text(keyword,pageable);
+        List<FunctionScoreQueryBuilder.FilterFunctionBuilder> filterFunctionBuilders = new ArrayList<>();
+        filterFunctionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("blog_text", keyword),
+                ScoreFunctionBuilders.weightFactorFunction(10)));//权重，可以多权重来搜索
+        FunctionScoreQueryBuilder.FilterFunctionBuilder[] builders = new FunctionScoreQueryBuilder.FilterFunctionBuilder[filterFunctionBuilders.size()];
+        filterFunctionBuilders.toArray(builders);
+        FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(builders)
+                .scoreMode(FunctionScoreQuery.ScoreMode.SUM)
+                .setMinScore(2);//设置最低分数
+        nativeSearchQueryBuilder.withQuery(functionScoreQueryBuilder);
+        nativeSearchQueryBuilder.withSort(SortBuilders.scoreSort().order(SortOrder.DESC));//按相关度排名
+        NativeSearchQuery searchQuery = nativeSearchQueryBuilder.build();
+        SearchHits<ESBlog> searchHits = elasticsearchRestTemplate.search(searchQuery, ESBlog.class);
+        if(searchHits.getTotalHits()<=0){
+            return new PageImpl<>(null,pageable,0);
+        }
+        List<ESBlog> esBlogList = searchHits.stream().map(SearchHit::getContent).collect(Collectors.toList());
+        //blogDao.findBlogListByBlog_text(keyword,pageable);
 //        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
         List<BlogDTO> blogDTOList = new ArrayList<>();
-        List<ESBlog> esBlogList = blogPage.getContent();
+//        List<ESBlog> esBlogList = blogPage.getContent();
         Integer user_id = userUtil.getUserId();
         for(ESBlog esBlog:esBlogList) {
             Integer blog_id = esBlog.getId();
@@ -346,7 +393,7 @@ public class BlogServiceImpl implements BlogService {
             }
 //            blogDTOList.add(new BlogDTO(blog));
         }
-        return new PageImpl<BlogDTO>(blogDTOList,blogPage.getPageable(),blogPage.getTotalElements());
+        return new PageImpl<BlogDTO>(blogDTOList,pageable,searchHits.getTotalHits());
     }
 
     @Override

@@ -73,4 +73,5 @@ public interface BlogService {
      */
     Page<BlogDTO> getBlogPageByUser_idOrderByTime(Integer user_id,Integer pageNum,Integer pageSize);
 
+    int insertToES();
 }
