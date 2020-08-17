@@ -58,7 +58,15 @@ spring:
     #jackson:
     ##    serialization:
     ##      indent_output: true #返回josn格式化，用来显示？
-
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+  elasticsearch:
+    rest:
+      uris: http://54.175.164.140:9200
+      username: elastic
+      password: tIBLlfhJfRPwhKfqoacr
 management:
   endpoint:
     health:

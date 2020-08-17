@@ -217,4 +217,10 @@ public class UserController {
         }
         return new Msg(HttpStatus.OK.value(),"编辑成功");
     }
+
+    @GetMapping(value = "/test2")
+    public Msg<String> test2() {
+        return new Msg(HttpStatus.OK.value(), "计算成功",null);
+    }
+
 }
