@@ -339,7 +339,7 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public Page<BlogDTO> getSearchListByBlog_text(String keyword, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
-        HighlightBuilder highlightBuilder = getHighlightBuilder("desc", "blog_text");
+        HighlightBuilder highlightBuilder = getHighlightBuilder( "blog_text");
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
         //分页
         nativeSearchQueryBuilder.withPageable(pageable).withHighlightBuilder(highlightBuilder);
