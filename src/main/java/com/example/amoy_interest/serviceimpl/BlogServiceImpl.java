@@ -354,7 +354,7 @@ public class BlogServiceImpl implements BlogService {
         NativeSearchQuery searchQuery = nativeSearchQueryBuilder.build();
         SearchHits<ESBlog> searchHits = elasticsearchRestTemplate.search(searchQuery, ESBlog.class);
         if(searchHits.getTotalHits()<=0){
-            return new PageImpl<>(null,pageable,0);
+            return new PageImpl<>(new ArrayList<>(),pageable,0);
         }
         List<ESBlog> esBlogList = searchHits.stream().map(SearchHit::getContent).collect(Collectors.toList());
         //blogDao.findBlogListByBlog_text(keyword,pageable);
