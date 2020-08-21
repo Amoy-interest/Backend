@@ -15,5 +15,6 @@ public interface BlogCommentDao {
     Page<BlogComment> findLevel1CommentListByBlog_id(Integer blog_id, Pageable pageable);
     Page<BlogComment> findMultiLevelCommentListByComment_id(Integer root_comment_id, Pageable pageable);
 
+    BlogComment findCommentByComment_id(Integer comment_id);
     BlogComment findOneByRoot_comment_id(Integer root_comment_id);
 }

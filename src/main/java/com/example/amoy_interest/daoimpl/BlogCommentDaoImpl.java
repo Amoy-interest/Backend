@@ -56,4 +56,9 @@ public class BlogCommentDaoImpl implements BlogCommentDao {
     public BlogComment findOneByRoot_comment_id(Integer root_comment_id) {
         return blogCommentRepository.findOneByRoot_comment_id(root_comment_id);
     }
+
+    @Override
+    public BlogComment findCommentByComment_id(Integer comment_id) {
+        return blogCommentRepository.getOne(comment_id);
+    }
 }

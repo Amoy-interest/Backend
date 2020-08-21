@@ -29,7 +29,7 @@ public class SensitiveWordController {
     @Autowired
     private SensitiveWordService sensitiveWordService;
 
-    @RequiresRoles(logical = Logical.AND,value = {"admin"})
+    @RequiresRoles(logical = Logical.AND, value = {"admin"})
     @ApiOperation(value = "以分页的方式获取敏感词列表")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Msg<CommonPage<SensitiveWord>> GetSensitiveWords(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
@@ -38,7 +38,7 @@ public class SensitiveWordController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(sws));
     }
 
-    @RequiresRoles(logical = Logical.AND,value = {"admin"})
+    @RequiresRoles(logical = Logical.AND, value = {"admin"})
     @ApiOperation(value = "以分页的方式搜索敏感词列表")
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public Msg<CommonPage<SensitiveWord>> GetSensitiveWords(@RequestParam(required = true)
@@ -50,10 +50,10 @@ public class SensitiveWordController {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(sensitiveWordService.findSensitiveWordsPageByKeyword(keyword, pageNum, pageSize)));
     }
 
-    @RequiresRoles(logical = Logical.AND,value = {"admin"})
+    @RequiresRoles(logical = Logical.AND, value = {"admin"})
     @ApiOperation(value = "添加敏感词")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Msg AddSensitiveWord(
+    public Msg AddSensitiveWord(@RequestParam(required = true)
                                 @NotNull(message = "敏感词不能为空")
                                 @NotEmpty(message = "敏感词不能为空字符串")
                                 @Length(max = 40, message = "敏感词不能大于40位") String keyword) {
@@ -61,12 +61,14 @@ public class SensitiveWordController {
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 
-    @RequiresRoles(logical = Logical.AND,value = {"admin"})
+    @RequiresRoles(logical = Logical.AND, value = {"admin"})
     @ApiOperation(value = "编辑敏感词")
     @RequestMapping(value = "", method = RequestMethod.PUT)
-    public Msg PutSensitiveWord(@NotNull(message = "旧敏感词不能为空")
+    public Msg PutSensitiveWord(@RequestParam(required = true)
+                                @NotNull(message = "旧敏感词不能为空")
                                 @NotEmpty(message = "旧敏感词不能为空字符串")
                                 @Length(max = 40, message = "旧敏感词不能大于40位") String oldWord,
+                                @RequestParam(required = true)
                                 @NotNull(message = "新敏感词不能为空")
                                 @NotEmpty(message = "新敏感词不能为空字符串")
                                 @Length(max = 40, message = "新敏感词不能大于40位") String newWord) {
@@ -74,10 +76,11 @@ public class SensitiveWordController {
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 
-    @RequiresRoles(logical = Logical.AND,value = {"admin"})
+    @RequiresRoles(logical = Logical.AND, value = {"admin"})
     @ApiOperation(value = "删除敏感词")
     @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public Msg DeleteSensitiveWord(@NotNull(message = "敏感词不能为空")
+    public Msg DeleteSensitiveWord(@RequestParam(required = true)
+                                   @NotNull(message = "敏感词不能为空")
                                    @NotEmpty(message = "敏感词不能为空字符串")
                                    @Length(max = 40, message = "敏感词不能大于40位") String keyword) {
         sensitiveWordService.deleteByKeyword(keyword);

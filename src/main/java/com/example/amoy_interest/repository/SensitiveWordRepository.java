@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface SensitiveWordRepository extends JpaRepository<SensitiveWord,Integer> {
+public interface SensitiveWordRepository extends JpaRepository<SensitiveWord,String> {
     @Query(value = "from SensitiveWord")
     List<SensitiveWord> findAllSensitiveWords();
 

@@ -1,7 +1,11 @@
 package com.example.amoy_interest.service;
 
+import com.example.amoy_interest.dto.BlogSingleCountDTO;
 import com.example.amoy_interest.dto.BlogVoteCountDTO;
+import com.example.amoy_interest.dto.UserSingleCountDTO;
+import com.example.amoy_interest.entity.BlogReport;
 import com.example.amoy_interest.entity.BlogVote;
+import com.example.amoy_interest.entity.UserReport;
 
 import java.util.List;
 
@@ -18,6 +22,44 @@ public interface RedisService {
      * @param user_id
      */
     void saveVote2Redis(Integer blog_id,Integer user_id);
+
+    /**
+     * 举报，key为blog_id::user_id
+     * @param blog_id
+     * @param user_id
+     * @param report_reason
+     */
+    void saveBlogReport2Redis(Integer blog_id,Integer user_id,String report_reason);
+
+    void saveUserReport2Redis(Integer user_id,Integer reporter_id,String report_reason);
+
+    void incrementUserFollowCount(Integer user_id);
+
+    void incrementUserFanCount(Integer user_id);
+
+    void incrementUserBlogCount(Integer user_id);
+
+    void incrementBlogCommentCount(Integer blog_id);
+
+    void incrementBlogReportCount(Integer blog_id);
+
+    void incrementUserReportCount(Integer user_id);
+
+    void decrementUserFollowCount(Integer user_id);
+
+    void decrementUserFanCount(Integer user_id);
+
+    void decrementUserBlogCount(Integer user_id);
+
+    void decrementBlogCommentCount(Integer blog_id);
+
+    void decrementBlogReportCount(Integer blog_id);
+
+    void decrementUserReportCount(Integer user_id);
+
+    void incrementBlogForwardCount(Integer blog_id);
+
+    void decrementBlogForwardCount(Integer blog_id);
 
     /**
      * 取消点赞。将状态改变为0
@@ -40,6 +82,23 @@ public interface RedisService {
      * @return
      */
     Integer findStatusFromRedis(Integer blog_id,Integer user_id);
+
+    /**
+     * 从Redis中查找博文是否已经被某用户举报过
+     * @param blog_id
+     * @param user_id
+     * @return
+     */
+    boolean blogIsReported(Integer blog_id,Integer user_id);
+
+    /**
+     * 从Redis中查找用户是否已经被某用户举报过
+     * @param user_id
+     * @param reporter_id
+     * @return
+     */
+    boolean userIsReported(Integer user_id,Integer reporter_id);
+
     /**
      * 该博文点赞数+1
      * @param blog_id
@@ -64,10 +123,41 @@ public interface RedisService {
      */
     List<BlogVoteCountDTO> getVoteCountFromRedis();
 
+    List<BlogReport> getBlogReportDataFromRedis();
+
+    List<UserReport> getUserReportDataFromRedis();
+
+    List<BlogSingleCountDTO> getBlogReportCountFromRedis();
+
+    List<BlogSingleCountDTO> getBlogForwardCountFromRedis();
+
+    List<BlogSingleCountDTO> getBlogCommentCountFromRedis();
+
+    List<UserSingleCountDTO> getUserFollowCountFromRedis();
+
+    List<UserSingleCountDTO> getUserFanCountFromRedis();
+
+    List<UserSingleCountDTO> getUserBlogCountFromRedis();
+
+    List<UserSingleCountDTO> getUserReportCountFromRedis();
+
     /**
      * 获取Redis中存储的点赞数量
      * @param blog_id
      * @return
      */
-    Integer getCountFromRedis(Integer blog_id);
+    Integer getVoteCountFromRedis(Integer blog_id);
+
+    Integer getBlogCommentCountFromRedis(Integer blog_id);
+
+    Integer getBlogReportCountFromRedis(Integer blog_id);
+
+    Integer getBlogForwardCountFromRedis(Integer blog_id);
+
+    Integer getUserFollowCountFromRedis(Integer user_id);
+
+    Integer getUserFanCountFromRedis(Integer user_id);
+
+    Integer getUserBlogCountFromRedis(Integer user_id);
+
 }
