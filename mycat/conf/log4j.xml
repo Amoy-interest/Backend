@@ -1,0 +1,44 @@
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+<appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+  <layout class="org.apache.log4j.PatternLayout">
+   <param name="ConversionPattern" value="%d{MM-dd HH:mm:ss.SSS}  %5p [%t] (%F:%L) -%m%n" />
+  </layout>
+ </appender>
+  <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
+	<param name="file" value="${MYCAT_HOME}/logs/mycat.log" />
+	<param name="Append" value="false"/>
+	<param name="MaxFileSize" value="1000KB"/>
+	<param name="MaxBackupIndex" value="10"/> 
+	<param name="encoding" value="UTF-8" />
+	<layout class="org.apache.log4j.PatternLayout">
+	  <param name="ConversionPattern" value="%d{MM/dd HH:mm:ss.SSS}  %5p [%t] (%F:%L) -%m%n" />
+	</layout>
+  </appender>
+
+
+  <appender name="FILE2" class="org.apache.log4j.RollingFileAppender">
+	<param name="file" value="${MYCAT_HOME}/logs/sqlexecutebug.log" />
+	<param name="Append" value="false"/>
+	<param name="MaxFileSize" value="1000KB"/>
+	<param name="MaxBackupIndex" value="10"/>
+	<param name="encoding" value="UTF-8" />
+	<layout class="org.apache.log4j.PatternLayout">
+	  <param name="ConversionPattern" value="%d{MM/dd HH:mm:ss.SSS} %5p [%t] (%F:%L) -%m%n" />
+	</layout>
+  </appender>
+
+
+  <logger name="org.opencloudb.mysql.nio.MySQLConnection" additivity="false">
+	<level value="debug" />
+	<appender-ref ref="FILE2" />
+  </logger>
+
+	<root>
+	<level value="debug" />
+	<appender-ref ref="FILE" />
+	 <!--<appender-ref ref="FILE" />-->
+  </root>
+
+</log4j:configuration>
+

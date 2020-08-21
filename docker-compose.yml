@@ -1,21 +1,91 @@
 version: '2.0'
 
 services:
-  mysql:
-    image: my_mysql
-    container_name: amoy_mysql
-    volumes:
-      - db_data:/var/lib/mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_ROOT_PASSWORD: amoy123
-      MYSQL_DATABASE: amoy
-    ports:
-      - "3306:3306"
+  # mysql:
+  #   image: my_mysql
+  #   container_name: amoy_mysql
+  #   volumes:
+  #     - db_data:/var/lib/mysql
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_HOST: '%'
+  #     MYSQL_ROOT_PASSWORD: amoy123
+  #     MYSQL_DATABASE: amoy
+      
+  #   ports:
+  #     - "3306:3306"
   #      MYSQL_USER: boot
   #      MYSQL_PASSWORD: boot123
+  mysql-master:
+    build:
+      context: ./mysql
+      dockerfile: master/Dockerfile
+    container_name: amoy_mysql_master
+    env_file:
+      - env/base.env
+      - env/master.env
+    networks:
+      mysql_net:
+        ipv4_address: 172.32.2.2
+    volumes:
+      - db_data_master:/var/lib/mysql
+      - ./mysql/init-db-sql/amoy_interest.sql:/docker-entrypoint-initdb.d/1-data.sql
+      - ./mysql/init-db-sql/init-master.sh:/docker-entrypoint-initdb.d/2-init-master.sh
+    environment:
+      - "MYSQL_ROOT_PASSWORD=amoy123"
+    # links:
+    #   - mysql-slave
+    ports:
+      - "33065:3306"
+    restart: always
+    hostname: mysql-master
 
+  mysql-slave:
+    build:
+      context: ./mysql
+      dockerfile: slave/Dockerfile
+    container_name: amoy_mysql_slave
+    env_file:
+      - env/base.env
+      - env/node.env
+    networks:
+      mysql_net:
+        ipv4_address: 172.32.2.3
+    volumes:
+      - db_data_slave:/var/lib/mysql
+      - ./mysql/init-db-sql/amoy_interest.sql:/docker-entrypoint-initdb.d/1-data.sql
+      - ./mysql/init-db-sql/init-node.sh:/docker-entrypoint-initdb.d/2-init-node.sh
+    environment:
+      - "MYSQL_ROOT_PASSWORD=amoy123"
+      - "MASTER_MYSQL_ROOT_PASSWORD=${MASTER_MYSQL_ROOT_PASSWORD}"
+      - "MYSQL_DATABASE=amoy"
+    ports:
+      - "33066:3306"
+    restart: always
+    hostname: mysql-slave
+    depends_on:
+      - mysql-master
+
+  mycat:
+    build: ./mycat
+    #image: mycat
+    container_name: mycat
+    restart: always
+    volumes:
+      #- ./mycat/conf/mycat-logs/:/usr/local/mycat/logs/:rw # mycat日志文件
+      - ./mycat/conf/log4j.xml:/usr/local/mycat/conf/log4j.xml
+      - ./mycat/conf/server.xml:/usr/local/mycat/conf/server.xml
+      - ./mycat/conf/schema.xml:/usr/local/mycat/conf/schema.xml
+      - ./mycat/conf/rule.xml:/usr/local/mycat/conf/rule.xml
+    ports:
+      - "8066:8066"
+      - "9066:9066"
+    links:
+      - mysql-master
+      - mysql-slave
+    networks:
+      mysql_net:
+        ipv4_address: 172.32.2.8
   redis:
     image: redis
     container_name: amoy_redis
@@ -38,9 +108,17 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
     depends_on:
-      - mysql
+      - mysql-master
+      - mysql-slave
       - redis
-
+networks:
+  mysql_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.32.2.0/24
 volumes:
   db_data:
-
+  db_data_master:
+  db_data_slave:
