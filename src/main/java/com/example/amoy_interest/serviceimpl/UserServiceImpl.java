@@ -3,7 +3,9 @@ package com.example.amoy_interest.serviceimpl;
 import com.example.amoy_interest.dao.*;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.*;
+import com.example.amoy_interest.service.RedisService;
 import com.example.amoy_interest.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,10 @@ public class UserServiceImpl implements UserService {
     private UserBanDao userBanDao;
     @Autowired
     private RoleDao roleDao;
+    @Autowired
+    private RedisService redisService;
+    @Autowired
+    private UserReportDao userReportDao;
 
     @Override
     public UserAuth findUserAuthById(Integer id) {
@@ -49,7 +55,7 @@ public class UserServiceImpl implements UserService {
                 registerDTO.getAddress(), 100, "这个人很懒，什么都没留下", null
         );
         userDao.insert(user);
-        UserCount userCount = new UserCount(user_id, 0, 0, 0);
+        UserCount userCount = new UserCount(user_id, 0, 0, 0,0);
         userCountDao.insert(userCount);
         user.setUserAuth(userAuth);
         UserRole userRole = new UserRole();
@@ -62,7 +68,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean follow(Integer user_id, Integer follow_id) {
         UserFollow userFollow = new UserFollow(user_id, follow_id);
-        userFollowDao.insert(userFollow);
+        Optional<UserFollow> userFollow1 = userFollowDao.findByUser_idAndFollow_id(user_id, follow_id);
+        if(userFollow1.isPresent()) {
+            return true;
+        }else {
+            userFollowDao.insert(userFollow);
+            redisService.incrementUserFollowCount(user_id);
+            redisService.incrementUserFanCount(follow_id);
+        }
         return true;
     }
 
@@ -251,7 +264,7 @@ public class UserServiceImpl implements UserService {
             userInfoDTO = new UserInfoDTO(user, true);
         else
             userInfoDTO = new UserInfoDTO(user, false);
-        UserCountDTO userCountDTO = new UserCountDTO(userCountDao.getByUserID(user_id2));
+        UserCountDTO userCountDTO = new UserCountDTO(CalculateCount(user_id2));
         return new UserDTO(userInfoDTO, userCountDTO);
     }
 
@@ -263,7 +276,7 @@ public class UserServiceImpl implements UserService {
         List<UserDTO> userDTOList = new ArrayList<>();
         for (User user : userList) {
             UserInfoDTO userInfoDTO = new UserInfoDTO(user, false);
-            UserCountDTO userCountDTO = new UserCountDTO(userCountDao.getByUserID(user.getUser_id()));
+            UserCountDTO userCountDTO = new UserCountDTO(CalculateCount(user.getUser_id()));
             userDTOList.add(new UserDTO(userInfoDTO, userCountDTO));
         }
         return new PageImpl<>(userDTOList, userPage.getPageable(), userPage.getTotalElements());
@@ -307,4 +320,31 @@ public class UserServiceImpl implements UserService {
         userDao.update(user);
         return true;
     }
+
+    @Override
+    public void ReportUser(UserReportParam userReportParam) {
+        Integer user_id = userReportParam.getUser_id();
+        Integer reporter_id = userReportParam.getReporter_id();
+        String report_reason = userReportParam.getReport_reason();
+        if(redisService.userIsReported(user_id,reporter_id)) {
+            redisService.saveUserReport2Redis(user_id,reporter_id,report_reason);
+        }else {
+            //redis没有记录，去数据库查
+            UserReport userReport = userReportDao.getByUserIdAndReporterId(user_id,reporter_id);
+            //刷新举报原因和时间，但是重复举报不增加举报数
+            redisService.saveUserReport2Redis(user_id,reporter_id,report_reason);
+            if(userReport != null) {
+                redisService.incrementUserReportCount(user_id);
+            }
+        }
+    }
+    private UserCount CalculateCount(Integer user_id) {
+        UserCount userCount = userCountDao.getByUserID(user_id);
+        userCount.setFollow_count(userCount.getFollow_count() + redisService.getUserFollowCountFromRedis(user_id));
+        userCount.setFan_count(userCount.getFan_count() + redisService.getUserFanCountFromRedis(user_id));
+        userCount.setBlog_count(userCount.getBlog_count() + redisService.getUserBlogCountFromRedis(user_id));
+        return userCount;
+    }
+
+
 }

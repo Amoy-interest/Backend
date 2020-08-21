@@ -8,6 +8,7 @@ public interface BlogCountDao {
     BlogCount findBlogCountByBlog_id(Integer blog_id);
     List<BlogCount> findReportedBlogs();
     BlogCount saveBlogCount(BlogCount blogCount);
+    void saveAll(List<BlogCount> list);
     void incrVoteCount(Integer blog_id);
     void decrVoteCount(Integer blog_id);
 }

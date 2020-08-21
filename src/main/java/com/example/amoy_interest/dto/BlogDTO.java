@@ -39,59 +39,93 @@ public class BlogDTO {
     @ApiModelProperty(value = "用户头像")
     private String avatar_path;
     @ApiModelProperty(value = "topic名")
-    private String topic_name;
+    private List<String> topics_name;
     @ApiModelProperty(value = "是否点赞过")
     private boolean is_vote;
     //该方法需要删除
-    public BlogDTO(Blog blog, List<BlogComment> blogComments, BlogCount blogCount, List<BlogImage> blogImages , Blog blogChild, List<BlogImage> blogChildImages) {
-        if (blog.getUser() != null) this.setNickname(blog.getUser().getNickname());
-        this.setBlog_type(blog.getBlog_type());
-        this.setBlog_time(blog.getBlog_time());
+//    public BlogDTO(Blog blog, List<BlogComment> blogComments, BlogCount blogCount, List<BlogImage> blogImages , Blog blogChild, List<BlogImage> blogChildImages) {
+//        if (blog.getUser() != null) this.setNickname(blog.getUser().getNickname());
+//        this.setBlog_type(blog.getBlog_type());
+//        this.setBlog_time(blog.getBlog_time());
+//        this.setBlog_id(blog.getBlog_id());
+//        List<String> tmp_blog_images = null;
+//        if (blogImages != null) {
+//            tmp_blog_images = new ArrayList<>();
+//            for (BlogImage blogImage : blogImages) {
+//                tmp_blog_images.add(blogImage.getBlog_image());
+//            }
+//        }
+//        this.blog_content = new BlogContentDTO(blog.getBlog_text(), tmp_blog_images);
+//
+//        if (blog.getBlog_type() > 0) {
+//            List<String> tmp_blog_child_images = null;
+//            if (blogChildImages != null ){
+//                tmp_blog_child_images = new ArrayList<>();
+//                for (BlogImage blogImage : blogChildImages) {
+//                    tmp_blog_child_images.add(blogImage.getBlog_image());
+//                }
+//            }
+////            if (blogChild.getUser() != null)
+////                this.blog_child = new BlogChildDTO(blogChild.getUser_id(),blogChild.getUser().getNickname(),blogChild.getBlog_text(), tmp_blog_child_images);
+////            else
+////                this.blog_child = new BlogChildDTO(blogChild.getUser_id(), null, blogChild.getBlog_text(), tmp_blog_child_images);
+//        }
+//
+//        this.blog_count = new BlogCountDTO(blogCount);
+//        // 原先的设计是只返回一级评论。当点击某条评论的时候再获取二级评论。
+////        this.blog_comments = blogComments;
+//    }
+//    public BlogDTO(Blog blog,BlogCount blogCount) {
+//        User user = blog.getUser();
+//        this.setUser_id(user.getUser_id());
+//        this.setNickname(user.getNickname());
+//        this.setAvatar_path(user.getAvatar_path());
+//        this.setBlog_id(blog.getBlog_id());
+//        this.setBlog_time(blog.getBlog_time());
+//        this.setBlog_type(blog.getBlog_type());
+//        List<String> imagesList = null;
+//        if (blog.getBlogImages() != null) {
+//            imagesList = new ArrayList<>();
+//            for (BlogImage blogImage : blog.getBlogImages()) {
+//                imagesList.add(blogImage.getBlog_image());
+//            }
+//        }
+//        this.blog_content = new BlogContentDTO(blog.getBlog_text(),imagesList);
+//        this.blog_count = new BlogCountDTO(blogCount);
+//        if (blog.getBlog_type() > 0) {
+//            Blog blog1 = blog.getReply();
+//            if(blog1.getCheck_status() == 2 || blog1.is_deleted()) { //转发的内容被删
+//                this.blog_child = null;
+//            }else {
+//                this.blog_child = new BlogChildDTO(blog.getReply());
+//            }
+//        }
+//        List<TopicBlog> list = blog.getTopics();
+////        Topic topic = blog.getTopic();
+//        this.topics_name = new ArrayList<>();
+//        for(TopicBlog topicBlog: list) {
+//            this.topics_name.add(topicBlog.getTopic_name());
+//        }
+////        this.topic_name = topic == null? null:topic.getTopic_name();
+//    }
+
+    public BlogDTO(Blog blog,BlogCount blogCount,boolean is_vote) {
+        User user = blog.getUser();
+        this.setUser_id(user.getUser_id());
+        this.setNickname(user.getNickname());
+        this.setAvatar_path(user.getAvatar_path());
         this.setBlog_id(blog.getBlog_id());
-        List<String> tmp_blog_images = null;
-        if (blogImages != null) {
-            tmp_blog_images = new ArrayList<>();
-            for (BlogImage blogImage : blogImages) {
-                tmp_blog_images.add(blogImage.getBlog_image());
+        this.setBlog_time(blog.getBlog_time());
+        this.setBlog_type(blog.getBlog_type());
+        List<String> imagesList = null;
+        if (blog.getBlogImages() != null) {
+            imagesList = new ArrayList<>();
+            for (BlogImage blogImage : blog.getBlogImages()) {
+                imagesList.add(blogImage.getBlog_image());
             }
         }
-        this.blog_content = new BlogContentDTO(blog.getBlog_text(), tmp_blog_images);
-
-        if (blog.getBlog_type() > 0) {
-            List<String> tmp_blog_child_images = null;
-            if (blogChildImages != null ){
-                tmp_blog_child_images = new ArrayList<>();
-                for (BlogImage blogImage : blogChildImages) {
-                    tmp_blog_child_images.add(blogImage.getBlog_image());
-                }
-            }
-//            if (blogChild.getUser() != null)
-//                this.blog_child = new BlogChildDTO(blogChild.getUser_id(),blogChild.getUser().getNickname(),blogChild.getBlog_text(), tmp_blog_child_images);
-//            else
-//                this.blog_child = new BlogChildDTO(blogChild.getUser_id(), null, blogChild.getBlog_text(), tmp_blog_child_images);
-        }
-
+        this.blog_content = new BlogContentDTO(blog.getBlog_text(),imagesList);
         this.blog_count = new BlogCountDTO(blogCount);
-        // 原先的设计是只返回一级评论。当点击某条评论的时候再获取二级评论。
-//        this.blog_comments = blogComments;
-    }
-    public BlogDTO(Blog blog) {
-        User user = blog.getUser();
-        this.setUser_id(user.getUser_id());
-        this.setNickname(user.getNickname());
-        this.setAvatar_path(user.getAvatar_path());
-        this.setBlog_id(blog.getBlog_id());
-        this.setBlog_time(blog.getBlog_time());
-        this.setBlog_type(blog.getBlog_type());
-        List<String> imagesList = null;
-        if (blog.getBlogImages() != null) {
-            imagesList = new ArrayList<>();
-            for (BlogImage blogImage : blog.getBlogImages()) {
-                imagesList.add(blogImage.getBlog_image());
-            }
-        }
-        this.blog_content = new BlogContentDTO(blog.getBlog_text(),imagesList);
-        this.blog_count = new BlogCountDTO(blog.getBlogCount());
         if (blog.getBlog_type() > 0) {
             Blog blog1 = blog.getReply();
             if(blog1.getCheck_status() == 2 || blog1.is_deleted()) { //转发的内容被删
@@ -100,40 +134,15 @@ public class BlogDTO {
                 this.blog_child = new BlogChildDTO(blog.getReply());
             }
         }
-        Topic topic = blog.getTopic();
-        this.topic_name = topic == null? null:topic.getTopic_name();
-    }
-
-    public BlogDTO(Blog blog,boolean is_vote) {
-        User user = blog.getUser();
-        this.setUser_id(user.getUser_id());
-        this.setNickname(user.getNickname());
-        this.setAvatar_path(user.getAvatar_path());
-        this.setBlog_id(blog.getBlog_id());
-        this.setBlog_time(blog.getBlog_time());
-        this.setBlog_type(blog.getBlog_type());
-        List<String> imagesList = null;
-        if (blog.getBlogImages() != null) {
-            imagesList = new ArrayList<>();
-            for (BlogImage blogImage : blog.getBlogImages()) {
-                imagesList.add(blogImage.getBlog_image());
-            }
+        List<TopicBlog> list = blog.getTopics();
+//        Topic topic = blog.getTopic();
+        this.topics_name = new ArrayList<>();
+        for(TopicBlog topicBlog: list) {
+            this.topics_name.add(topicBlog.getTopic_name());
         }
-        this.blog_content = new BlogContentDTO(blog.getBlog_text(),imagesList);
-        this.blog_count = new BlogCountDTO(blog.getBlogCount());
-        if (blog.getBlog_type() > 0) {
-            Blog blog1 = blog.getReply();
-            if(blog1.getCheck_status() == 2 || blog1.is_deleted()) { //转发的内容被删
-                this.blog_child = null;
-            }else {
-                this.blog_child = new BlogChildDTO(blog.getReply());
-            }
-        }
-        Topic topic = blog.getTopic();
-        this.topic_name = topic == null? null:topic.getTopic_name();
         this.is_vote = is_vote;
     }
-    public BlogDTO(ESBlog blog,User user,List<BlogImage> blogImageList,BlogCount blogCount,Blog reply,Topic topic,boolean is_vote) {
+    public BlogDTO(ESBlog blog,User user,List<BlogImage> blogImageList,BlogCount blogCount,Blog reply,boolean is_vote) {
         this.setUser_id(user.getUser_id());
         this.setNickname(user.getNickname());
         this.setAvatar_path(user.getAvatar_path());
@@ -158,7 +167,7 @@ public class BlogDTO {
             }
         }
 //        Topic topic = blog.getTopic();
-        this.topic_name = topic == null? null:topic.getTopic_name();
+        this.topics_name = blog.getTopics_name();
         this.is_vote = is_vote;
     }
 }

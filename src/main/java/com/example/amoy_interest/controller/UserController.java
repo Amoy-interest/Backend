@@ -1,5 +1,6 @@
 package com.example.amoy_interest.controller;
 
+import com.alibaba.druid.sql.visitor.functions.Now;
 import com.auth0.jwt.JWT;
 import com.example.amoy_interest.constant.Constant;
 import com.example.amoy_interest.dto.*;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @RequestMapping("/users")
 @Api(tags = "用户模块")
@@ -52,6 +54,9 @@ public class UserController {
         String key = AesCipherUtil.deCrypto(userAuth.getPassword());
         // 因为密码加密是以帐号+密码的形式进行加密的，所以解密后的对比是帐号+密码
         if (key.equals(data.getUsername() + data.getPassword())) {
+            if (userAuth.getIs_forbidden() == 1&&userAuth.getUserBan().getForbidden_time().after(new Date())) {
+                throw new CustomUnauthorizedException(MsgUtil.USER_FORBIDDEN_MSG);
+            }
             // 清除可能存在的Shiro权限信息缓存
             if (JedisUtil.exists(Constant.PREFIX_SHIRO_CACHE + data.getUsername())) {
                 JedisUtil.delKey(Constant.PREFIX_SHIRO_CACHE + data.getUsername());
@@ -67,25 +72,6 @@ public class UserController {
         } else {
             throw new CustomUnauthorizedException("帐号或密码错误(Account or Password Error.)");
         }
-//        String username = data.getUsername();
-//        String password = data.getPassword();
-//        //需要重写，用checkUser,检查用户是否被封号
-//        UserAuth userAuth = userService.findUserAuthByUsername(username);
-//        if (userAuth == null) {
-//            return new Msg<UserDTO>(MsgCode.USER_NOT_EXIST, MsgUtil.LOGIN_USER_ERROR_MSG, null);
-//        } else {
-//            if (!userAuth.getPassword().equals(password)) {
-//                return new Msg<UserDTO>(MsgCode.ERROR, MsgUtil.LOGIN_USER_ERROR_MSG, null);
-//            } else {
-//                if (userAuth.getIs_forbidden() == 1) {
-//                    return new Msg<>(MsgCode.LOGIN_USER_ERROR, MsgUtil.USER_FORBIDDEN_MSG);
-//                }
-//                String token = tokenService.getToken(userAuth);
-//                UserInfoDTO userInfoDTO = new UserInfoDTO(userAuth.getUser(), false);
-//                UserDTO userDTO = new UserDTO(userInfoDTO, token);
-//                return new Msg<UserDTO>(MsgCode.SUCCESS, MsgUtil.LOGIN_SUCCESS_MSG, userDTO);
-//            }
-//        }
     }
 
 
@@ -105,9 +91,6 @@ public class UserController {
     @ApiOperation(value = "注册", notes = "注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public Msg<UserInfoDTO> Register(@RequestBody @Valid RegisterDTO registerDTO, HttpServletResponse httpServletResponse) {
-//        UserDto userDtoTemp = new UserDto();
-//        userDtoTemp.setAccount(userDto.getAccount());
-//        userDtoTemp = userService.selectOne(userDtoTemp);
         String username = registerDTO.getUsername();
         UserAuth userAuth = userService.findUserAuthByUsername(username);
         if (userAuth != null) {
@@ -216,5 +199,14 @@ public class UserController {
             return new Msg(404,"编辑失败");
         }
         return new Msg(HttpStatus.OK.value(),"编辑成功");
+    }
+
+    @RequiresAuthentication
+    @ApiOperation(value = "举报用户")
+    @PostMapping(value = "/report")
+    public Msg ReportUser(@RequestBody @Valid UserReportParam userReportParam) {
+        userReportParam.setReporter_id(userUtil.getUserId());
+        userService.ReportUser(userReportParam);
+        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
 }

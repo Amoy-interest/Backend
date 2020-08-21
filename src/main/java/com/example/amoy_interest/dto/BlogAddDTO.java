@@ -25,9 +25,7 @@ public class BlogAddDTO {
     @ApiModelProperty(value = "博文图片", required = false)
     private List<String> images;
     @ApiModelProperty(value = "所在话题名(没有则为空)",required = false)
-    private String topic_name;
+    private List<String> topic_name;
     @ApiModelProperty(value = "发博用户id(不用传过来,后端从token中取)",required = false)
     private Integer user_id;
-    @ApiModelProperty(value = "话题id(不用传过来,后端从数据库取)",required = false)
-    private Integer topic_id;
 }

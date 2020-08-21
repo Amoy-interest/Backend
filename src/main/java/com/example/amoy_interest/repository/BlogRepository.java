@@ -35,14 +35,14 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
     Page<Blog> findListByUser_id(Integer user_id, Pageable pageable);
 
     //如何写？
-//    @Query(value = "SELECT * FROM blog as b WHERE b.is_deleted = 0 and b.check_status = 0 and (report_count > 10)",
-//            countQuery = "SELECT count(*) FROM blog natural join blog_count WHERE is_deleted = 0 and check_status = 0 and report_count > 10",
-//            nativeQuery = true)
-    @Query(value = "From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10", countQuery = "SELECT count(b.blog_id) From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10")
+    @Query(value = "SELECT new com.example.amoy_interest.entity.Blog(b) FROM Blog as b left join BlogCount bc WHERE b.is_deleted = false and b.check_status = 0 and bc.report_count > 10",
+            countQuery = "select count(b.blog_id) FROM Blog as b left join BlogCount bc WHERE b.is_deleted = false and b.check_status = 0 and bc.report_count > 10"
+    )
+//    @Query(value = "From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10", countQuery = "SELECT count(b.blog_id) From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10")
     Page<Blog> findReportedBlogsPage(Pageable pageable);
 
-    @Query(value = "From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10 and b.blog_text like %?1%",
-            countQuery = "SELECT count(b.blog_id) From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10 and b.blog_text like %?1%")
+    @Query(value = "select new com.example.amoy_interest.entity.Blog(b) FROM Blog as b left join BlogCount bc WHERE b.is_deleted = false and b.check_status = 0 and b.blog_text like %?1% and bc.report_count > 10 ",
+            countQuery = "SELECT count(b.blog_id) FROM Blog as b left join BlogCount bc WHERE b.is_deleted = false and b.check_status = 0 and b.blog_text like %?1% and bc.report_count > 10 ")
     Page<Blog> searchReportedBlogsPage(String keyword, Pageable pageable);
 
     @Query(value = "From Blog b where b.check_status <> 2 and b.is_deleted = false and b.user_id = ?1",

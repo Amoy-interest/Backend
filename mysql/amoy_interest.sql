@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : dd
+Source Server         : mok
 Source Server Version : 80020
 Source Host           : localhost:3306
 Source Database       : amoy_interest
@@ -10,13 +10,12 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-07-29 20:41:52
+Date: 2020-08-21 11:36:19
 */
 DROP DATABASE IF EXISTS `amoy`;
 CREATE DATABASE `amoy`;
 use `amoy`;
 SET FOREIGN_KEY_CHECKS=0;
-
 -- ----------------------------
 -- Table structure for blog
 -- ----------------------------
@@ -29,13 +28,12 @@ CREATE TABLE `blog` (
   `blog_text` varchar(140) DEFAULT NULL,
   `is_deleted` smallint DEFAULT NULL,
   `check_status` smallint DEFAULT NULL,
-  `topic_id` int DEFAULT NULL,
-  `reply_blog_id` int DEFAULT NULL,
+  `reply_blog_id` int DEFAULT '0',
   PRIMARY KEY (`blog_id`),
   KEY `FK_Reference_4` (`user_id`),
   KEY `FK_Reference_13` (`reply_blog_id`),
   CONSTRAINT `FK_Reference_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for blog_comment
@@ -87,6 +85,19 @@ CREATE TABLE `blog_image` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
+-- Table structure for blog_report
+-- ----------------------------
+DROP TABLE IF EXISTS `blog_report`;
+CREATE TABLE `blog_report` (
+  `blog_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `report_reason` varchar(20) NOT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`blog_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
 -- Table structure for blog_vote
 -- ----------------------------
 DROP TABLE IF EXISTS `blog_vote`;
@@ -102,7 +113,7 @@ CREATE TABLE `blog_vote` (
   KEY `user_id` (`user_id`),
   CONSTRAINT `blog_id` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `blog` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for role_permission
@@ -138,7 +149,7 @@ CREATE TABLE `topic` (
   `logo_path` varchar(1024) DEFAULT NULL,
   `topic_intro` varchar(140) DEFAULT NULL,
   PRIMARY KEY (`topic_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for topic_blog
@@ -147,6 +158,7 @@ DROP TABLE IF EXISTS `topic_blog`;
 CREATE TABLE `topic_blog` (
   `topic_id` int NOT NULL,
   `blog_id` int NOT NULL,
+  `topic_name` varchar(50) NOT NULL,
   PRIMARY KEY (`topic_id`,`blog_id`),
   KEY `FK_Reference_7` (`blog_id`),
   CONSTRAINT `FK_Reference_6` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`topic_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
@@ -169,8 +181,8 @@ CREATE TABLE `topic_heat` (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(15) NOT NULL,
-  `password` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `username` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `password` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `user_type` smallint NOT NULL,
   `is_ban` smallint DEFAULT NULL,
   `is_forbidden` smallint DEFAULT NULL,
@@ -199,6 +211,7 @@ CREATE TABLE `user_count` (
   `follow_count` int DEFAULT NULL,
   `fan_count` int DEFAULT NULL,
   `blog_count` int DEFAULT NULL,
+  `report_count` int DEFAULT '0',
   PRIMARY KEY (`user_id`),
   CONSTRAINT `FK_Reference_8` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -234,13 +247,26 @@ CREATE TABLE `user_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
+-- Table structure for user_report
+-- ----------------------------
+DROP TABLE IF EXISTS `user_report`;
+CREATE TABLE `user_report` (
+  `user_id` int NOT NULL,
+  `reporter_id` int NOT NULL,
+  `report_reason` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`,`reporter_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
 -- Table structure for user_role
 -- ----------------------------
 DROP TABLE IF EXISTS `user_role`;
 CREATE TABLE `user_role` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(100) NOT NULL,
-  `role_name` varchar(100) NOT NULL,
+  `role_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'user',
   PRIMARY KEY (`id`),
   KEY `User_id` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
