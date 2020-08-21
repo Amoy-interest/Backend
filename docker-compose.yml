@@ -35,7 +35,8 @@ services:
     expose:
       - "8082"
     restart: always
-
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
     depends_on:
       - mysql
       - redis
