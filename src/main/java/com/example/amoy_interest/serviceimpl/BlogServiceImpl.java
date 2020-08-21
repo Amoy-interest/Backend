@@ -342,7 +342,8 @@ public class BlogServiceImpl implements BlogService {
         HighlightBuilder highlightBuilder = getHighlightBuilder( "blog_text");
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
         //分页
-        nativeSearchQueryBuilder.withPageable(pageable).withHighlightBuilder(highlightBuilder);
+        nativeSearchQueryBuilder.withPageable(pageable).withHighlightFields(new HighlightBuilder.Field("blog_text")).build();
+                //withHighlightBuilder(highlightBuilder);
         List<FunctionScoreQueryBuilder.FilterFunctionBuilder> filterFunctionBuilders = new ArrayList<>();
         filterFunctionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("blog_text", keyword),
                 ScoreFunctionBuilders.weightFactorFunction(10)));//权重，可以多权重来搜索

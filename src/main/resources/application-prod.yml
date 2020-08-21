@@ -3,7 +3,7 @@ server:
   context-path: /
 spring:
   datasource:
-    url: jdbc:mysql://amoy_mysql:3306/amoy
+    url: jdbc:mysql://amoy_mysql_master:3306/amoy
     username: root
     password: amoy123
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -64,9 +64,9 @@ spring:
         enabled: true
   elasticsearch:
     rest:
-      uris: http://54.175.164.140:9200
+      uris: http://106.14.19.68:5601:9200
       username: elastic
-      password: tIBLlfhJfRPwhKfqoacr
+      password: VpEszoE3peaL7RazXQAO
 management:
   endpoint:
     health:
