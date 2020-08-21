@@ -1,17 +1,13 @@
 package com.example.amoy_interest.controller;
 
 import com.example.amoy_interest.dto.*;
-import com.example.amoy_interest.entity.TopicHeat;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
 import com.example.amoy_interest.service.BlogService;
 import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.utils.CommonPage;
-import com.example.amoy_interest.utils.sensitivefilter2.DBProperties;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.hibernate.validator.constraints.Length;
@@ -21,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @Api(tags = "话题or热榜模块")
 @RequestMapping("/topics")
@@ -59,11 +53,10 @@ public class TopicController {
     }
 
     @RequiresAuthentication
-    @ApiOperation(value = "编辑话题简介")
-    @PutMapping(value = "/intro")
-    public Msg<TopicDTO> ModifyTopicIntro(@RequestBody @Valid TopicIntroDTO topicIntroDTO) {
-        System.out.println(topicIntroDTO.getTopic_name());
-        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.modifyTopicIntro(topicIntroDTO));
+    @ApiOperation(value = "编辑话题")
+    @PutMapping(value = "")
+    public Msg<TopicDTO> ModifyTopicIntro(@RequestBody @Valid TopicModifyParam topicModifyParam) {
+        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.modifyTopic(topicModifyParam));
     }
 
     @RequiresAuthentication
@@ -74,13 +67,6 @@ public class TopicController {
                         @Length(max = 40, message = "话题名不能大于40位") String topic_name) {
         topicService.addTopic(topic_name);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
-    }
-
-    @RequiresAuthentication
-    @ApiOperation(value = "编辑话题logo")
-    @PutMapping(value = "/logo")
-    public Msg<TopicDTO> ModifyTopicLogo(@RequestBody @Valid TopicLogoDTO topicLogoDTO) {
-        return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, topicService.modifyTopicLogo(topicLogoDTO));
     }
 
     @ApiOperation(value = "获取热榜(按照reddit算法简单实现)")

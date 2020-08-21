@@ -7,6 +7,7 @@ import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
 import com.example.amoy_interest.service.BlogService;
+import com.example.amoy_interest.service.CountService;
 import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.service.UserService;
 import com.example.amoy_interest.utils.CommonPage;
@@ -40,6 +41,8 @@ public class  AdminController {
     UserService userService;
     @Autowired
     TopicService topicService;
+    @Autowired
+    CountService countService;
 
     @RequiresRoles(logical = Logical.AND, value = {"admin"})
     @ApiOperation(value = "分页获取被举报的blog")
@@ -199,5 +202,14 @@ public class  AdminController {
                                                     @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                     @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.searchUserForbidPage(keyword, pageNum, pageSize)));
+    }
+
+    @RequiresRoles(logical = Logical.AND, value = {"admin"})
+    @ApiOperation(value = "手动更新举报信息", notes = "手动更新举报信息")
+    @RequestMapping(value = "/report/update", method = RequestMethod.GET)
+    public Msg UpdateReport() {
+        countService.transUserReporterDataFromRedis2DB();
+        countService.transBlogReportDataFromRedis2DB();
+        return MsgUtil.ok(null);
     }
 }

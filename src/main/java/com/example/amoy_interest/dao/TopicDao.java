@@ -13,6 +13,7 @@ public interface TopicDao {
     Topic insert(Topic topic);
     Topic update(Topic topic);
     Topic getTopicByName(String topic_name);
+    List<Topic> getTopicListByName(List<String> topic_name);
     List<Topic> getReportedTopic();
     Page<Topic> getReportedTopicPage(Pageable pageable);
     Page<Topic> searchReportedTopicPage(String keyword,Pageable pageable);

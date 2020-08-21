@@ -42,6 +42,11 @@ public class TopicDaoImpl implements TopicDao {
     }
 
     @Override
+    public List<Topic> getTopicListByName(List<String> topic_name) {
+        return topicRepository.getTopicListByName(topic_name);
+    }
+
+    @Override
     public List<Topic> getReportedTopic() {
         return topicRepository.getReportedTopic();
     }

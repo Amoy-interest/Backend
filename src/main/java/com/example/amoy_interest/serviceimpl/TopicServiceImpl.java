@@ -1,17 +1,12 @@
 package com.example.amoy_interest.serviceimpl;
 
-import com.example.amoy_interest.dao.BlogDao;
 import com.example.amoy_interest.dao.TopicDao;
 import com.example.amoy_interest.dao.TopicHeatDao;
 import com.example.amoy_interest.dto.*;
-import com.example.amoy_interest.entity.Blog;
 import com.example.amoy_interest.entity.Topic;
 import com.example.amoy_interest.entity.TopicHeat;
-import com.example.amoy_interest.service.BlogService;
 import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.utils.HotRank;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -60,23 +55,13 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public TopicDTO modifyTopicIntro(TopicIntroDTO topicIntroDTO) {
-        Topic topic = topicDao.getTopicByName(topicIntroDTO.getTopic_name());
+    public TopicDTO modifyTopic(TopicModifyParam topicModifyParam) {
+        Topic topic = topicDao.getTopicByName(topicModifyParam.getTopic_name());
         if(topic == null) {
             return null;
         }
-        topic.setTopic_intro(topicIntroDTO.getTopic_intro());
-        topicDao.update(topic);
-        return new TopicDTO(topic);
-    }
-
-    @Override
-    public TopicDTO modifyTopicLogo(TopicLogoDTO topicLogoDTO) {
-        Topic topic = topicDao.getTopicByName(topicLogoDTO.getTopic_name());
-        if(topic == null) {
-            return null;
-        }
-        topic.setLogo_path(topicLogoDTO.getLogo_path());
+        topic.setTopic_intro(topicModifyParam.getTopic_intro());
+        topic.setLogo_path(topicModifyParam.getLogo_path());
         topicDao.update(topic);
         return new TopicDTO(topic);
     }

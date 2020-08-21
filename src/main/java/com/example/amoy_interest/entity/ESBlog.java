@@ -10,7 +10,9 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: Mok
@@ -26,7 +28,7 @@ public class ESBlog implements Serializable {
     @Id
     private Integer id;
     private Integer user_id;
-    private Integer topic_id;
+    private List<String> topics_name;
     private Integer blog_type;
     private Date blog_time;
     @Field(analyzer = "ik_max_word",type = FieldType.Text)
@@ -37,7 +39,11 @@ public class ESBlog implements Serializable {
     public ESBlog(Blog blog) {
         this.id = blog.getBlog_id();
         this.user_id = blog.getUser_id();
-        this.topic_id = blog.getTopic_id();
+        List<TopicBlog> topics = blog.getTopics();
+        topics_name = new ArrayList<>();
+        for(TopicBlog topic: topics) {
+            topics_name.add(topic.getTopic_name());
+        }
         this.blog_type = blog.getBlog_type();
         this.blog_text = blog.getBlog_text();
         this.blog_time = blog.getBlog_time();

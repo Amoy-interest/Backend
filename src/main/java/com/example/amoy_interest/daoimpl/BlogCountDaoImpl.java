@@ -38,4 +38,8 @@ public class BlogCountDaoImpl implements BlogCountDao {
         return blogCountRepository.saveAndFlush(blogCount);
     }
 
+    @Override
+    public void saveAll(List<BlogCount> list) {
+        blogCountRepository.saveAll(list);
+    }
 }

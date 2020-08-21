@@ -14,6 +14,8 @@ public interface UserService {
 
     boolean modifyUser(UserModifyParam userModifyParam);
 
+    void ReportUser(UserReportParam userReportParam);
+
     UserAuth findUserAuthById(Integer id);
 
     UserAuth findUserAuthByUsername(String username);

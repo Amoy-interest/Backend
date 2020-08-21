@@ -2,10 +2,7 @@ package com.example.amoy_interest.controller;
 
 import com.auth0.jwt.JWT;
 import com.example.amoy_interest.dto.*;
-import com.example.amoy_interest.entity.Blog;
-import com.example.amoy_interest.entity.BlogComment;
-import com.example.amoy_interest.entity.BlogCount;
-import com.example.amoy_interest.entity.UserAuth;
+import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
@@ -22,6 +19,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -39,13 +37,7 @@ public class BlogController {
     @Autowired
     private BlogService blogService;
     @Autowired
-    private UserService userService;
-    @Autowired
     private UserUtil userUtil;
-    @Autowired
-    private TopicService topicService;
-    @Autowired
-    private RedisService redisService;
 
     @RequiresAuthentication
     @ApiOperation(value = "写博文")
@@ -68,16 +60,6 @@ public class BlogController {
         if(!stringSet.isEmpty())
             return new Msg<>(403,"内容含有敏感词",stringSet);
         blogAddDTO.setUser_id(userAuth.getUser_id());
-        if(blogAddDTO.getTopic_name() != null) {
-            String topic_name = blogAddDTO.getTopic_name();
-            Integer topic_id = topicService.getTopic_idByName(topic_name);
-            if(topic_id == null) {
-                topic_id = topicService.addTopic(topic_name).getTopic_id();
-            }
-            blogAddDTO.setTopic_id(topic_id);
-        }else {
-            blogAddDTO.setTopic_id(0);
-        }
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.ADD_BLOG_SUCCESS_MSG, blogService.addBlog(blogAddDTO));
     }
 
@@ -112,7 +94,6 @@ public class BlogController {
     @RequiresAuthentication
     @ApiOperation(value = "转发")
     @PostMapping(value = "/forward")
-//    public Msg<BlogDTO> ForwardBlog(@RequestBody @Valid BlogForwardDTO blogForwardDTO) {
     public Msg ForwardBlog(@RequestBody @Valid BlogForwardDTO blogForwardDTO) {
         UserAuth userAuth = userUtil.getUser();
         if (userAuth.getIs_ban() == 1 && userAuth.getUserBan().getBan_time().after(new Date())) {
@@ -145,13 +126,14 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.COMMENT_SUCCESS_MSG, blogService.addBlogComment(commentPostDTO));
     }
 
+    //删除评论就不计数了
     @RequiresAuthentication
     @ApiOperation(value = "删除评论")
     @DeleteMapping(value = "/comments")
     public Msg DeleteComment(@NotNull(message = "评论id不能为空")
                              @Min(value = 1, message = "评论id不能小于1")
                              @RequestParam(required = true) Integer comment_id) {
-        blogService.deleteCommentByComment_id(comment_id);
+        blogService.deleteCommentByComment_id(comment_id);//
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.DELETE_COMMENT_SUCCESS_MSG);
     }
 
@@ -177,27 +159,18 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getMultiLevelCommentPage(root_comment_id, pageNum, pageSize)));
     }
 
-    //不支持修改评论
     @RequiresAuthentication
     @ApiOperation(value = "点赞")
     @RequestMapping(value = "/vote", method = RequestMethod.POST)
     public Msg Vote(@RequestBody @Valid VoteDTO voteDTO) {
         Integer comment_id = voteDTO.getComment_id();
         Integer blog_id = voteDTO.getBlog_id();
-        Integer user_id = userUtil.getUserId();
         if (comment_id == 0) {
-//            blogService.incrVoteCount(blog_id);
-            Integer status = redisService.findStatusFromRedis(blog_id,user_id);
-            if(status == 1) {//已经赞过，什么都不做(现在没有去查数据库，可能会有问题，是否需要查数据库？)
-                return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.VOTE_SUCCESS_MSG);
-            }else {
-                redisService.saveVote2Redis(blog_id,user_id);
-                redisService.incrementVoteCount(blog_id);
-            }
+            blogService.incrVoteCount(blog_id);
         } else {
+            //评论的点赞也得处理
             blogService.incrCommentVoteCount(comment_id);
         }
-        System.out.println("vote");
         return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.VOTE_SUCCESS_MSG);
     }
 
@@ -207,16 +180,8 @@ public class BlogController {
     public Msg CancelVote(@RequestBody @Valid VoteDTO voteDTO) { //用body还是在url上？
         Integer comment_id = voteDTO.getComment_id();
         Integer blog_id = voteDTO.getBlog_id();
-        Integer user_id = userUtil.getUserId();
         if (comment_id == 0) {
-//            blogService.decrVoteCount(blog_id);
-            Integer status = redisService.findStatusFromRedis(blog_id,user_id);
-            if(status == 0) {//已经取消点赞过，什么都不做(现在没有去查数据库，可能会有问题，是否需要查数据库？)
-                return MsgUtil.makeMsg(MsgCode.SUCCESS, MsgUtil.CANCEL_VOTE_SUCCESS_MSG);
-            }else {
-                redisService.cancelVoteFromRedis(blog_id,user_id);
-                redisService.decrementVoteCount(blog_id);
-            }
+            blogService.decrVoteCount(blog_id);
         } else {
             blogService.decrCommentVoteCount(comment_id);
         }
@@ -274,10 +239,9 @@ public class BlogController {
     @RequiresAuthentication
     @ApiOperation(value = "举报博文")
     @PostMapping(value = "/report")
-    public Msg ReportBlog(@NotNull(message = "博文id不能为空")
-                          @Min(value = 1, message = "id不能小于1")
-                          @RequestParam(required = true) Integer blog_id) {
-        blogService.reportBlogByBlog_id(blog_id);
+    public Msg ReportBlog(@RequestBody @Valid BlogReportDTO blogReportDTO) {
+        blogService.reportBlog(blogReportDTO);
+
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
     @GetMapping(value = "/test")

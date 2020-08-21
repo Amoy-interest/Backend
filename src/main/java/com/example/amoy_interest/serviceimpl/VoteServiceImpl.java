@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,29 +64,34 @@ public class VoteServiceImpl implements VoteService {
     @Transactional
     public void transVoteFromRedis2DB() {
         List<BlogVote> list = redisService.getVoteDataFromRedis();
-        for (BlogVote blogVote : list) {
-            BlogVote bv = getByBlogIdAndUserId(blogVote.getBlog_id(), blogVote.getUser_id());
-            if (bv == null) {
-                save(blogVote);
-            } else {
-                bv.setStatus(blogVote.getStatus());
-                save(bv);
-            }
-        }
+//        for (BlogVote blogVote : list) {
+//            BlogVote bv = getByBlogIdAndUserId(blogVote.getBlog_id(), blogVote.getUser_id());
+//            if (bv == null) {
+//                save(blogVote);
+//            } else {
+//                bv.setStatus(blogVote.getStatus());
+//                save(bv);
+//            }
+//        }
+        saveAll(list);
     }
 
     @Override
     @Transactional
     public void transVoteCountFromRedis2DB() {
         List<BlogVoteCountDTO> list = redisService.getVoteCountFromRedis();
+        List<BlogCount> blogCountList = new ArrayList<>();
         for (BlogVoteCountDTO dto : list) {
             BlogCount blogCount = blogCountDao.findBlogCountByBlog_id(dto.getBlog_id());
             if(blogCount != null) {
                 blogCount.setVote_count(blogCount.getVote_count() + dto.getVote_count());
-                blogCountDao.saveBlogCount(blogCount);
+                blogCountList.add(blogCount);
             }else {
                 log.error("无BlogCount记录");
             }
+        }
+        if(!blogCountList.isEmpty()) {
+            blogCountDao.saveAll(blogCountList);
         }
     }
 }

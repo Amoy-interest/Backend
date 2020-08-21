@@ -61,6 +61,8 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
                         return true;
                     } else {
                         msg = "Token已过期(" + throwable.getMessage() + ")";
+                        this.response403(response,msg);
+                        return false;
                     }
                 } else {
                     // 应用异常不为空
@@ -191,6 +193,22 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
         httpServletResponse.setContentType("application/json; charset=utf-8");
         try (PrintWriter out = httpServletResponse.getWriter()) {
             String data = JsonConvertUtil.objectToJson(new Msg(HttpStatus.UNAUTHORIZED.value(), "无权访问(Unauthorized):" + msg, null));
+            out.append(data);
+        } catch (IOException e) {
+            logger.error("直接返回Response信息出现IOException异常:{}", e.getMessage());
+            throw new CustomException("直接返回Response信息出现IOException异常:" + e.getMessage());
+        }
+    }
+    /**
+     * 无需转发，直接返回Response信息
+     */
+    private void response403(ServletResponse response, String msg) {
+        HttpServletResponse httpServletResponse = WebUtils.toHttp(response);
+        httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        httpServletResponse.setCharacterEncoding("UTF-8");
+        httpServletResponse.setContentType("application/json; charset=utf-8");
+        try (PrintWriter out = httpServletResponse.getWriter()) {
+            String data = JsonConvertUtil.objectToJson(new Msg(403, "无权访问(Unauthorized):" + msg, null));
             out.append(data);
         } catch (IOException e) {
             logger.error("直接返回Response信息出现IOException异常:{}", e.getMessage());

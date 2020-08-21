@@ -19,6 +19,11 @@ public class BlogImageDaoImpl implements BlogImageDao {
     }
 
     @Override
+    public List<BlogImage> saveAll(List<BlogImage> blogImageList) {
+        return blogImageRepository.saveAll(blogImageList);
+    }
+
+    @Override
     public BlogImage save(BlogImage blogImage) {
         return blogImageRepository.saveAndFlush(blogImage);
     }
