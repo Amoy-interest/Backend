@@ -8,11 +8,27 @@
     name,逻辑数据库名，与server.xml中的schema对应。
     checkSQLschema,数据库前缀相关设置，建议看文档，这里暂时设为folse。
     sqlMaxLimit,select 时默认的limit，避免查询全表。-->
-    <schema name="amoy" checkSQLschema="false" sqlMaxLimit="100">
+    <schema name="amoy" checkSQLschema="false" sqlMaxLimit="100" dataNode="dn1">
         <!--t_test表根据 id 进行十进制求模运算-->
-        <table name="user" primaryKey="user_id" autoIncrement="true" dataNode="dn1" rule="rule2"></table>
         <!--t_task_test表根据org_code列,进行一致性hash规则分片-->
-        <table name="blog" dataNode="dn1" rule="sharding-by-murmur-orgcode"></table>
+        <!-- <table name="user" primaryKey="user_id" autoIncrement="true" dataNode="dn1" ></table>
+        <table name="blog" primaryKey="blog_id" autoIncrement="true" dataNode="dn1"></table>
+        <table name="blog_comment" primaryKey="comment_id" autoIncrement="true" dataNode="dn1" ></table>
+        <table name="blog_count" primaryKey="blog_id" dataNode="dn1" ></table>
+        <table name="blog_image" primaryKey="image_id" autoIncrement="true" dataNode="dn1" ></table>
+        <table name="blog_report" dataNode="dn1" ></table>
+        <table name="blog_vote" primaryKey="id" autoIncrement="true" dataNode="dn1" ></table>
+        <table name="role_permission" primaryKey="id" autoIncrement="true" dataNode="dn1" ></table>
+        <table name="sensitive_words" primaryKey="keyword" dataNode="dn1" ></table>
+        <table name="topic" primaryKey="topic_id" autoIncrement="true" dataNode="dn1" ></table>
+        <table name="topic_blog" dataNode="dn1" ></table>
+        <table name="topic_heat" primaryKey="topic_id" dataNode="dn1" ></table>
+        <table name="user_ban" primaryKey="user_id" dataNode="dn1" ></table>
+        <table name="user_count" primaryKey="user_id" dataNode="dn1" ></table>
+        <table name="user_follow" primaryKey="user_id" dataNode="dn1" ></table>
+        <table name="user_info" primaryKey="user_id" dataNode="dn1"></table>   
+        <table name="user_report" dataNode="dn1" ></table>
+        <table name="user_role" primaryKey="id" autoIncrement="true" dataNode="dn1" ></table> -->
     </schema>
 
     <!-- 定义MyCat的数据节点(分片) -->
@@ -49,8 +65,8 @@
         <!--心跳检测 -->
         <heartbeat>select user()</heartbeat>
         <!--配置后台数据库的IP地址和端口号，还有账号密码 -->
-        <writeHost host="mysql-master" url="jdbc:mysql://172.32.2.2:3306?useSSL=false&amp;serverTimezone=GMT%2B8&amp;allowPublicKeyRetrieval=true" user="root" password="amoy123">
-            <readHost host="mysql-slave" url="jdbc:mysql://172.32.2.3:3306?useSSL=false&amp;serverTimezone=GMT%2B8&amp;allowPublicKeyRetrieval=true" user="root" password="amoy123" />
+        <writeHost host="mysql-master" url="jdbc:mysql://172.22.2.2:3306?useSSL=false&amp;serverTimezone=GMT%2B8&amp;allowPublicKeyRetrieval=true" user="root" password="amoy123">
+            <readHost host="mysql-slave" url="jdbc:mysql://172.22.2.3:3306?useSSL=false&amp;serverTimezone=GMT%2B8&amp;allowPublicKeyRetrieval=true" user="root" password="amoy123" />
             <!-- <readHost host="s2" url="192.18.0.4:3306" user="root" password="password" /> -->
         </writeHost>
     </dataHost>
