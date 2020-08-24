@@ -10,12 +10,13 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-08-21 11:36:19
+Date: 2020-08-24 17:14:32
 */
 DROP DATABASE IF EXISTS `amoy`;
 CREATE DATABASE `amoy`;
 use `amoy`;
 SET FOREIGN_KEY_CHECKS=0;
+
 -- ----------------------------
 -- Table structure for blog
 -- ----------------------------
@@ -112,7 +113,7 @@ CREATE TABLE `blog_vote` (
   KEY `blog_id` (`blog_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `blog_id` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `blog` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------

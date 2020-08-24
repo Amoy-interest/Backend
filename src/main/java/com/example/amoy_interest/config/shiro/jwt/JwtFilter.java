@@ -82,7 +82,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
             String httpMethod = httpServletRequest.getMethod();
             // 获取当前请求URI
             String requestURI = httpServletRequest.getRequestURI();
-            logger.info("当前请求 {} Authorization属性(Token)为空 请求类型 {}", requestURI, httpMethod);
+//            logger.info("当前请求 {} Authorization属性(Token)为空 请求类型 {}", requestURI, httpMethod);
             // mustLoginFlag = true 开启任何请求必须登录才可访问
             final Boolean mustLoginFlag = false;
             if (mustLoginFlag) {

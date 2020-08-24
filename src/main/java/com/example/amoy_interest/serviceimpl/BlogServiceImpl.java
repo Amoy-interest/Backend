@@ -106,6 +106,7 @@ public class BlogServiceImpl implements BlogService {
         blog.setBlogImages(blogImageList);
         blog.setUser(userDao.getById(blogAddDTO.getUser_id()));
         BlogDTO blogDTO = new BlogDTO(blog, blogCount, false);
+
         //计数
         redisService.incrementUserBlogCount(user_id);
         return blogDTO;

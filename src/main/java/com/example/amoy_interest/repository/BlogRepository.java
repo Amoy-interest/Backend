@@ -19,14 +19,14 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
     @Query(value = "from Blog")
     List<Blog> getAllBlogs();
 
-    @Query(value = "SELECT * FROM blog WHERE blog_text like %?1% and is_deleted = false",
-            countQuery = "SELECT count(*) From blog WHERE blog_text like %?1% and is_deleted = false",
-            nativeQuery = true)
-    Page<Blog> findListByBlog_textLike(String Blog_text, Pageable pageable);
+//    @Query(value = "SELECT * FROM blog WHERE blog_text like %?1% and is_deleted = false",
+//            countQuery = "SELECT count(*) From blog WHERE blog_text like %?1% and is_deleted = false",
+//            nativeQuery = true)
+//    Page<Blog> findListByBlog_textLike(String Blog_text, Pageable pageable);
 
-    @Query(value = "SELECT * FROM blog WHERE topic_id = ?1 and is_deleted = false",
-            countQuery = "SELECT count(*) From blog WHERE topic_id = ?1  and is_deleted = false",
-            nativeQuery = true)
+    @Query(value = "select b FROM Blog b join b.topics as t WHERE t.topic_id = ?1 and b.is_deleted = false",
+            countQuery = "SELECT count(b.blog_id) FROM Blog b join b.topics as t WHERE t.topic_id = ?1 and b.is_deleted = false"
+            )
     Page<Blog> findListByTopic_id(Integer topic_id, Pageable pageable);
 
     @Query(value = "SELECT * FROM blog WHERE user_id = ?1  and is_deleted = false",
@@ -35,13 +35,13 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
     Page<Blog> findListByUser_id(Integer user_id, Pageable pageable);
 
     //如何写？
-    @Query(value = "SELECT new com.example.amoy_interest.entity.Blog(b) FROM Blog as b left join BlogCount bc WHERE b.is_deleted = false and b.check_status = 0 and bc.report_count > 10",
-            countQuery = "select count(b.blog_id) FROM Blog as b left join BlogCount bc WHERE b.is_deleted = false and b.check_status = 0 and bc.report_count > 10"
+    @Query(value = "select b FROM Blog as b join b.blogCount as bc WHERE b.is_deleted = false and b.check_status = 0 and bc.report_count > 10",
+            countQuery = "select count(b.blog_id) FROM Blog as b join b.blogCount as bc WHERE b.is_deleted = false and b.check_status = 0 and bc.report_count > 10"
     )
 //    @Query(value = "From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10", countQuery = "SELECT count(b.blog_id) From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10")
     Page<Blog> findReportedBlogsPage(Pageable pageable);
 
-    @Query(value = "select new com.example.amoy_interest.entity.Blog(b) FROM Blog as b left join BlogCount bc WHERE b.is_deleted = false and b.check_status = 0 and b.blog_text like %?1% and bc.report_count > 10 ",
+    @Query(value = "select b FROM Blog as b join BlogCount bc WHERE b.is_deleted = false and b.check_status = 0 and b.blog_text like %?1% and bc.report_count > 10 ",
             countQuery = "SELECT count(b.blog_id) FROM Blog as b left join BlogCount bc WHERE b.is_deleted = false and b.check_status = 0 and b.blog_text like %?1% and bc.report_count > 10 ")
     Page<Blog> searchReportedBlogsPage(String keyword, Pageable pageable);
 
