@@ -20,13 +20,13 @@ services:
     build:
       context: ./mysql
       dockerfile: master/Dockerfile
-    container_name: amoy_mysql_master
+    container_name: mysql-master
     env_file:
       - env/base.env
       - env/master.env
     networks:
       mysql_net:
-        ipv4_address: 172.32.2.2
+        ipv4_address: 172.22.2.2
     volumes:
       - db_data_master:/var/lib/mysql
       - ./mysql/init-db-sql/amoy_interest.sql:/docker-entrypoint-initdb.d/1-data.sql
@@ -44,13 +44,13 @@ services:
     build:
       context: ./mysql
       dockerfile: slave/Dockerfile
-    container_name: amoy_mysql_slave
+    container_name: mysql-slave
     env_file:
       - env/base.env
       - env/node.env
     networks:
       mysql_net:
-        ipv4_address: 172.32.2.3
+        ipv4_address: 172.22.2.3
     volumes:
       - db_data_slave:/var/lib/mysql
       - ./mysql/init-db-sql/amoy_interest.sql:/docker-entrypoint-initdb.d/1-data.sql
@@ -70,6 +70,7 @@ services:
     build: ./mycat
     #image: mycat
     container_name: mycat
+    hostname: mycat
     restart: always
     volumes:
       #- ./mycat/conf/mycat-logs/:/usr/local/mycat/logs/:rw # mycat日志文件
@@ -85,7 +86,8 @@ services:
       - mysql-slave
     networks:
       mysql_net:
-        ipv4_address: 172.32.2.8
+        ipv4_address: 172.22.2.8
+
   redis:
     image: redis
     container_name: amoy_redis
@@ -95,9 +97,14 @@ services:
       - db_data:/var/lib/redis
     ports:
        - "6379:6379"
+    networks:
+      mysql_net:
+        ipv4_address: 172.22.2.5
 
   amoy_interest:
-    image: amoy_dev3
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
     container_name: amoy_dev3
     # build: .
     ports:
@@ -111,13 +118,21 @@ services:
       - mysql-master
       - mysql-slave
       - redis
+      - mycat
+    links:
+      - mycat
+    networks:
+      mysql_net:
+        ipv4_address: 172.22.2.4
+
 networks:
   mysql_net:
     driver: bridge
     ipam:
       driver: default
       config:
-      - subnet: 172.32.2.0/24
+      - subnet: 172.22.2.0/24
+        #gateway: 172.32.2.1
 volumes:
   db_data:
   db_data_master:

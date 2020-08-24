@@ -3,6 +3,8 @@ FROM centos:7
 COPY ./Mycat-server-1.6.7.4-release-20200105164103-linux.tar.gz /usr/local/
 RUN yum install -y java-1.8.0-openjdk-devel.x86_64 gettext nmap-ncat openssl telnet \
  && yum clean all -y
+COPY ./mysql-connector-java-8.0.20.jar /usr/local/mycat/lib/
+RUN rm -rf /usr/local/mycat/lib/mysql-connector-java-5.1.35.jar && chmod 777 /usr/local/mycat/lib/mysql-connector-java-8.0.20.jar
 
 #Mycat版本
 # ENV MYCAT_VERSION 1.6.7.3
