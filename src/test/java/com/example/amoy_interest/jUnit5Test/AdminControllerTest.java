@@ -67,11 +67,12 @@ public class AdminControllerTest {
     private TopicService topicService;
 
     private ObjectMapper om = new ObjectMapper();
-//    @BeforeEach
-//    public void setUp() {
-//        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-//    }
-//
+    @BeforeEach
+    public void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+
+    }
+
 //    @Test
 //    public void testGetReportedBlogs() throws Exception{
 //        List<BlogDTO> blogDTOList = new ArrayList<>();

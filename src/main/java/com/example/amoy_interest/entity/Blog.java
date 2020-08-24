@@ -61,9 +61,9 @@ public class Blog {
 //    @JoinColumn(name = "blog_id",referencedColumnName = "blog_id")
 //    private List<BlogComment> comments;
 
-//    @OneToOne(fetch=FetchType.LAZY)
-//    @JoinColumn(name = "blog_id",referencedColumnName = "blog_id")
-//    private BlogCount blogCount;
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "blog_id",referencedColumnName = "blog_id")
+    private BlogCount blogCount;
 
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name = "blog_id",referencedColumnName = "blog_id")
