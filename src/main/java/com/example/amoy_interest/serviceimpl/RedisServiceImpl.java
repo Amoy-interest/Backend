@@ -57,7 +57,6 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public void incrementVoteCount(Integer blog_id) {
-        //数据不存在会自动初始化为0再加一
         redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_BLOG_VOTE_COUNT, blog_id, 1);
     }
 
@@ -103,7 +102,7 @@ public class RedisServiceImpl implements RedisService {
             String value = (String) entry.getValue();
 
             //组装成 BlogReport 对象
-            BlogReport blogReport= new BlogReport(blog_id, user_id, value);
+            BlogReport blogReport = new BlogReport(blog_id, user_id, value);
             list.add(blogReport);
 
             //存到 list 后从 Redis 中删除
@@ -126,7 +125,7 @@ public class RedisServiceImpl implements RedisService {
             String value = (String) entry.getValue();
 
             //组装成 UserReport 对象
-            UserReport userReport = new UserReport(user_id,reporter_id,value);
+            UserReport userReport = new UserReport(user_id, reporter_id, value);
             list.add(userReport);
 
             //存到 list 后从 Redis 中删除
@@ -139,24 +138,30 @@ public class RedisServiceImpl implements RedisService {
     public List<BlogVoteCountDTO> getVoteCountFromRedis() {
         Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(RedisKeyUtils.MAP_KEY_BLOG_VOTE_COUNT, ScanOptions.NONE);
         List<BlogVoteCountDTO> list = new ArrayList<>();
-        while (cursor.hasNext()){
+        while (cursor.hasNext()) {
             Map.Entry<Object, Object> map = cursor.next();
             //将点赞数量存储在 LikedCountDT
 //            String key = (String)map.getKey();
             Integer key = (Integer) map.getKey();
             BlogVoteCountDTO dto = new BlogVoteCountDTO(key, (Integer) map.getValue());
             list.add(dto);
+        }
+        return list;
+    }
+
+    @Override
+    public void deleteVoteCount(List<Integer> list) {
+        for (Integer key : list) {
             //从Redis中删除这条记录
             redisTemplate.opsForHash().delete(RedisKeyUtils.MAP_KEY_BLOG_VOTE_COUNT, key);
         }
-        return list;
     }
 
     @Override
     public List<BlogSingleCountDTO> getBlogReportCountFromRedis() {
         Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(RedisKeyUtils.MAP_KEY_BLOG_REPORT_COUNT, ScanOptions.NONE);
         List<BlogSingleCountDTO> list = new ArrayList<>();
-        while (cursor.hasNext()){
+        while (cursor.hasNext()) {
             Map.Entry<Object, Object> map = cursor.next();
             //将点赞数量存储在 LikedCountDT
 //            String key = (String)map.getKey();
@@ -173,92 +178,121 @@ public class RedisServiceImpl implements RedisService {
     public List<BlogSingleCountDTO> getBlogForwardCountFromRedis() {
         Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(RedisKeyUtils.MAP_KEY_BLOG_FORWARD_COUNT, ScanOptions.NONE);
         List<BlogSingleCountDTO> list = new ArrayList<>();
-        while (cursor.hasNext()){
+        while (cursor.hasNext()) {
             Map.Entry<Object, Object> map = cursor.next();
             //将点赞数量存储在 LikedCountDT
 //            String key = (String)map.getKey();
             Integer key = (Integer) map.getKey();
             BlogSingleCountDTO dto = new BlogSingleCountDTO(key, (Integer) map.getValue());
             list.add(dto);
+        }
+        return list;
+    }
+
+    @Override
+    public void deleteBlogForwardCount(List<Integer> list) {
+        for (Integer key : list) {
             //从Redis中删除这条记录
             redisTemplate.opsForHash().delete(RedisKeyUtils.MAP_KEY_BLOG_FORWARD_COUNT, key);
         }
-        return list;
     }
 
     @Override
     public List<BlogSingleCountDTO> getBlogCommentCountFromRedis() {
         Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(RedisKeyUtils.MAP_KEY_BLOG_COMMENT_COUNT, ScanOptions.NONE);
         List<BlogSingleCountDTO> list = new ArrayList<>();
-        while (cursor.hasNext()){
+        while (cursor.hasNext()) {
             Map.Entry<Object, Object> map = cursor.next();
             //将点赞数量存储在 LikedCountDT
 //            String key = (String)map.getKey();
             Integer key = (Integer) map.getKey();
             BlogSingleCountDTO dto = new BlogSingleCountDTO(key, (Integer) map.getValue());
             list.add(dto);
+        }
+        return list;
+    }
+
+    @Override
+    public void deleteBlogCommentCount(List<Integer> list) {
+        for (Integer key : list) {
             //从Redis中删除这条记录
             redisTemplate.opsForHash().delete(RedisKeyUtils.MAP_KEY_BLOG_COMMENT_COUNT, key);
         }
-        return list;
     }
 
     @Override
     public List<UserSingleCountDTO> getUserFollowCountFromRedis() {
         Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(RedisKeyUtils.MAP_KEY_USER_FOLLOW_COUNT, ScanOptions.NONE);
         List<UserSingleCountDTO> list = new ArrayList<>();
-        while (cursor.hasNext()){
+        while (cursor.hasNext()) {
             Map.Entry<Object, Object> map = cursor.next();
 
 //            String key = (String)map.getKey();
             Integer key = (Integer) map.getKey();
             UserSingleCountDTO dto = new UserSingleCountDTO(key, (Integer) map.getValue());
             list.add(dto);
+        }
+        return list;
+    }
+
+    @Override
+    public void deleteUserFollowCount(List<Integer> list) {
+        for (Integer key : list) {
             //从Redis中删除这条记录
             redisTemplate.opsForHash().delete(RedisKeyUtils.MAP_KEY_USER_FOLLOW_COUNT, key);
         }
-        return list;
     }
 
     @Override
     public List<UserSingleCountDTO> getUserFanCountFromRedis() {
         Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(RedisKeyUtils.MAP_KEY_USER_FAN_COUNT, ScanOptions.NONE);
         List<UserSingleCountDTO> list = new ArrayList<>();
-        while (cursor.hasNext()){
+        while (cursor.hasNext()) {
             Map.Entry<Object, Object> map = cursor.next();
 
 //            String key = (String)map.getKey();
             Integer key = (Integer) map.getKey();
             UserSingleCountDTO dto = new UserSingleCountDTO(key, (Integer) map.getValue());
             list.add(dto);
+        }
+        return list;
+    }
+
+    @Override
+    public void deleteUserFanCount(List<Integer> list) {
+        for (Integer key : list) {
             //从Redis中删除这条记录
             redisTemplate.opsForHash().delete(RedisKeyUtils.MAP_KEY_USER_FAN_COUNT, key);
         }
-        return list;
     }
 
     @Override
     public List<UserSingleCountDTO> getUserBlogCountFromRedis() {
         Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(RedisKeyUtils.MAP_KEY_USER_BLOG_COUNT, ScanOptions.NONE);
         List<UserSingleCountDTO> list = new ArrayList<>();
-        while (cursor.hasNext()){
+        while (cursor.hasNext()) {
             Map.Entry<Object, Object> map = cursor.next();
 
 //            String key = (String)map.getKey();
             Integer key = (Integer) map.getKey();
             UserSingleCountDTO dto = new UserSingleCountDTO(key, (Integer) map.getValue());
             list.add(dto);
-            //从Redis中删除这条记录
-            redisTemplate.opsForHash().delete(RedisKeyUtils.MAP_KEY_USER_BLOG_COUNT, key);
         }
         return list;
+    }
+
+    @Override
+    public void deleteUserBlogCount(List<Integer> list) {
+        for (Integer key : list) {
+            redisTemplate.opsForHash().delete(RedisKeyUtils.MAP_KEY_USER_BLOG_COUNT, key);
+        }
     }
 
     @Override
     public List<UserSingleCountDTO> getUserReportCountFromRedis() {
         Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(RedisKeyUtils.MAP_KEY_USER_REPORT_COUNT, ScanOptions.NONE);
         List<UserSingleCountDTO> list = new ArrayList<>();
-        while (cursor.hasNext()){
+        while (cursor.hasNext()) {
             Map.Entry<Object, Object> map = cursor.next();
 
 //            String key = (String)map.getKey();
@@ -273,66 +307,57 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public Integer getBlogCommentCountFromRedis(Integer blog_id) {
-        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_BLOG_COMMENT_COUNT,blog_id);
-        if(obj == null) {
-            return 0;
-        }else
-            return (Integer)obj;
-    }
-
-    @Override
-    public Integer getBlogReportCountFromRedis(Integer blog_id) {
-        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_BLOG_REPORT_COUNT,blog_id);
-        if(obj == null) {
-            return 0;
-        }else
-            return (Integer)obj;
+        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_BLOG_COMMENT_COUNT, blog_id);
+        if (obj == null) {
+            return null;
+        } else
+            return (Integer) obj;
     }
 
     @Override
     public Integer getBlogForwardCountFromRedis(Integer blog_id) {
-        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_BLOG_FORWARD_COUNT,blog_id);
-        if(obj == null) {
-            return 0;
-        }else
-            return (Integer)obj;
+        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_BLOG_FORWARD_COUNT, blog_id);
+        if (obj == null) {
+            return null;
+        } else
+            return (Integer) obj;
     }
 
     @Override
     public Integer getUserFollowCountFromRedis(Integer user_id) {
-        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_USER_FOLLOW_COUNT,user_id);
-        if(obj == null) {
-            return 0;
-        }else
-            return (Integer)obj;
+        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_USER_FOLLOW_COUNT, user_id);
+        if (obj == null) {
+            return null;
+        } else
+            return (Integer) obj;
     }
 
     @Override
     public Integer getUserFanCountFromRedis(Integer user_id) {
-        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_USER_FAN_COUNT,user_id);
-        if(obj == null) {
-            return 0;
-        }else
-            return (Integer)obj;
+        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_USER_FAN_COUNT, user_id);
+        if (obj == null) {
+            return null;
+        } else
+            return (Integer) obj;
     }
 
     @Override
     public Integer getUserBlogCountFromRedis(Integer user_id) {
-        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_USER_BLOG_COUNT,user_id);
-        if(obj == null) {
-            return 0;
-        }else
-            return (Integer)obj;
+        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_USER_BLOG_COUNT, user_id);
+        if (obj == null) {
+            return null;
+        } else
+            return (Integer) obj;
     }
 
     @Override
     public Integer findStatusFromRedis(Integer blog_id, Integer user_id) {
         String key = RedisKeyUtils.getVoteKey(blog_id, user_id);
-        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_USER_VOTE_BLOG,key);
-        if(obj == null) {
+        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_USER_VOTE_BLOG, key);
+        if (obj == null) {
             //为空，说明redis没有数据，
             return -1;
-        }else{
+        } else {
             return (Integer) obj;
         }
     }
@@ -340,10 +365,10 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public boolean blogIsReported(Integer blog_id, Integer user_id) {
         String key = RedisKeyUtils.getBlogReportKey(blog_id, user_id);
-        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_BLOG_REPORT,key);
-        if(obj == null) {
+        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_BLOG_REPORT, key);
+        if (obj == null) {
             return false;
-        }else {
+        } else {
             return true;
         }
     }
@@ -351,21 +376,21 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public boolean userIsReported(Integer user_id, Integer reporter_id) {
         String key = RedisKeyUtils.getUserReportKey(user_id, reporter_id);
-        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_USER_REPORT,key);
-        if(obj == null) {
+        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_USER_REPORT, key);
+        if (obj == null) {
             return false;
-        }else {
+        } else {
             return true;
         }
     }
 
     @Override
     public Integer getVoteCountFromRedis(Integer blog_id) {
-        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_BLOG_VOTE_COUNT,blog_id);
-        if(obj == null) {
-            return 0;
-        }else
-            return (Integer)obj;
+        Object obj = redisTemplate.opsForHash().get(RedisKeyUtils.MAP_KEY_BLOG_VOTE_COUNT, blog_id);
+        if (obj == null) {
+            return null;
+        } else
+            return (Integer) obj;
     }
 
     @Override
@@ -379,78 +404,107 @@ public class RedisServiceImpl implements RedisService {
     public void saveUserReport2Redis(Integer user_id, Integer reporter_id, String report_reason) {
         String key = RedisKeyUtils.getUserReportKey(user_id, reporter_id);
 
-        redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_USER_REPORT,key,report_reason);
+        redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_USER_REPORT, key, report_reason);
     }
 
     @Override
     public void incrementUserFollowCount(Integer user_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_FOLLOW_COUNT,user_id,1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_FOLLOW_COUNT, user_id, 1);
     }
 
     @Override
     public void incrementUserFanCount(Integer user_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_FAN_COUNT,user_id,1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_FAN_COUNT, user_id, 1);
     }
 
     @Override
     public void incrementUserBlogCount(Integer user_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_BLOG_COUNT,user_id,1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_BLOG_COUNT, user_id, 1);
     }
 
     @Override
     public void incrementBlogCommentCount(Integer blog_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_BLOG_COMMENT_COUNT,blog_id,1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_BLOG_COMMENT_COUNT, blog_id, 1);
     }
 
     @Override
     public void incrementBlogReportCount(Integer blog_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_BLOG_REPORT_COUNT,blog_id,1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_BLOG_REPORT_COUNT, blog_id, 1);
     }
 
     @Override
     public void incrementUserReportCount(Integer user_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_REPORT_COUNT,user_id,1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_REPORT_COUNT, user_id, 1);
     }
 
     @Override
     public void incrementBlogForwardCount(Integer blog_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_BLOG_FORWARD_COUNT,blog_id,1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_BLOG_FORWARD_COUNT, blog_id, 1);
     }
 
     @Override
     public void decrementUserFollowCount(Integer user_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_FOLLOW_COUNT,user_id,-1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_FOLLOW_COUNT, user_id, -1);
     }
 
     @Override
     public void decrementUserFanCount(Integer user_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_FAN_COUNT,user_id,-1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_FAN_COUNT, user_id, -1);
     }
 
     @Override
     public void decrementUserBlogCount(Integer user_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_BLOG_COUNT,user_id,-1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_BLOG_COUNT, user_id, -1);
     }
 
     @Override
     public void decrementBlogCommentCount(Integer blog_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_BLOG_COMMENT_COUNT,blog_id,-1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_BLOG_COMMENT_COUNT, blog_id, -1);
     }
 
     @Override
     public void decrementBlogReportCount(Integer blog_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_BLOG_REPORT_COUNT,blog_id,-1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_BLOG_REPORT_COUNT, blog_id, -1);
     }
 
     @Override
     public void decrementUserReportCount(Integer user_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_REPORT_COUNT,user_id,-1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_REPORT_COUNT, user_id, -1);
     }
 
     @Override
     public void decrementBlogForwardCount(Integer blog_id) {
-        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_BLOG_FORWARD_COUNT,blog_id,-1);
+        redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_BLOG_FORWARD_COUNT, blog_id, -1);
     }
 
+    @Override
+    public void setVoteCount(Integer blog_id, Integer count) {
+        redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_BLOG_VOTE_COUNT, blog_id, count);
+    }
+
+    @Override
+    public void setBlogCommentCount(Integer blog_id, Integer count) {
+        redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_BLOG_COMMENT_COUNT, blog_id, count);
+    }
+
+    @Override
+    public void setBlogForwardCount(Integer blog_id, Integer count) {
+        redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_BLOG_FORWARD_COUNT, blog_id, count);
+    }
+
+    @Override
+    public void setUserFollowCount(Integer user_id, Integer count) {
+        redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_USER_FOLLOW_COUNT, user_id, count);
+    }
+
+    @Override
+    public void setUserFanCount(Integer user_id, Integer count) {
+        redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_USER_FAN_COUNT, user_id, count);
+    }
+
+    @Override
+    public void setUserBlogCount(Integer user_id, Integer count) {
+        redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_USER_REPORT_COUNT, user_id, count);
+    }
 
 }

@@ -73,6 +73,14 @@ public class UserServiceImpl implements UserService {
             return true;
         }else {
             userFollowDao.insert(userFollow);
+            if(redisService.getUserFollowCountFromRedis(user_id) == null) {
+                UserCount userCount = userCountDao.getByUserID(user_id);
+                redisService.setUserFollowCount(user_id,userCount.getFollow_count());
+            }
+            if(redisService.getUserFanCountFromRedis(follow_id) == null) {
+                UserCount userCount = userCountDao.getByUserID(follow_id);
+                redisService.setUserFanCount(follow_id,userCount.getFan_count());
+            }
             redisService.incrementUserFollowCount(user_id);
             redisService.incrementUserFanCount(follow_id);
         }
@@ -220,7 +228,22 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public boolean unfollow(Integer user_id, Integer unfollow_id) {
         UserFollow userFollow = new UserFollow(user_id, unfollow_id);
-        userFollowDao.delete(userFollow);
+        Optional<UserFollow> userFollow1 = userFollowDao.findByUser_idAndFollow_id(user_id, unfollow_id);
+        if(!userFollow1.isPresent()) {
+            return true;
+        }else {
+            userFollowDao.delete(userFollow);
+            if(redisService.getUserFollowCountFromRedis(user_id) == null) {
+                UserCount userCount = userCountDao.getByUserID(user_id);
+                redisService.setUserFollowCount(user_id,userCount.getFollow_count());
+            }
+            if(redisService.getUserFanCountFromRedis(unfollow_id) == null) {
+                UserCount userCount = userCountDao.getByUserID(unfollow_id);
+                redisService.setUserFanCount(unfollow_id,userCount.getFan_count());
+            }
+            redisService.decrementUserFollowCount(user_id);
+            redisService.decrementUserFanCount(unfollow_id);
+        }
         return true;
     }
 
@@ -264,7 +287,7 @@ public class UserServiceImpl implements UserService {
             userInfoDTO = new UserInfoDTO(user, true);
         else
             userInfoDTO = new UserInfoDTO(user, false);
-        UserCountDTO userCountDTO = new UserCountDTO(CalculateCount(user_id2));
+        UserCountDTO userCountDTO = new UserCountDTO(getUserCount(user_id2));
         return new UserDTO(userInfoDTO, userCountDTO);
     }
 
@@ -276,7 +299,7 @@ public class UserServiceImpl implements UserService {
         List<UserDTO> userDTOList = new ArrayList<>();
         for (User user : userList) {
             UserInfoDTO userInfoDTO = new UserInfoDTO(user, false);
-            UserCountDTO userCountDTO = new UserCountDTO(CalculateCount(user.getUser_id()));
+            UserCountDTO userCountDTO = new UserCountDTO(getUserCount(user.getUser_id()));
             userDTOList.add(new UserDTO(userInfoDTO, userCountDTO));
         }
         return new PageImpl<>(userDTOList, userPage.getPageable(), userPage.getTotalElements());
@@ -338,12 +361,31 @@ public class UserServiceImpl implements UserService {
             }
         }
     }
-    private UserCount CalculateCount(Integer user_id) {
-        UserCount userCount = userCountDao.getByUserID(user_id);
-        userCount.setFollow_count(userCount.getFollow_count() + redisService.getUserFollowCountFromRedis(user_id));
-        userCount.setFan_count(userCount.getFan_count() + redisService.getUserFanCountFromRedis(user_id));
-        userCount.setBlog_count(userCount.getBlog_count() + redisService.getUserBlogCountFromRedis(user_id));
-        return userCount;
+    private UserCount getUserCount(Integer user_id) {
+        Integer follow = redisService.getUserFollowCountFromRedis(user_id);
+        Integer fan = redisService.getUserFanCountFromRedis(user_id);
+        Integer blog = redisService.getUserBlogCountFromRedis(user_id);
+//        Integer report = redisService.getUserReportCountFromRedis(user_id);
+        if(fan == null || follow == null || blog == null ) {
+            UserCount userCount = userCountDao.getByUserID(user_id);
+            if(fan == null) {
+                fan = userCount.getFan_count();
+                redisService.setUserFanCount(user_id,fan);
+            }
+            if(follow == null) {
+                follow = userCount.getFollow_count();
+                redisService.setUserFollowCount(user_id,follow);
+            }
+            if(blog == null) {
+                blog = userCount.getBlog_count();
+                redisService.setUserBlogCount(user_id,blog);
+            }
+//            if(report == null) {
+//                report = userCount.getReport_count();
+//                redisService.setUserReportCount(user_id,report);
+//            }
+        }
+        return new UserCount(user_id,follow,fan,blog,0);
     }
 
 

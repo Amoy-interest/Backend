@@ -1,6 +1,7 @@
 package com.example.amoy_interest.repository;
 
 import com.example.amoy_interest.entity.ESBlog;
+import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
