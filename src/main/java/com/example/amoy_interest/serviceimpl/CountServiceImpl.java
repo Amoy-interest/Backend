@@ -39,28 +39,34 @@ public class CountServiceImpl implements CountService {
     public void transBlogCountDataFromRedis2DB() {
         List<BlogSingleCountDTO> list = redisService.getBlogCommentCountFromRedis();
         List<BlogCount> list1 = new ArrayList<>();
+        List<Integer> integerList = new ArrayList<>();
         for(BlogSingleCountDTO dto:list) {
+            integerList.add(dto.getBlog_id());
             BlogCount blogCount = blogCountDao.findBlogCountByBlog_id(dto.getBlog_id());
             if(blogCount != null) {
-                blogCount.setComment_count(blogCount.getComment_count() + dto.getCount());
+                blogCount.setComment_count(dto.getCount());
                 list1.add(blogCount);
             }else {
                 log.error("BlogCount id:" +blogCount.getBlog_id() + "数据库中不存在");
             }
         }
         blogCountDao.saveAll(list1);
+        redisService.deleteBlogCommentCount(integerList);
         list = redisService.getBlogForwardCountFromRedis();
+        integerList = new ArrayList<>();
         List<BlogCount> list2 = new ArrayList<>();
         for(BlogSingleCountDTO dto:list) {
+            integerList.add(dto.getBlog_id());
             BlogCount blogCount = blogCountDao.findBlogCountByBlog_id(dto.getBlog_id());
             if(blogCount != null) {
-                blogCount.setForward_count(blogCount.getForward_count() + dto.getCount());
+                blogCount.setForward_count(dto.getCount());
                 list2.add(blogCount);
             }else {
                 log.error("BlogCount id:" +blogCount.getBlog_id() + "数据库中不存在");
             }
         }
         blogCountDao.saveAll(list2);
+        redisService.deleteBlogForwardCount(integerList);
     }
 
     @Override
@@ -106,39 +112,49 @@ public class CountServiceImpl implements CountService {
     public void transUserCountDataFromRedis2DB() {
         List<UserSingleCountDTO> list = redisService.getUserBlogCountFromRedis();
         List<UserCount> list1 = new ArrayList<>();
+        List<Integer> integerList = new ArrayList<>();
         for(UserSingleCountDTO dto:list) {
+            integerList.add(dto.getUser_id());
+            integerList.add(dto.getUser_id());
             UserCount userCount = userCountDao.getByUserID(dto.getUser_id());
             if(userCount != null) {
-                userCount.setBlog_count(userCount.getBlog_count() + dto.getCount());
+                userCount.setBlog_count(dto.getCount());
                 list1.add(userCount);
             }else {
                 log.error("UserCount id:" +userCount.getUser_id() + "数据库中不存在");
             }
         }
         userCountDao.saveAll(list1);
+        redisService.deleteUserBlogCount(integerList);
         list = redisService.getUserFanCountFromRedis();
         List<UserCount> list2 = new ArrayList<>();
+        integerList = new ArrayList<>();
         for(UserSingleCountDTO dto:list) {
+            integerList.add(dto.getUser_id());
             UserCount userCount = userCountDao.getByUserID(dto.getUser_id());
             if(userCount != null) {
-                userCount.setFan_count(userCount.getFan_count() + dto.getCount());
+                userCount.setFan_count(dto.getCount());
                 list2.add(userCount);
             }else {
                 log.error("UserCount id:" +userCount.getUser_id() + "数据库中不存在");
             }
         }
         userCountDao.saveAll(list2);
+        redisService.deleteUserFanCount(integerList);
         list = redisService.getUserFollowCountFromRedis();
         List<UserCount> list3 = new ArrayList<>();
+        integerList = new ArrayList<>();
         for(UserSingleCountDTO dto:list) {
+            integerList.add(dto.getUser_id());
             UserCount userCount = userCountDao.getByUserID(dto.getUser_id());
             if(userCount != null) {
-                userCount.setFollow_count(userCount.getFollow_count() + dto.getCount());
+                userCount.setFollow_count(dto.getCount());
                 list3.add(userCount);
             }else {
                 log.error("UserCount id:" +userCount.getUser_id() + "数据库中不存在");
             }
         }
         userCountDao.saveAll(list3);
+        redisService.deleteUserFollowCount(integerList);
     }
 }

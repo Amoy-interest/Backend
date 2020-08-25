@@ -31,7 +31,7 @@ public class ESBlog implements Serializable {
     private List<String> topics_name;
     private Integer blog_type;
     private Date blog_time;
-    @Field(analyzer = "ik_max_word",type = FieldType.Text)
+    @Field(analyzer = "ik_max_word",type = FieldType.Text,searchAnalyzer = "ik_smart")
     private String blog_text;
     private boolean is_deleted;
     private Integer check_status;
@@ -49,6 +49,6 @@ public class ESBlog implements Serializable {
         this.blog_time = blog.getBlog_time();
         this.is_deleted = blog.is_deleted();
         this.check_status = blog.getCheck_status();
-        this.reply_blog_id = blog.getReply().getBlog_id();
+        this.reply_blog_id = blog_type == 0? 0 : blog.getReply().getBlog_id();
     }
 }

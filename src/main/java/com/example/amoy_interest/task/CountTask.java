@@ -15,7 +15,7 @@ import java.util.Date;
  * @Date: 2020/7/29 18:00
  */
 @Slf4j
-public class VoteTask extends QuartzJobBean {
+public class CountTask extends QuartzJobBean {
 
     @Autowired
     VoteService voteService;

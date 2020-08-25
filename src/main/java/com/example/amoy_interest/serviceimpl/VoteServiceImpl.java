@@ -81,10 +81,12 @@ public class VoteServiceImpl implements VoteService {
     public void transVoteCountFromRedis2DB() {
         List<BlogVoteCountDTO> list = redisService.getVoteCountFromRedis();
         List<BlogCount> blogCountList = new ArrayList<>();
+        List<Integer> list2 = new ArrayList<>();
         for (BlogVoteCountDTO dto : list) {
+            list2.add(dto.getBlog_id());
             BlogCount blogCount = blogCountDao.findBlogCountByBlog_id(dto.getBlog_id());
             if(blogCount != null) {
-                blogCount.setVote_count(blogCount.getVote_count() + dto.getVote_count());
+                blogCount.setVote_count(dto.getVote_count());
                 blogCountList.add(blogCount);
             }else {
                 log.error("无BlogCount记录");
@@ -93,5 +95,7 @@ public class VoteServiceImpl implements VoteService {
         if(!blogCountList.isEmpty()) {
             blogCountDao.saveAll(blogCountList);
         }
+        //存到mysql后再删除数据，防止redis取了mysql旧数据
+        redisService.deleteVoteCount(list2);
     }
 }

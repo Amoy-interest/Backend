@@ -1,11 +1,13 @@
 package com.example.amoy_interest.daoimpl;
 
 import com.example.amoy_interest.dao.BlogCountDao;
+import com.example.amoy_interest.dto.BlogHeatParam;
 import com.example.amoy_interest.entity.BlogCount;
 import com.example.amoy_interest.repository.BlogCountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -41,5 +43,15 @@ public class BlogCountDaoImpl implements BlogCountDao {
     @Override
     public void saveAll(List<BlogCount> list) {
         blogCountRepository.saveAll(list);
+    }
+
+    @Override
+    public List<BlogHeatParam> getBlogHeatParamAfterTime(Date time) {
+        return blogCountRepository.getBlogHeatParamAfterTime(time);
+    }
+
+    @Override
+    public List<BlogHeatParam> getAllBlogHeatParam() {
+        return blogCountRepository.getAllBlogHeatParam();
     }
 }

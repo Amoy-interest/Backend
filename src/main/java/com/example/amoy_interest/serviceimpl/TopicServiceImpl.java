@@ -3,10 +3,12 @@ package com.example.amoy_interest.serviceimpl;
 import com.example.amoy_interest.dao.TopicDao;
 import com.example.amoy_interest.dao.TopicHeatDao;
 import com.example.amoy_interest.dto.*;
+import com.example.amoy_interest.entity.BlogHeat;
 import com.example.amoy_interest.entity.Topic;
 import com.example.amoy_interest.entity.TopicHeat;
 import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.utils.HotRank;
+import org.elasticsearch.index.query.WrapperQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,9 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public TopicDTO getTopicDTOByName(String topic_name) {
         Topic topic = topicDao.getTopicByName(topic_name);
+        if(topic == null) {
+            return null;
+        }
         return new TopicDTO(topic);
     }
 
@@ -159,5 +164,10 @@ public class TopicServiceImpl implements TopicService {
             topicHeatResultList.add(topicHeatResult);
         }
         return new PageImpl<>(topicHeatResultList,topicHeatPage.getPageable(),topicHeatPage.getTotalElements());
+    }
+
+    @Override
+    public void updateAllTopicHeat() {
+
     }
 }

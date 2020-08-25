@@ -59,4 +59,5 @@ public interface VoteService {
      * 将Redis中的点赞数量数据存入数据库
      */
     void transVoteCountFromRedis2DB();
+
 }
