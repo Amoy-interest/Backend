@@ -38,6 +38,8 @@ public class BlogController {
     private BlogService blogService;
     @Autowired
     private UserUtil userUtil;
+    @Autowired
+    private RecommendService recommendService;
 
     @RequiresAuthentication
     @ApiOperation(value = "写博文")
@@ -201,13 +203,28 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, CommonPage.restPage(blogService.getSearchListByBlog_text(keyword, pageNum, pageSize)));
     }
 
+//    @RequiresAuthentication
+//    @ApiOperation(value = "分页获取推荐blog（未实现热度,现在等于未登录前的blog）")
+//    @GetMapping(value = "/recommend")
+//    public Msg<CommonPage<BlogDTO>> GetRecommendBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+//                                                      @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+//        Integer user_id = userUtil.getUserId();
+//        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getAllBlogPageOrderByTime(pageNum, pageSize)));
+//    }
+
     @RequiresAuthentication
-    @ApiOperation(value = "分页获取推荐blog（未实现热度,现在等于未登录前的blog）")
+    @ApiOperation(value = "获取相似博文")
+    @GetMapping(value = "/sim")
+    public Msg<List<BlogDTO>> getSimBlog(@RequestParam(required = true) Integer blog_id, @RequestParam(required = false, defaultValue = "5") Integer limit_count) {
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, recommendService.getSimBlogUsingBlog_id(blog_id, limit_count));
+    }
+
+    @RequiresAuthentication
+    @ApiOperation(value = "获取推荐博文")
     @GetMapping(value = "/recommend")
-    public Msg<CommonPage<BlogDTO>> GetRecommendBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                                      @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+    public Msg<List<BlogDTO>> getRecommendBlog(@RequestParam(required = false, defaultValue = "5") Integer limit_count) {
         Integer user_id = userUtil.getUserId();
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getAllBlogPageOrderByTime(pageNum, pageSize)));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, recommendService.getRecommendBlogsUsingUser_id(user_id, limit_count));
     }
 
     @RequiresAuthentication

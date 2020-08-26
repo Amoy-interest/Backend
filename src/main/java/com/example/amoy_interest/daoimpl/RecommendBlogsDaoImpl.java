@@ -8,6 +8,8 @@ import java.util.List;
 import com.example.amoy_interest.repository.RecommendBlogsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Repository
 public class RecommendBlogsDaoImpl implements RecommendBlogsDao {
@@ -15,8 +17,8 @@ public class RecommendBlogsDaoImpl implements RecommendBlogsDao {
     private RecommendBlogsRepository recommendBlogsRepository;
 
     @Override
-    public List<Blog> getRecommendBlogsUsingUser_id(Integer user_id) {
-        return recommendBlogsRepository.getRecommendBlogsUsingUser_id(user_id);
+    public Page<Blog> getRecommendBlogsUsingUser_id(Integer user_id, Pageable pageable) {
+        return recommendBlogsRepository.getRecommendBlogsUsingUser_id(user_id, pageable);
     }
 
     @Override
