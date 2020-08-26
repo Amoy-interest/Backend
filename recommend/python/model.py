@@ -473,7 +473,9 @@ if __name__ == "__main__":
 
 	next_day = next_time.date().day
 
-	next_time = datetime.datetime.strptime(str(next_year)+"-"+str(next_month)+"-"+str(next_day)+" 10:30:00", "%Y-%m-%d %H:%M:%S")
+	next_time = datetime.datetime.strptime(str(next_year)+"-"+str(next_month)+"-"+str(next_day)+" 17:27:00", "%Y-%m-%d %H:%M:%S")
+
+	print("start_time:", next_time)
 
 	timer_start_time = (next_time - now_time).total_seconds()
 
