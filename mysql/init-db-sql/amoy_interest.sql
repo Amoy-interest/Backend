@@ -10,11 +10,9 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-08-25 19:22:22
+Date: 2020-08-26 09:49:24
 */
-DROP DATABASE IF EXISTS `amoy`;
-CREATE DATABASE `amoy`;
-use `amoy`;
+
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
@@ -128,6 +126,20 @@ CREATE TABLE `blog_vote` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
+-- Table structure for recommend_blogs
+-- ----------------------------
+DROP TABLE IF EXISTS `recommend_blogs`;
+CREATE TABLE `recommend_blogs` (
+  `user_id` int NOT NULL,
+  `blog_id` int NOT NULL,
+  `recommended` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`user_id`,`blog_id`),
+  KEY `FK_21` (`blog_id`),
+  CONSTRAINT `FK_20` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `FK_21` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
 -- Table structure for role_permission
 -- ----------------------------
 DROP TABLE IF EXISTS `role_permission`;
@@ -146,6 +158,32 @@ CREATE TABLE `sensitive_words` (
   `keyword` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`keyword`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for sim_blog
+-- ----------------------------
+DROP TABLE IF EXISTS `sim_blog`;
+CREATE TABLE `sim_blog` (
+  `blog_id` int NOT NULL,
+  `sim_id` int NOT NULL,
+  PRIMARY KEY (`blog_id`,`sim_id`),
+  KEY `FK_25` (`sim_id`),
+  CONSTRAINT `FK_24` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`),
+  CONSTRAINT `FK_25` FOREIGN KEY (`sim_id`) REFERENCES `blog` (`blog_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for sim_user
+-- ----------------------------
+DROP TABLE IF EXISTS `sim_user`;
+CREATE TABLE `sim_user` (
+  `user_id` int NOT NULL,
+  `sim_id` int NOT NULL,
+  PRIMARY KEY (`user_id`,`sim_id`),
+  KEY `FK_23` (`sim_id`),
+  CONSTRAINT `FK_22` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `FK_23` FOREIGN KEY (`sim_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for topic
