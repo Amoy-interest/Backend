@@ -24,13 +24,13 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
 //            nativeQuery = true)
 //    Page<Blog> findListByBlog_textLike(String Blog_text, Pageable pageable);
 
-    @Query(value = "select b FROM Blog b join b.topics as t WHERE t.topic_id = ?1 and b.is_deleted = false",
-            countQuery = "SELECT count(b.blog_id) FROM Blog b join b.topics as t WHERE t.topic_id = ?1 and b.is_deleted = false"
+    @Query(value = "select b FROM Blog b join b.topics as t WHERE t.topic_id = ?1 and b.is_deleted = false and b.check_status <> 2",
+            countQuery = "SELECT count(b.blog_id) FROM Blog b join b.topics as t WHERE t.topic_id = ?1 and b.is_deleted = false and b.check_status <> 2"
             )
     Page<Blog> findListByTopic_id(Integer topic_id, Pageable pageable);
 
-    @Query(value = "SELECT * FROM blog WHERE user_id = ?1  and is_deleted = false",
-            countQuery = "SELECT count(*) From blog WHERE user_id = ?1  and is_deleted = false",
+    @Query(value = "SELECT * FROM blog WHERE user_id = ?1  and is_deleted = false and check_status <> 2",
+            countQuery = "SELECT count(*) From blog WHERE user_id = ?1  and is_deleted = false and check_status <> 2",
             nativeQuery = true)
     Page<Blog> findListByUser_id(Integer user_id, Pageable pageable);
 
@@ -50,8 +50,8 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
     Page<Blog> getBlogPageByUser_id(Integer user_id, Pageable pageable);
 
     //需要优化？
-    @Query(value = "SELECT * From blog b where b.is_deleted = false and (b.user_id = ?1 or b.user_id in (SELECT follow_id from user_follow u where user_id = ?1))",
-            countQuery = "SELECT count(*) From blog b where b.is_deleted = false and (b.user_id = ?1 or b.user_id in (SELECT follow_id from user_follow u where user_id = ?1))",
+    @Query(value = "SELECT * From blog b where b.is_deleted = false and b.check_status <> 2 and (b.user_id = ?1 or b.user_id in (SELECT follow_id from user_follow u where user_id = ?1))",
+            countQuery = "SELECT count(*) From blog b where b.is_deleted = false and b.check_status <> 2 and (b.user_id = ?1 or b.user_id in (SELECT follow_id from user_follow u where user_id = ?1))",
             nativeQuery = true)
     Page<Blog> getFollowBlogPageByUser_id(Integer user_id, Pageable pageable);
 

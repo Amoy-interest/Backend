@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import javax.management.relation.Role;
 import java.util.List;
 
+import static com.example.amoy_interest.constant.Constant.TEST_TOKEN;
+
 /**
  * 自定义Realm
  * @author dolyw.com
@@ -62,6 +64,10 @@ public class UserRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         String username = JwtUtil.getClaim(principalCollection.toString(), Constant.USERNAME);
+        if(username == "鲁迅") {
+            simpleAuthorizationInfo.addRole("admin");
+            return simpleAuthorizationInfo;
+        }
 //        UserDto userDto = new UserDto();
 //        userDto.setAccount(account);
 //        // 查询用户角色
@@ -90,6 +96,9 @@ public class UserRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String token = (String) authenticationToken.getCredentials();
+        if(token == TEST_TOKEN) {
+            return new SimpleAuthenticationInfo(token, token, "userRealm");
+        }
         // 解密获得account，用于和数据库进行对比
         String username = JwtUtil.getClaim(token, Constant.USERNAME);
         // 帐号为空

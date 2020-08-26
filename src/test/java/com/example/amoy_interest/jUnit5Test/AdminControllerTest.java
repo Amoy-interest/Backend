@@ -1,6 +1,7 @@
 package com.example.amoy_interest.jUnit5Test;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.amoy_interest.config.shiro.jwt.JwtToken;
 import com.example.amoy_interest.controller.AdminController;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.Blog;
@@ -17,6 +18,12 @@ import com.example.amoy_interest.utils.CommonPage;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
+import org.apache.shiro.web.subject.WebSubject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,11 +33,15 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -54,11 +65,13 @@ public class AdminControllerTest {
     private final static Integer pageNum1 = 1;
     private final static Integer pageSize1 = 5;
     private final static Integer orderType1 = 1;
-    private final static String token1 = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk2MzgyMzM2fQ.ea94gluuWxGJwF2xgxl-KHTlkOkcTTy8R6FPwH65Usc";
+    private final static String token1 = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMSIsImN1cnJlbnRUaW1lTWlsbGlzIjoiMTU5ODQwODAyMTU0OSIsImV4cCI6MTkxMzc2ODAyMSwidXNlcm5hbWUiOiLpsoHov4UifQ.FSxvme-or5PLR23LYNfgcD4k6P7p_uqVbYegdJVA3HE";
 //    @InjectMocks
 //    private AdminController adminController;
     @Autowired
     private WebApplicationContext context;
+    @Autowired
+    private SecurityManager securityManager;
     @MockBean
     private UserService userService;
     @MockBean
@@ -67,11 +80,22 @@ public class AdminControllerTest {
     private TopicService topicService;
 
     private ObjectMapper om = new ObjectMapper();
-    @BeforeEach
-    public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-
-    }
+//    @BeforeEach
+//    public void setUp() {
+//        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+//        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest(context.getServletContext());
+//        MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
+//        MockHttpSession mockHttpSession = new MockHttpSession(context.getServletContext());
+//        mockHttpServletRequest.setSession(mockHttpSession);
+//        SecurityUtils.setSecurityManager(securityManager);
+//        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+//        Subject subject = new WebSubject
+//                .Builder(mockHttpServletRequest, mockHttpServletResponse)
+//                .buildWebSubject();
+//        JwtToken token = new JwtToken(token1);
+//        subject.login(token);
+//        ThreadContext.bind(subject);
+//    }
 
 //    @Test
 //    public void testGetReportedBlogs() throws Exception{
@@ -80,10 +104,15 @@ public class AdminControllerTest {
 //        Pageable pageable = PageRequest.of(pageNum1,pageSize1);
 //        Page<BlogDTO> blogDTOPage  = new PageImpl<>(blogDTOList,pageable,0);
 //        when(blogService.getReportedBlogsPage(pageNum1,pageSize1,orderType1)).thenReturn(blogDTOPage);
-//        mockMvc.perform(get("/admins/blogs/reported/?orderType=1&pageNum=1&pageSize=5")
-//                .header("token", token1))
-//                .andExpect(status().isOk()).andReturn();
-//        verify(blogService, times(1)).getReportedBlogsPage(any(),any(),any());
+//        MvcResult result = mockMvc.perform(get("/admins/blogs/reported/?orderType=1&pageNum=1&pageSize=5")
+////                .header("Authorization", token1))
+////                .andExpect(status().isOk())
+//        ).andReturn();
+//        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+//        String resultContent = result.getResponse().getContentAsString();
+//        Msg msg = om.readValue(resultContent,new TypeReference<Msg>() {});
+//        System.out.println(msg.getMsg());
+////        verify(blogService, times(1)).getReportedBlogsPage(any(),any(),any());
 //    }
 //    @Test
 //    public void testBan() throws Exception{

@@ -436,7 +436,8 @@ def cal_sim_blog(conn, cursor1):
 def recommend_sys():
 
 	conn = pymysql.connect(
-	    host="106.14.19.68",
+	    host="mycat",
+		#"106.14.19.68",
 	    port=8066,
 	    user="root",
 	    password="amoy123",
@@ -472,7 +473,7 @@ if __name__ == "__main__":
 
 	next_day = next_time.date().day
 
-	next_time = datetime.datetime.strptime(str(next_year)+"-"+str(next_month)+"-"+str(next_day)+" 03:00:00", "%Y-%m-%d %H:%M:%S")
+	next_time = datetime.datetime.strptime(str(next_year)+"-"+str(next_month)+"-"+str(next_day)+" 10:30:00", "%Y-%m-%d %H:%M:%S")
 
 	timer_start_time = (next_time - now_time).total_seconds()
 

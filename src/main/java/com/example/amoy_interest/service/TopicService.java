@@ -18,4 +18,5 @@ public interface TopicService {
     TopicDTO modifyTopic(TopicModifyParam topicModifyParam);
     void updateTopicHeat();
     Page<TopicHeatResult> getHotList(Integer pageNum,Integer pageSize);
+    void updateAllTopicHeat();
 }

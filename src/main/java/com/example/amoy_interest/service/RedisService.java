@@ -150,8 +150,6 @@ public interface RedisService {
 
     Integer getBlogCommentCountFromRedis(Integer blog_id);
 
-    Integer getBlogReportCountFromRedis(Integer blog_id);
-
     Integer getBlogForwardCountFromRedis(Integer blog_id);
 
     Integer getUserFollowCountFromRedis(Integer user_id);
@@ -159,5 +157,29 @@ public interface RedisService {
     Integer getUserFanCountFromRedis(Integer user_id);
 
     Integer getUserBlogCountFromRedis(Integer user_id);
+
+    void setVoteCount(Integer blog_id,Integer count);
+
+    void setBlogCommentCount(Integer blog_id,Integer count);
+
+    void setBlogForwardCount(Integer blog_id,Integer count);
+
+    void setUserFollowCount(Integer user_id,Integer count);
+
+    void setUserFanCount(Integer user_id,Integer count);
+
+    void setUserBlogCount(Integer user_id,Integer count);
+
+    void deleteVoteCount(List<Integer> list);
+
+    void deleteBlogCommentCount(List<Integer> list);
+
+    void deleteBlogForwardCount(List<Integer> list);
+
+    void deleteUserFollowCount(List<Integer> list);
+
+    void deleteUserFanCount(List<Integer> list);
+
+    void deleteUserBlogCount(List<Integer> list);
 
 }

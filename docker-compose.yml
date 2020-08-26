@@ -11,7 +11,7 @@ services:
   #     MYSQL_ROOT_HOST: '%'
   #     MYSQL_ROOT_PASSWORD: amoy123
   #     MYSQL_DATABASE: amoy
-      
+
   #   ports:
   #     - "3306:3306"
   #      MYSQL_USER: boot
@@ -29,8 +29,9 @@ services:
         ipv4_address: 172.22.2.2
     volumes:
       - db_data_master:/var/lib/mysql
-      - ./mysql/init-db-sql/amoy_interest.sql:/docker-entrypoint-initdb.d/1-data.sql
-      - ./mysql/init-db-sql/init-master.sh:/docker-entrypoint-initdb.d/2-init-master.sh
+      - ./mysql/init-db-sql/init_database.sql:/docker-entrypoint-initdb.d/1-init.sql
+      - ./mysql/init-db-sql/amoy_interest.sql:/docker-entrypoint-initdb.d/2-data.sql
+      - ./mysql/init-db-sql/init-master.sh:/docker-entrypoint-initdb.d/3-init-master.sh
     environment:
       - "MYSQL_ROOT_PASSWORD=amoy123"
     # links:
@@ -53,8 +54,9 @@ services:
         ipv4_address: 172.22.2.3
     volumes:
       - db_data_slave:/var/lib/mysql
-      - ./mysql/init-db-sql/amoy_interest.sql:/docker-entrypoint-initdb.d/1-data.sql
-      - ./mysql/init-db-sql/init-node.sh:/docker-entrypoint-initdb.d/2-init-node.sh
+      - ./mysql/init-db-sql/init_database.sql:/docker-entrypoint-initdb.d/1-init.sql
+      - ./mysql/init-db-sql/amoy_interest.sql:/docker-entrypoint-initdb.d/2-data.sql
+      - ./mysql/init-db-sql/init-node.sh:/docker-entrypoint-initdb.d/3-init-node.sh
     environment:
       - "MYSQL_ROOT_PASSWORD=amoy123"
       - "MASTER_MYSQL_ROOT_PASSWORD=${MASTER_MYSQL_ROOT_PASSWORD}"
@@ -124,6 +126,24 @@ services:
     networks:
       mysql_net:
         ipv4_address: 172.22.2.4
+  recommend: # docker-compose编排名称，一般同微服务名称，注意不要与其>他服务重名
+    image: "python:3.7.0b4" # docker镜像名及版本
+    hostname: recommand # docker容器主机名
+    container_name: recommend # docker容器名
+    volumes: # 挂载目录
+      - ./recommend/python:/python # 项目相关
+      - ./recommend/docker:/docker # docker相关
+    ports: # 端口映射
+      - "5000:5000"
+    environment: # 配置环境变量
+      - TZ=Asia/Shanghai # 设置时区
+    command: bash /docker/run.sh #设置启动命令
+    restart: unless-stopped # 自动启动s
+    links:
+      - mycat
+    networks:
+      mysql_net:
+        ipv4_address: 172.22.2.6
 
 networks:
   mysql_net:

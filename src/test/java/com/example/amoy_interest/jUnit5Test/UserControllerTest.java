@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.example.amoy_interest.constant.Constant.TEST_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
@@ -28,30 +29,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerTest {
     private MockMvc mockMvc;
+    private final static String token1 = TEST_TOKEN;
+
 
     @Autowired
     private WebApplicationContext context;
 
-    @MockBean
-    private UserService userService;
+//    @MockBean
+//    private UserService userService;
 
 //    @InjectMocks
 //    private UserController userController;
 
     private ObjectMapper om = new ObjectMapper();
 //
-//    @BeforeEach
-//    public void setUp() {mockMvc = MockMvcBuilders.webAppContextSetup(context).build();}
+    @BeforeEach
+    public void setUp() {mockMvc = MockMvcBuilders.webAppContextSetup(context).build();}
 //
 //    @Test
 //    public void testLogin() throws Exception{
-//        User user = new User(100,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"啥都不会",null);
-//        UserAuth userAuth = new UserAuth(100,"admin","123456",0,0,0,user,null);
-//        user.setUserAuth(userAuth);
-//        UserInfoDTO userInfoDTO = new UserInfoDTO(100,"mok",0,"上海市闵行区","啥都不会",null,0,false);
-//        when(userService.findUserAuthByUsername("admin")).thenReturn(userAuth);
-//        LoginDTO loginDTO = new LoginDTO("admin","123456");
-//
+////        User user = new User(100,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"啥都不会",null);
+////        UserAuth userAuth = new UserAuth(100,"admin","123456",0,0,0,user,null);
+////        user.setUserAuth(userAuth);
+////        UserInfoDTO userInfoDTO = new UserInfoDTO(100,"mok",0,"上海市闵行区","啥都不会",null,0,false);
+////        when(userService.findUserAuthByUsername("admin")).thenReturn(userAuth);
+//        LoginDTO loginDTO = new LoginDTO("鲁迅","123456");
 //        String requestJson = JSONObject.toJSONString(loginDTO);
 //        MvcResult result = mockMvc.perform(post("/users/login")
 //                .contentType(MediaType.APPLICATION_JSON)
@@ -59,7 +61,8 @@ public class UserControllerTest {
 //                .andExpect(status().isOk()).andReturn();
 //        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
 //        String resultContent = result.getResponse().getContentAsString();
-////        Msg<UserDTO> msg = om.readValue(resultContent,new TypeReference<Msg<UserDTO>>() {});
+//        Msg<UserInfoDTO> msg = om.readValue(resultContent,new TypeReference<Msg<UserInfoDTO>>() {});
+//        System.out.println(msg.getMsg());
 ////        assertEquals(0,msg.getStatus());
 ////        assertEquals(MsgUtil.LOGIN_SUCCESS_MSG,msg.getMsg());
 ////        assertEquals(userInfoDTO,msg.getData().getUser());

@@ -3,18 +3,26 @@ package com.example.amoy_interest.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-
-import javax.persistence.*;
-
+/**
+ * @Author: Mok
+ * @Date: 2020/8/24 17:46
+ */
 @Data
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Table(name = "blog_heat")
 public class BlogHeat {
     @Id
-    private int blog_Id;
+    private Integer blog_id;
+    private Integer heat;
 
-    private int blog_heat;
+    public BlogHeat(BlogHeat bh) {
+        this.blog_id = bh.blog_id;
+        this.heat = bh.heat;
+    }
 }

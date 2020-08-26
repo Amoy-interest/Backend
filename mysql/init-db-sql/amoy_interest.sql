@@ -10,11 +10,9 @@ Target Server Type    : MYSQL
 Target Server Version : 80020
 File Encoding         : 65001
 
-Date: 2020-08-24 17:14:32
+Date: 2020-08-26 09:49:24
 */
-DROP DATABASE IF EXISTS `amoy`;
-CREATE DATABASE `amoy`;
-use `amoy`;
+
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
@@ -64,12 +62,23 @@ CREATE TABLE `blog_comment` (
 DROP TABLE IF EXISTS `blog_count`;
 CREATE TABLE `blog_count` (
   `blog_id` int NOT NULL,
-  `forward_count` int DEFAULT NULL,
-  `comment_count` int DEFAULT NULL,
-  `vote_count` int DEFAULT NULL,
-  `report_count` int DEFAULT NULL,
+  `forward_count` int NOT NULL DEFAULT '0',
+  `comment_count` int NOT NULL DEFAULT '0',
+  `vote_count` int NOT NULL DEFAULT '0',
+  `report_count` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`blog_id`),
   CONSTRAINT `FK_Reference_9` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for blog_heat
+-- ----------------------------
+DROP TABLE IF EXISTS `blog_heat`;
+CREATE TABLE `blog_heat` (
+  `blog_id` int NOT NULL,
+  `heat` int DEFAULT '0',
+  PRIMARY KEY (`blog_id`),
+  CONSTRAINT `blogid` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -117,6 +126,20 @@ CREATE TABLE `blog_vote` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
+-- Table structure for recommend_blogs
+-- ----------------------------
+DROP TABLE IF EXISTS `recommend_blogs`;
+CREATE TABLE `recommend_blogs` (
+  `user_id` int NOT NULL,
+  `blog_id` int NOT NULL,
+  `recommended` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`user_id`,`blog_id`),
+  KEY `FK_21` (`blog_id`),
+  CONSTRAINT `FK_20` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `FK_21` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
 -- Table structure for role_permission
 -- ----------------------------
 DROP TABLE IF EXISTS `role_permission`;
@@ -135,6 +158,32 @@ CREATE TABLE `sensitive_words` (
   `keyword` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`keyword`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for sim_blog
+-- ----------------------------
+DROP TABLE IF EXISTS `sim_blog`;
+CREATE TABLE `sim_blog` (
+  `blog_id` int NOT NULL,
+  `sim_id` int NOT NULL,
+  PRIMARY KEY (`blog_id`,`sim_id`),
+  KEY `FK_25` (`sim_id`),
+  CONSTRAINT `FK_24` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`blog_id`),
+  CONSTRAINT `FK_25` FOREIGN KEY (`sim_id`) REFERENCES `blog` (`blog_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for sim_user
+-- ----------------------------
+DROP TABLE IF EXISTS `sim_user`;
+CREATE TABLE `sim_user` (
+  `user_id` int NOT NULL,
+  `sim_id` int NOT NULL,
+  PRIMARY KEY (`user_id`,`sim_id`),
+  KEY `FK_23` (`sim_id`),
+  CONSTRAINT `FK_22` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `FK_23` FOREIGN KEY (`sim_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for topic
@@ -173,7 +222,8 @@ DROP TABLE IF EXISTS `topic_heat`;
 CREATE TABLE `topic_heat` (
   `topic_id` int NOT NULL,
   `heat` int DEFAULT NULL,
-  PRIMARY KEY (`topic_id`)
+  PRIMARY KEY (`topic_id`),
+  KEY `fk_heat` (`heat`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -271,3 +321,16 @@ CREATE TABLE `user_role` (
   PRIMARY KEY (`id`),
   KEY `User_id` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Procedure structure for fix_blog_count
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `fix_blog_count`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `fix_blog_count`()
+BEGIN
+	#Routine body goes here...
+	insert into blog_count(blog_id) select blog_id from blog as b where b.blog_id not in (select blog_id from blog_count);
+END
+;;
+DELIMITER ;

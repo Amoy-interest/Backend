@@ -1,11 +1,14 @@
 package com.example.amoy_interest.utils;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class HotRank {
 
     private static long epoch_seconds(Date pubtimes) {
-        return pubtimes.getTime() / 1000 - 1134028003;
+        Calendar time = Calendar.getInstance();
+        time.set(2018,1,1);
+        return (pubtimes.getTime() - time.getTime().getTime()) / 1000;
     }
 
     /******
@@ -35,10 +38,10 @@ public class HotRank {
         scorecount = score(ups, downs);
         seconds = epoch_seconds(pubtimes);
 
-        order = Math.log10(Math.max(Math.abs(scorecount), 1));
+        order = Math.log10(Math.max(Math.abs(scorecount), 1))/Math.log10(5);
         signcount = (long) Math.signum(scorecount);
 
-        hotrank = order + (signcount * seconds) / 45000;
+        hotrank = (order + (signcount * seconds) / 90000)*100;
 
         return hotrank;
     }
