@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.example.amoy_interest.constant.Constant.TEST_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
@@ -28,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerTest {
     private MockMvc mockMvc;
-    private final static String token1 = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMSIsImN1cnJlbnRUaW1lTWlsbGlzIjoiMTU5ODQwODAyMTU0OSIsImV4cCI6MTkxMzc2ODAyMSwidXNlcm5hbWUiOiLpsoHov4UifQ.FSxvme-or5PLR23LYNfgcD4k6P7p_uqVbYegdJVA3HE";
+    private final static String token1 = TEST_TOKEN;
 
 
     @Autowired
@@ -53,7 +54,6 @@ public class UserControllerTest {
 ////        UserInfoDTO userInfoDTO = new UserInfoDTO(100,"mok",0,"上海市闵行区","啥都不会",null,0,false);
 ////        when(userService.findUserAuthByUsername("admin")).thenReturn(userAuth);
 //        LoginDTO loginDTO = new LoginDTO("鲁迅","123456");
-//
 //        String requestJson = JSONObject.toJSONString(loginDTO);
 //        MvcResult result = mockMvc.perform(post("/users/login")
 //                .contentType(MediaType.APPLICATION_JSON)

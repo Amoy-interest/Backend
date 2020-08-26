@@ -7,7 +7,7 @@ public class HotRank {
 
     private static long epoch_seconds(Date pubtimes) {
         Calendar time = Calendar.getInstance();
-        time.set(2020,1,1);
+        time.set(2018,1,1);
         return (pubtimes.getTime() - time.getTime().getTime()) / 1000;
     }
 
