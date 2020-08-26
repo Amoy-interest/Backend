@@ -61,13 +61,21 @@ public class RecommendServiceImpl implements RecommendService {
 
     private List<BlogDTO> convertToBlogDTOList(List<Blog> blogList) {
         List<BlogDTO> blogDTOList = new ArrayList<>();
-        Integer user_id = userUtil.getUserId();
+        boolean flag = false;
+        Integer user_id = null;
+        if(userUtil.getUserId() == null) {
+            flag = true;
+        }else {
+            user_id = userUtil.getUserId();
+        }
         for (Blog blog : blogList) {
             Integer blog_id = blog.getBlog_id();
-            Integer result = redisService.findStatusFromRedis(blog_id, user_id);
-
+            Integer result = 0;
+            if(!flag) {
+                result = redisService.findStatusFromRedis(blog_id, user_id);
+            }
             //统计数据
-            BlogCount blogCount = CalculateCount(blog_id);
+            BlogCount blogCount = getBlogCount(blog_id);
             if (result == 1) {
                 blogDTOList.add(new BlogDTO(blog, blogCount, true));
             } else if (result == 0) {
@@ -84,11 +92,32 @@ public class RecommendServiceImpl implements RecommendService {
         return blogDTOList;
     }
 
-    private BlogCount CalculateCount(Integer blog_id) {
-        BlogCount blogCount = blogCountDao.findBlogCountByBlog_id(blog_id);
-        blogCount.setForward_count(blogCount.getForward_count() + redisService.getBlogForwardCountFromRedis(blog_id));
-        blogCount.setComment_count(blogCount.getComment_count() + redisService.getBlogCommentCountFromRedis(blog_id));
-        blogCount.setVote_count(blogCount.getVote_count() + redisService.getVoteCountFromRedis(blog_id));
+    private BlogCount getBlogCount(Integer blog_id) {
+        BlogCount blogCount = null;
+        Integer forward = redisService.getBlogForwardCountFromRedis(blog_id);
+        Integer comment = redisService.getBlogCommentCountFromRedis(blog_id);
+        Integer vote = redisService.getVoteCountFromRedis(blog_id);
+//        Integer report = redisService.getBlogReportCountFromRedis(blog_id);
+        if(forward == null || comment == null || vote == null ) {
+            blogCount = blogCountDao.findBlogCountByBlog_id(blog_id);
+            if(forward == null) {
+                forward = blogCount.getForward_count();
+                redisService.setBlogForwardCount(blog_id,forward);
+            }
+            if(comment == null) {
+                comment = blogCount.getComment_count();
+                redisService.setBlogCommentCount(blog_id,comment);
+            }
+            if(vote == null) {
+                vote = blogCount.getVote_count();
+                redisService.setVoteCount(blog_id,vote);
+            }
+//            if(report == null) {
+//                report = blogCount.getReport_count();
+//                redisService.setBlogReportCount(blog_id,report);
+//            }
+        }
+        blogCount = new BlogCount(blog_id,forward,comment,vote,0);
         return blogCount;
     }
 }
