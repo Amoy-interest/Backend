@@ -146,8 +146,8 @@ public class BlogServiceImpl implements BlogService {
         List<TopicBlog> list = blogchild.getTopics();
         List<TopicBlog> topicBlogList = new ArrayList<>();
         for (TopicBlog topicBlog : list) {
-            topicBlog.setBlog_id(blog.getBlog_id());
-            topicBlogList.add(topicBlog);
+            TopicBlog topicBlog1 = new TopicBlog(topicBlog.getTopic_id(),blog.getBlog_id(),topicBlog.getTopic_name());
+            topicBlogList.add(topicBlog1);
         }
         topicBlogDao.saveAll(topicBlogList);
 
@@ -156,6 +156,7 @@ public class BlogServiceImpl implements BlogService {
         List<BlogImage> blogImageList = null;
         blog.setBlogImages(blogImageList);
         blog.setUser(userDao.getById(blogForwardDTO.getUser_id()));
+        blog.setTopics(topicBlogList);
         BlogDTO blogDTO = new BlogDTO(blog, blogCount, false);
         //计数
         if(redisService.getUserBlogCountFromRedis(user_id) == null) {

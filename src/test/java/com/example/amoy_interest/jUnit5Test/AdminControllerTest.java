@@ -81,22 +81,22 @@ public class AdminControllerTest {
 
     private ObjectMapper om = new ObjectMapper();
 
-//    @BeforeEach
-//    public void setUp() {
-//        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-//        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest(context.getServletContext());
-//        MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-//        MockHttpSession mockHttpSession = new MockHttpSession(context.getServletContext());
-//        mockHttpServletRequest.setSession(mockHttpSession);
-//        SecurityUtils.setSecurityManager(securityManager);
-//        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-//        Subject subject = new WebSubject
-//                .Builder(mockHttpServletRequest, mockHttpServletResponse)
-//                .buildWebSubject();
-//        JwtToken token = new JwtToken(token1);
-//        subject.login(token);
-//        ThreadContext.bind(subject);
-//    }
+    @BeforeEach
+    public void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest(context.getServletContext());
+        MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
+        MockHttpSession mockHttpSession = new MockHttpSession(context.getServletContext());
+        mockHttpServletRequest.setSession(mockHttpSession);
+        SecurityUtils.setSecurityManager(securityManager);
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        Subject subject = new WebSubject
+                .Builder(mockHttpServletRequest, mockHttpServletResponse)
+                .buildWebSubject();
+        JwtToken token = new JwtToken(token1);
+        subject.login(token);
+        ThreadContext.bind(subject);
+    }
 
 //    @Test
 //    public void testGetReportedBlogs() throws Exception {
@@ -119,8 +119,84 @@ public class AdminControllerTest {
 //        MvcResult result = mockMvc.perform(get("/admins/blogs/reported/search?keyword=你好吗&orderType=1&pageNum=1&pageSize=5"))
 //                .andExpect(status().isOk())
 //                .andReturn();
-//        verify(blogService,times(1)).searchReportedBlogsPage("你好吗",any(),any(),any());
+//        verify(blogService,times(1)).searchReportedBlogsPage("你好吗",1,5,1);
 //    }
+//    @Test
+//    public void testCheckReportedBlog() throws Exception {
+//        when(blogService.checkReportedBlog(any())).thenReturn(true);
+//        BlogCheckDTO blogCheckDTO = new BlogCheckDTO(1, 1);
+//        String requestJson = JSONObject.toJSONString(blogCheckDTO);
+//        mockMvc.perform(put("/admins/blogs/reported")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(requestJson))
+//                .andExpect(status().isOk()).andReturn();
+//        verify(blogService, times(1)).checkReportedBlog(any());
+////        verify(blogService, times(1)).updateBlog(Mockito.any());
+//    }
+//    @Test
+//    public void testGetReportedTopics() throws Exception{
+//        List<TopicReportDTO> topicReportDTOList = new ArrayList<>();
+//        Date time = new Date();
+//        for(int i = 1;i <= 10;i++) {
+//            TopicReportDTO topicReportDTO = new TopicReportDTO("高考加油"+Integer.toString(i),time,11);
+//            topicReportDTOList.add(topicReportDTO);
+//        }
+//        Pageable pageable = PageRequest.of(pageNum1,pageSize1);
+//        Page<TopicReportDTO> page = new PageImpl<>(topicReportDTOList,pageable,10);
+//        when(topicService.getReportedTopicsPage(pageNum1,pageSize1,orderType1)).thenReturn(page);
+//        MvcResult result = mockMvc.perform(get("/admins/topics/reported/?orderType=1&pageNum=1&pageSize=5"))
+//                .andExpect(status().isOk()).andReturn();
+//        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+//        String resultContent = result.getResponse().getContentAsString();
+//        Msg<CommonPage<TopicReportDTO>> msg = om.readValue(resultContent,new TypeReference<Msg<CommonPage<TopicReportDTO>>>() {});
+//        assertEquals(0,msg.getStatus());
+//        assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
+////        assertEquals(10,msg.getData());
+//    }
+//    @Test
+//    public void testSearchReportedTopics() {
+//
+//    }
+//    @Test
+//    public void testCheckReportedTopic() throws Exception{
+//        TopicCheckDTO topicCheckDTO = new TopicCheckDTO("高考加油",1);
+//        when(topicService.checkReportedTopic(any())).thenReturn(true);
+//        String requestJson = JSONObject.toJSONString(topicCheckDTO);
+//        MvcResult result = mockMvc.perform(put("/admins/topics/reported")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(requestJson)
+//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
+//                .andExpect(status().isOk()).andReturn();
+//        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+//        String resultContent = result.getResponse().getContentAsString();
+//        Msg msg = om.readValue(resultContent,new TypeReference<Msg>() {});
+//        //有问题
+////        assertEquals(0,msg.getStatus());
+////        assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
+//    }
+//        @Test
+//    public void testGetReportedUser() throws Exception{
+//        List<UserReportDTO> userReportDTOList = new ArrayList<>();
+//        for(int i = 1;i <= 10;i++) {
+//            UserReportDTO userReportDTO = new UserReportDTO(i,"mok"+Integer.toString(i),59);
+//            userReportDTOList.add(userReportDTO);
+//        }
+//        when(userService.getReportedUsers()).thenReturn(userReportDTOList);
+//        MvcResult result = mockMvc.perform(get("/admins/users/reported")
+//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk2MzgyMzM2fQ.ea94gluuWxGJwF2xgxl-KHTlkOkcTTy8R6FPwH65Usc"))
+//                .andExpect(status().isOk()).andReturn();
+//        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+//        String resultContent = result.getResponse().getContentAsString();
+//        Msg<CommonPage<UserReportDTO>> msg = om.readValue(resultContent,new TypeReference<Msg<CommonPage<UserReportDTO>>>() {});
+////        assertEquals(0,msg.getStatus());
+////        assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
+////        assertEquals(10,msg.getData().size());
+//    }
+//    @Test
+//    public void testSearchReportedUser() throws Exception {
+//
+//    }
+//
 //    @Test
 //    public void testBan() throws Exception{
 //        UserCheckDTO userCheckDTO = new UserCheckDTO(1, (long) 86400);
@@ -185,77 +261,28 @@ public class AdminControllerTest {
 //        assertEquals(0,msg.getStatus());
 //        assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
 //    }
+//    @Test
+//    public void testGetBan() {
 //
-//
-//    @Test
-//    public void testCheckReportedBlog() throws Exception {
-//        when(blogService.findBlogByBlog_id(1)).thenReturn(new Blog(1, 1, 0, 0,null, "666",  false, 1, -1));
-//        when(blogService.updateBlog(Mockito.any())).thenReturn(null);
-//        BlogCheckDTO blogCheckDTO = new BlogCheckDTO(1, 1);
-//        String requestJson = JSONObject.toJSONString(blogCheckDTO);
-//        mockMvc.perform(put("/admins/blogs/reported")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(requestJson)
-//                .header("token", token1))
-//                .andExpect(status().isOk()).andReturn();
-////        verify(blogService, times(1)).findBlogByBlog_id(any());
-////        verify(blogService, times(1)).updateBlog(Mockito.any());
-//    }
-//    @Test
-//    public void testGetReportedUser() throws Exception{
-//        List<UserReportDTO> userReportDTOList = new ArrayList<>();
-//        for(int i = 1;i <= 10;i++) {
-//            UserReportDTO userReportDTO = new UserReportDTO(i,"mok"+Integer.toString(i),59);
-//            userReportDTOList.add(userReportDTO);
-//        }
-//        when(userService.getReportedUsers()).thenReturn(userReportDTOList);
-//        MvcResult result = mockMvc.perform(get("/admins/users/reported")
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk2MzgyMzM2fQ.ea94gluuWxGJwF2xgxl-KHTlkOkcTTy8R6FPwH65Usc"))
-//                .andExpect(status().isOk()).andReturn();
-//        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
-//        String resultContent = result.getResponse().getContentAsString();
-//        Msg<CommonPage<UserReportDTO>> msg = om.readValue(resultContent,new TypeReference<Msg<CommonPage<UserReportDTO>>>() {});
-////        assertEquals(0,msg.getStatus());
-////        assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
-////        assertEquals(10,msg.getData().size());
-//    }
-//    @Test
-//    public void testGetReportedTopics() throws Exception{
-//        List<TopicReportDTO> topicReportDTOList = new ArrayList<>();
-//        Date time = new Date();
-//        for(int i = 1;i <= 10;i++) {
-//            TopicReportDTO topicReportDTO = new TopicReportDTO("高考加油"+Integer.toString(i),time,11);
-//            topicReportDTOList.add(topicReportDTO);
-//        }
-//        Pageable pageable = PageRequest.of(pageNum1,pageSize1);
-//        Page<TopicReportDTO> page = new PageImpl<>(topicReportDTOList,pageable,10);
-//        when(topicService.getReportedTopicsPage(pageNum1,pageSize1,orderType1)).thenReturn(page);
-//        MvcResult result = mockMvc.perform(get("/admins/topics/reported/?orderType=1&pageNum=1&pageSize=5")
-//                .header("token", token1))
-//                .andExpect(status().isOk()).andReturn();
-//        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
-//        String resultContent = result.getResponse().getContentAsString();
-//        Msg<CommonPage<TopicReportDTO>> msg = om.readValue(resultContent,new TypeReference<Msg<CommonPage<TopicReportDTO>>>() {});
-//        assertEquals(0,msg.getStatus());
-//        assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
-////        assertEquals(10,msg.getData());
-//    }
-//    @Test
-//    public void testCheckReportedTopic() throws Exception{
-//        TopicCheckDTO topicCheckDTO = new TopicCheckDTO("高考加油",1);
-//        when(topicService.checkReportedTopic(any())).thenReturn(true);
-//        String requestJson = JSONObject.toJSONString(topicCheckDTO);
-//        MvcResult result = mockMvc.perform(put("/admins/topics/reported")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(requestJson)
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
-//                .andExpect(status().isOk()).andReturn();
-//        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
-//        String resultContent = result.getResponse().getContentAsString();
-//        Msg msg = om.readValue(resultContent,new TypeReference<Msg>() {});
-//        //有问题
-////        assertEquals(0,msg.getStatus());
-////        assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
 //    }
 //
+//    @Test
+//    public void testGetForbid() {
+//
+//    }
+//
+//    @Test
+//    public void testSearchBan() {
+//
+//    }
+//
+//    @Test
+//    public void testSearchForbid() {
+//
+//    }
+//
+//    @Test
+//    public void testUpdateReport() {
+//
+//    }
 }
