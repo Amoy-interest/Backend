@@ -54,7 +54,7 @@ public class AdminControllerTest {
     private final static Integer pageNum1 = 1;
     private final static Integer pageSize1 = 5;
     private final static Integer orderType1 = 1;
-    private final static String token1 = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk2MzgyMzM2fQ.ea94gluuWxGJwF2xgxl-KHTlkOkcTTy8R6FPwH65Usc";
+    private final static String token1 = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMSIsImN1cnJlbnRUaW1lTWlsbGlzIjoiMTU5ODQwODAyMTU0OSIsImV4cCI6MTkxMzc2ODAyMSwidXNlcm5hbWUiOiLpsoHov4UifQ.FSxvme-or5PLR23LYNfgcD4k6P7p_uqVbYegdJVA3HE";
 //    @InjectMocks
 //    private AdminController adminController;
     @Autowired
@@ -70,7 +70,7 @@ public class AdminControllerTest {
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-
+//        mockMvc.perform(get)
     }
 
 //    @Test
@@ -80,10 +80,15 @@ public class AdminControllerTest {
 //        Pageable pageable = PageRequest.of(pageNum1,pageSize1);
 //        Page<BlogDTO> blogDTOPage  = new PageImpl<>(blogDTOList,pageable,0);
 //        when(blogService.getReportedBlogsPage(pageNum1,pageSize1,orderType1)).thenReturn(blogDTOPage);
-//        mockMvc.perform(get("/admins/blogs/reported/?orderType=1&pageNum=1&pageSize=5")
-//                .header("token", token1))
-//                .andExpect(status().isOk()).andReturn();
-//        verify(blogService, times(1)).getReportedBlogsPage(any(),any(),any());
+//        MvcResult result = mockMvc.perform(get("/admins/blogs/reported/?orderType=1&pageNum=1&pageSize=5")
+//                .header("Authorization", token1))
+////                .andExpect(status().isOk())
+//                .andReturn();
+//        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+//        String resultContent = result.getResponse().getContentAsString();
+//        Msg msg = om.readValue(resultContent,new TypeReference<Msg>() {});
+//        System.out.println(msg.getMsg());
+////        verify(blogService, times(1)).getReportedBlogsPage(any(),any(),any());
 //    }
 //    @Test
 //    public void testBan() throws Exception{
