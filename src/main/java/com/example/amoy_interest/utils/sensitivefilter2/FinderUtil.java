@@ -54,7 +54,7 @@ public class FinderUtil {
 		String username = config.getUsername();
 		String password = config.getPassword();
 		String className = config.getClassName();
-		System.out.println(className+url+username+password);
+//		System.out.println(className+url+username+password);
 		DBWordProvider p = new DBWordProvider(className, url, username, password);
 //		DBWordProvider p = new DBWordProvider();
 		String[] words = p.loadWords();

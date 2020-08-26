@@ -693,11 +693,19 @@ public class BlogServiceImpl implements BlogService {
 
     private List<BlogDTO> convertToBlogDTOList(List<Blog> blogList) {
         List<BlogDTO> blogDTOList = new ArrayList<>();
-        Integer user_id = userUtil.getUserId();
+        boolean flag = false;
+        Integer user_id = null;
+        if(userUtil.getUserId() == null) {
+            flag = true;
+        }else {
+            user_id = userUtil.getUserId();
+        }
         for (Blog blog : blogList) {
             Integer blog_id = blog.getBlog_id();
-            Integer result = redisService.findStatusFromRedis(blog_id, user_id);
-
+            Integer result = 0;
+            if(!flag) {
+                result = redisService.findStatusFromRedis(blog_id, user_id);
+            }
             //统计数据
             BlogCount blogCount = getBlogCount(blog_id);
             if (result == 1) {
