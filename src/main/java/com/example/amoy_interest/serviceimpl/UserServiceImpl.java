@@ -141,16 +141,17 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
-    @Override
-    public List<UserReportDTO> getReportedUsers() {
-        List<User> userList = userDao.getReportedUsers();
-        List<UserReportDTO> userReportDTOList = new ArrayList<>();
-        for (User user : userList) {
-            UserReportDTO userReportDTO = new UserReportDTO(user);
-            userReportDTOList.add(userReportDTO);
-        }
-        return userReportDTOList;
-    }
+//    @Override
+//    public List<UserReportDTO> getReportedUsers() {
+////        List<User> userList = userDao.getReportedUsers();
+////        List<UserReportDTO> userReportDTOList = new ArrayList<>();
+////        for (User user : userList) {
+////            UserReportDTO userReportDTO = new UserReportDTO(user);
+////            userReportDTOList.add(userReportDTO);
+////        }
+////        return userReportDTOList;
+//        return null;
+//    }
 
     @Override
     public User findUserById(Integer user_id) {
@@ -170,13 +171,7 @@ public class UserServiceImpl implements UserService {
 //        }
 //        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Pageable pageable = PageRequest.of(pageNum, pageSize);
-        Page<User> userPage = userDao.getReportedUsersPage(pageable);
-        List<User> userList = userPage.getContent();
-        List<UserReportDTO> userReportDTOList = new ArrayList<>();
-        for (User user : userList) {
-            userReportDTOList.add(new UserReportDTO(user));
-        }
-        return new PageImpl<>(userReportDTOList, userPage.getPageable(), userPage.getTotalElements());
+        return userDao.getReportedUsersPage(pageable);
     }
 
     @Override
@@ -259,13 +254,7 @@ public class UserServiceImpl implements UserService {
 //        }
 //        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Pageable pageable = PageRequest.of(pageNum, pageSize);
-        Page<User> userPage = userDao.searchReportedUsersPage(keyword, pageable);
-        List<User> userList = userPage.getContent();
-        List<UserReportDTO> userReportDTOList = new ArrayList<>();
-        for (User user : userList) {
-            userReportDTOList.add(new UserReportDTO(user));
-        }
-        return new PageImpl<>(userReportDTOList, userPage.getPageable(), userPage.getTotalElements());
+        return userDao.searchReportedUsersPage(keyword, pageable);
     }
 
     @Override
