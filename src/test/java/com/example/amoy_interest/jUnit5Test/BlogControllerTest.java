@@ -66,187 +66,187 @@ public class BlogControllerTest {
     @Autowired
     private SecurityManager securityManager;
 
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest(context.getServletContext());
-        MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
-        MockHttpSession mockHttpSession = new MockHttpSession(context.getServletContext());
-        mockHttpServletRequest.setSession(mockHttpSession);
-        SecurityUtils.setSecurityManager(securityManager);
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-        Subject subject = new WebSubject
-                .Builder(mockHttpServletRequest, mockHttpServletResponse)
-                .buildWebSubject();
-        JwtToken token = new JwtToken(TEST_TOKEN);
-        subject.login(token);
-        ThreadContext.bind(subject);
-    }
-
-    @MockBean
-    private BlogService blogService;
-
-    @Test
-    public void testAddBlog() throws Exception {
-        Mockito.when(blogService.addBlog(Mockito.any())).thenReturn(null);
-        BlogContentDTO blogContentDTO = new BlogContentDTO("123456", null);
-        String requestJson = JSONObject.toJSONString(blogContentDTO);
-        mockMvc.perform(post("/blogs")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
-                .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).addBlog(Mockito.any());
-    }
-
-    @Test
-    public void testGetBlog() throws Exception {
-        Mockito.when(blogService.getAllBlogDetail(1)).thenReturn(testBlogDTO);
-        mockMvc.perform(get("/blogs?blog_id=1"))//.header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
-                .andExpect(status().isOk()).andReturn();
-    }
-
-    @Test
-    public void testPutBlog() throws Exception {
-        Mockito.when(blogService.findBlogByBlog_id(1)).thenReturn(testBlog);
-        Mockito.when(blogService.updateBlog(Mockito.any())).thenReturn(null);
-        BlogPutDTO blogPutDTO = new BlogPutDTO(1, "dest", null);
-        String requestJson = JSONObject.toJSONString(blogPutDTO);
-        mockMvc.perform(put("/blogs")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
-                .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).updateBlog(Mockito.any());
-    }
-
-    @Test
-    public void testForwardBlog() throws Exception {
-
-    }
-
-    @Test
-    public void testDeleteBlog() throws Exception {
-        doNothing().when(blogService).deleteByBlog_id(Mockito.any());
-        mockMvc.perform(delete("/blogs?blog_id=1"))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
-                .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).deleteByBlog_id(1);
-    }
-
-    @Test
-    public void testComment() throws Exception {
-        when(blogService.addBlogComment(Mockito.any())).thenReturn(null);
-//        CommentPostDTO commentPostDTO = new CommentPostDTO(1, 1, "dd", "ddd", "test");
-//        String requestJson = JSONObject.toJSONString(commentPostDTO);
-//        mockMvc.perform(post("/blogs/comments")
+//    @BeforeEach
+//    public void setup() {
+//        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+//        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest(context.getServletContext());
+//        MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
+//        MockHttpSession mockHttpSession = new MockHttpSession(context.getServletContext());
+//        mockHttpServletRequest.setSession(mockHttpSession);
+//        SecurityUtils.setSecurityManager(securityManager);
+//        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+//        Subject subject = new WebSubject
+//                .Builder(mockHttpServletRequest, mockHttpServletResponse)
+//                .buildWebSubject();
+//        JwtToken token = new JwtToken(TEST_TOKEN);
+//        subject.login(token);
+//        ThreadContext.bind(subject);
+//    }
+//
+//    @MockBean
+//    private BlogService blogService;
+//
+//    @Test
+//    public void testAddBlog() throws Exception {
+//        Mockito.when(blogService.addBlog(Mockito.any())).thenReturn(null);
+//        BlogContentDTO blogContentDTO = new BlogContentDTO("123456", null);
+//        String requestJson = JSONObject.toJSONString(blogContentDTO);
+//        mockMvc.perform(post("/blogs")
 //                .contentType(MediaType.APPLICATION_JSON)
-//                .content(requestJson)
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
+//                .content(requestJson))
 //                .andExpect(status().isOk()).andReturn();
-//        verify(blogService, times(1)).addBlogComment(Mockito.any());
-    }
-
-
-    @Test
-    public void testDeleteComment() throws Exception {
-        doNothing().when(blogService).deleteCommentByComment_id(any());
-        mockMvc.perform(delete("/blogs/comments?comment_id=1"))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
-                .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).deleteCommentByComment_id(any());
-    }
-
-    @Test
-    public void testGetLevel1Comments() throws Exception {
-
-    }
-
-    @Test
-    public void testGetMultiComments() throws Exception {
-
-    }
-
-    @Test
-    public void testVote() throws Exception {
-        doNothing().when(blogService).incrVoteCount(Mockito.any());
-        doNothing().when(blogService).incrCommentVoteCount(Mockito.any());
-        VoteDTO voteDTO = new VoteDTO(1, 0);
-        String requestJson = JSONObject.toJSONString(voteDTO);
-        mockMvc.perform(post("/blogs/vote")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
-                .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).incrVoteCount(Mockito.any());
-        VoteDTO voteDTO1 = new VoteDTO(2, 1);
-        String requestJson1 = JSONObject.toJSONString(voteDTO1);
-        mockMvc.perform(post("/blogs/vote")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson1))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
-                .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).incrCommentVoteCount(Mockito.any());
-    }
-
-    @Test
-    public void testCancelVote() throws Exception {
-        doNothing().when(blogService).decrVoteCount(Mockito.any());
-        doNothing().when(blogService).decrCommentVoteCount(Mockito.any());
-        VoteDTO voteDTO = new VoteDTO(1, 0);
-        String requestJson = JSONObject.toJSONString(voteDTO);
-        mockMvc.perform(delete("/blogs/vote")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
-                .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).decrVoteCount(Mockito.any());
-        VoteDTO voteDTO1 = new VoteDTO(2, 1);
-        String requestJson1 = JSONObject.toJSONString(voteDTO1);
-        mockMvc.perform(delete("/blogs/vote")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson1))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
-                .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).decrCommentVoteCount(Mockito.any());
-    }
-
-
-    @Test
-    public void testSearch() throws Exception {
-        List<BlogDTO> blogList = new ArrayList<>();
-//        blogList.add(new Blog(1, 1, 0, 0,null, "abbcdde",  false, 1, 0));
-//        blogList.add(new Blog(2, 1, 0, 0,null, "abcdde",  false, 1, 0));
-        Pageable pageable = PageRequest.of(0, 5);
-        Page<BlogDTO> page = new PageImpl<>(blogList, pageable, 0);
-        Mockito.when(blogService.getSearchListByBlog_text("abbc", 0, 5)).thenReturn(page);
-        mockMvc.perform(get("/blogs/search?keyword=abbc"))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
-                .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).getSearchListByBlog_text("abbc", 0, 5);
-    }
-
-    @Test
-    public void testGetRecommendBlogs() throws Exception {
-
-    }
-
-    @Test
-    public void testGetFollowBlogs() throws Exception {
-
-    }
-
-    @Test
-    public void testGetUserBlogs() throws Exception {
-
-    }
-
-    @Test
-    public void testGetBeforeLoginBlogs() throws Exception{
-
-    }
-
-    @Test
-    public void testReportBlog() throws Exception{
-
-    }
+//        verify(blogService, times(1)).addBlog(Mockito.any());
+//    }
+//
+//    @Test
+//    public void testGetBlog() throws Exception {
+//        Mockito.when(blogService.getAllBlogDetail(1)).thenReturn(testBlogDTO);
+//        mockMvc.perform(get("/blogs?blog_id=1"))//.header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
+//                .andExpect(status().isOk()).andReturn();
+//    }
+//
+//    @Test
+//    public void testPutBlog() throws Exception {
+//        Mockito.when(blogService.findBlogByBlog_id(1)).thenReturn(testBlog);
+//        Mockito.when(blogService.updateBlog(Mockito.any())).thenReturn(null);
+//        BlogPutDTO blogPutDTO = new BlogPutDTO(1, "dest", null);
+//        String requestJson = JSONObject.toJSONString(blogPutDTO);
+//        mockMvc.perform(put("/blogs")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(requestJson))
+////                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
+//                .andExpect(status().isOk()).andReturn();
+//        verify(blogService, times(1)).updateBlog(Mockito.any());
+//    }
+//
+//    @Test
+//    public void testForwardBlog() throws Exception {
+//
+//    }
+//
+//    @Test
+//    public void testDeleteBlog() throws Exception {
+//        doNothing().when(blogService).deleteByBlog_id(Mockito.any());
+//        mockMvc.perform(delete("/blogs?blog_id=1"))
+////                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
+//                .andExpect(status().isOk()).andReturn();
+//        verify(blogService, times(1)).deleteByBlog_id(1);
+//    }
+//
+//    @Test
+//    public void testComment() throws Exception {
+//        when(blogService.addBlogComment(Mockito.any())).thenReturn(null);
+////        CommentPostDTO commentPostDTO = new CommentPostDTO(1, 1, "dd", "ddd", "test");
+////        String requestJson = JSONObject.toJSONString(commentPostDTO);
+////        mockMvc.perform(post("/blogs/comments")
+////                .contentType(MediaType.APPLICATION_JSON)
+////                .content(requestJson)
+////                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
+////                .andExpect(status().isOk()).andReturn();
+////        verify(blogService, times(1)).addBlogComment(Mockito.any());
+//    }
+//
+//
+//    @Test
+//    public void testDeleteComment() throws Exception {
+//        doNothing().when(blogService).deleteCommentByComment_id(any());
+//        mockMvc.perform(delete("/blogs/comments?comment_id=1"))
+////                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
+//                .andExpect(status().isOk()).andReturn();
+//        verify(blogService, times(1)).deleteCommentByComment_id(any());
+//    }
+//
+//    @Test
+//    public void testGetLevel1Comments() throws Exception {
+//
+//    }
+//
+//    @Test
+//    public void testGetMultiComments() throws Exception {
+//
+//    }
+//
+//    @Test
+//    public void testVote() throws Exception {
+//        doNothing().when(blogService).incrVoteCount(Mockito.any());
+//        doNothing().when(blogService).incrCommentVoteCount(Mockito.any());
+//        VoteDTO voteDTO = new VoteDTO(1, 0);
+//        String requestJson = JSONObject.toJSONString(voteDTO);
+//        mockMvc.perform(post("/blogs/vote")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(requestJson))
+////                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
+//                .andExpect(status().isOk()).andReturn();
+//        verify(blogService, times(1)).incrVoteCount(Mockito.any());
+//        VoteDTO voteDTO1 = new VoteDTO(2, 1);
+//        String requestJson1 = JSONObject.toJSONString(voteDTO1);
+//        mockMvc.perform(post("/blogs/vote")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(requestJson1))
+////                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
+//                .andExpect(status().isOk()).andReturn();
+//        verify(blogService, times(1)).incrCommentVoteCount(Mockito.any());
+//    }
+//
+//    @Test
+//    public void testCancelVote() throws Exception {
+//        doNothing().when(blogService).decrVoteCount(Mockito.any());
+//        doNothing().when(blogService).decrCommentVoteCount(Mockito.any());
+//        VoteDTO voteDTO = new VoteDTO(1, 0);
+//        String requestJson = JSONObject.toJSONString(voteDTO);
+//        mockMvc.perform(delete("/blogs/vote")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(requestJson))
+////                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
+//                .andExpect(status().isOk()).andReturn();
+//        verify(blogService, times(1)).decrVoteCount(Mockito.any());
+//        VoteDTO voteDTO1 = new VoteDTO(2, 1);
+//        String requestJson1 = JSONObject.toJSONString(voteDTO1);
+//        mockMvc.perform(delete("/blogs/vote")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(requestJson1))
+////                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
+//                .andExpect(status().isOk()).andReturn();
+//        verify(blogService, times(1)).decrCommentVoteCount(Mockito.any());
+//    }
+//
+//
+//    @Test
+//    public void testSearch() throws Exception {
+//        List<BlogDTO> blogList = new ArrayList<>();
+////        blogList.add(new Blog(1, 1, 0, 0,null, "abbcdde",  false, 1, 0));
+////        blogList.add(new Blog(2, 1, 0, 0,null, "abcdde",  false, 1, 0));
+//        Pageable pageable = PageRequest.of(0, 5);
+//        Page<BlogDTO> page = new PageImpl<>(blogList, pageable, 0);
+//        Mockito.when(blogService.getSearchListByBlog_text("abbc", 0, 5)).thenReturn(page);
+//        mockMvc.perform(get("/blogs/search?keyword=abbc"))
+////                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
+//                .andExpect(status().isOk()).andReturn();
+//        verify(blogService, times(1)).getSearchListByBlog_text("abbc", 0, 5);
+//    }
+//
+//    @Test
+//    public void testGetRecommendBlogs() throws Exception {
+//
+//    }
+//
+//    @Test
+//    public void testGetFollowBlogs() throws Exception {
+//
+//    }
+//
+//    @Test
+//    public void testGetUserBlogs() throws Exception {
+//
+//    }
+//
+//    @Test
+//    public void testGetBeforeLoginBlogs() throws Exception{
+//
+//    }
+//
+//    @Test
+//    public void testReportBlog() throws Exception{
+//
+//    }
 }
