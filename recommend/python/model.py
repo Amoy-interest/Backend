@@ -433,14 +433,18 @@ def cal_sim_blog(conn, cursor1, user_len, blog_len):
 
 def recommend_sys():
 
+	print("begin")
+
 	conn = pymysql.connect(
-	    host="106.14.19.68",
+	    host="mycat",
 	     port=8066,
 	     user="root",
 	     password="amoy123",
 	     database="amoy",
 	     charset="utf8")
 	cursor1 = conn.cursor()
+
+	print("connect to db")
 
 	sql1 = "SELECT count(*) FROM user"
 
@@ -453,6 +457,10 @@ def recommend_sys():
 	cursor1.execute(sql2)
 
 	blog_len = (list(cursor1.fetchone()))[0]
+
+	print("blog_len", blog_len)
+
+	print("user_len", user_len)
 
 	blog_vectors = build_blog_vector(cursor1, user_len, blog_len)
 
@@ -482,7 +490,7 @@ if __name__ == "__main__":
 
 	next_day = next_time.date().day
 
-	next_time = datetime.datetime.strptime(str(next_year)+"-"+str(next_month)+"-"+str(next_day)+" 10:20:00", "%Y-%m-%d %H:%M:%S")
+	next_time = datetime.datetime.strptime(str(next_year)+"-"+str(next_month)+"-"+str(next_day)+" 15:30:00", "%Y-%m-%d %H:%M:%S")
 
 	print("start_time:", next_time)
 
