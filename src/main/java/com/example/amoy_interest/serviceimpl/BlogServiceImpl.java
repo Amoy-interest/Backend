@@ -14,6 +14,7 @@ import com.example.amoy_interest.service.VoteService;
 import com.example.amoy_interest.utils.HotRank;
 import com.example.amoy_interest.utils.UserUtil;
 import io.swagger.models.auth.In;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.common.lucene.search.function.FunctionScoreQuery;
 import org.elasticsearch.common.util.concurrent.EsAbortPolicy;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -44,6 +45,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class BlogServiceImpl implements BlogService {
 
     @Autowired
@@ -230,7 +232,12 @@ public class BlogServiceImpl implements BlogService {
     public Integer deleteByBlog_id(Integer blog_id) {
         Integer user_id = userUtil.getUserId();
         Blog blog = blogDao.findBlogByBlog_id(blog_id);
-        if (user_id != blog.getUser_id() || blog == null) {
+        if(blog == null) {
+            log.info("user_id = "+String.valueOf(user_id)+"but blog is null");
+        }else {
+            log.info("user_id = "+String.valueOf(user_id)+"but blog_user_id =" + String.valueOf(blog.getUser_id()));
+        }
+        if (blog == null || user_id != blog.getUser_id() ) {
             return 0;//不一致，删除失败
         }
         blog.set_deleted(true);//逻辑删除
