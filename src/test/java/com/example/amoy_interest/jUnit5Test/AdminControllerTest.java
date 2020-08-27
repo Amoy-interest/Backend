@@ -9,6 +9,7 @@ import com.example.amoy_interest.entity.BlogCount;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgUtil;
 import com.example.amoy_interest.service.BlogService;
+import com.example.amoy_interest.service.CountService;
 import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.service.UserService;
 import com.example.amoy_interest.serviceimpl.BlogServiceImpl;
@@ -27,6 +28,8 @@ import org.apache.shiro.web.subject.WebSubject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -42,6 +45,9 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -56,9 +62,10 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
+//@RunWith(SpringJUnit4ClassRunner.class)
 //@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class AdminControllerTest {
     private MockMvc mockMvc;
 
@@ -78,6 +85,8 @@ public class AdminControllerTest {
     private BlogService blogService;
     @MockBean
     private TopicService topicService;
+    @MockBean
+    private CountService countService;
 
     private ObjectMapper om = new ObjectMapper();
 
@@ -183,14 +192,12 @@ public class AdminControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
                 .andExpect(status().isOk()).andReturn();
+        verify(topicService,times(1)).checkReportedTopic(topicCheckDTO);
         result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
         String resultContent = result.getResponse().getContentAsString();
         Msg msg = om.readValue(resultContent, new TypeReference<Msg>() {
         });
-        //有问题
         assertEquals(200, msg.getStatus());
-//        assertEquals(0,msg.getStatus());
-//        assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
     }
 
     @Test
@@ -211,7 +218,8 @@ public class AdminControllerTest {
 
     @Test
     public void testSearchReportedUser() throws Exception {
-
+        mockMvc.perform(get("/admins/users/reported/search?keyword=你好")).andExpect(status().isOk()).andReturn();
+        verify(userService,times(1)).searchReportedUsersPage("你好",0,5,1);
     }
 
     @Test
@@ -295,15 +303,19 @@ public class AdminControllerTest {
     @Test
     public void testSearchBan() throws Exception {
         mockMvc.perform(get("/admins/users/ban/search?keyword=你好&pageNum=0&pageSize=5")).andExpect(status().isOk()).andReturn();
+        verify(userService,times(1)).searchUserBanPage("你好",0,5);
     }
 
     @Test
-    public void testSearchForbid() {
-//        mockMvc.perform(get())
+    public void testSearchForbid() throws Exception {
+        mockMvc.perform(get("/admins/users/forbid/search?keyword=你好")).andExpect(status().isOk()).andReturn();
+        verify(userService,times(1)).searchUserForbidPage("你好",0,5);
     }
 
     @Test
-    public void testUpdateReport() {
-
+    public void testUpdateReport() throws Exception {
+        mockMvc.perform(get("/admins/report/update")).andExpect(status().isOk()).andReturn();
+        verify(countService,times(1)).transUserReporterDataFromRedis2DB();
+        verify(countService,times(1)).transBlogReportDataFromRedis2DB();
     }
 }
