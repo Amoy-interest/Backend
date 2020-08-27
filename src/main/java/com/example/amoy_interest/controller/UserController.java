@@ -218,8 +218,8 @@ public class UserController {
     @RequiresAuthentication
     @ApiOperation(value = "获取相似用户")
     @GetMapping(value = "/sim")
-    public Msg<List<SimUserDTO>> getSimUser(@RequestParam(required = true) Integer user_id, @RequestParam(required = false, defaultValue = "5") Integer limit_count) {
+    public Msg<CommonPage<SimUserDTO>> getSimUser(@RequestParam(required = true) Integer user_id, @RequestParam(required = false, defaultValue = "5") Integer limit_count) {
         Integer my_user_id = userUtil.getUserId();
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, recommendService.getSimUserUsingUser_id(my_user_id, user_id, limit_count));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(recommendService.getSimUserUsingUser_id(my_user_id, user_id, limit_count)));
     }
 }
