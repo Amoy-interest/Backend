@@ -3,9 +3,7 @@ package com.example.amoy_interest.jUnit5Test;
 import com.alibaba.fastjson.JSONObject;
 import com.example.amoy_interest.config.shiro.jwt.JwtToken;
 import com.example.amoy_interest.dto.*;
-import com.example.amoy_interest.entity.Blog;
-import com.example.amoy_interest.entity.BlogCount;
-import com.example.amoy_interest.entity.User;
+import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgUtil;
 import com.example.amoy_interest.service.BlogService;
@@ -13,6 +11,8 @@ import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.serviceimpl.BlogServiceImpl;
 import com.example.amoy_interest.serviceimpl.TopicServiceImpl;
 import com.example.amoy_interest.serviceimpl.UserServiceImpl;
+import com.example.amoy_interest.utils.UserUtil;
+import com.example.amoy_interest.utils.sensitivefilter2.FinderUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.shiro.SecurityUtils;
@@ -21,6 +21,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.subject.WebSubject;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -57,15 +58,28 @@ public class BlogControllerTest {
 
     private MockMvc mockMvc;
 
-    private static final User testUser = new User(1,"鲁迅","123@163.com",0,"广东",0,"无",null);
-    private static final Blog testBlog = new Blog(1,1,0,new Date(),"今天天气好",false,0,0);
-    private static final BlogCount testBlogCount = new BlogCount(1,0,0,0,0);
-    private static final BlogDTO testBlogDTO = new BlogDTO(testBlog,testBlogCount,false);
+    private static UserAuth testAuth= new UserAuth(1,"鲁迅","123456",1,0,0);
+    private static UserAuth testAuth2 = new UserAuth(1,"鲁迅","123456",1,0,0);
+    private static User testUser = new User(1,"鲁迅","123@163.com",0,"广东",0,"无",null);
+    private static Blog testBlog = new Blog(1,1,0,new Date(),"今天天气好",false,0,0);
+    private static BlogCount testBlogCount = new BlogCount(1,0,0,0,0);
+    private static BlogDTO testBlogDTO = new BlogDTO(testBlog,testBlogCount,false);
     @Autowired
     private WebApplicationContext context;
     @Autowired
     private SecurityManager securityManager;
-
+//
+//    @BeforeAll
+//    public void init() {
+////        Date future = (new Date()).getTime() + 60*60;
+//        testAuth2.setUserBan(new UserBan(1,new Date(),new Date()));
+//    }
+    @MockBean
+    private UserUtil userUtil;
+    @MockBean
+    private FinderUtil finderUtil;
+    @MockBean
+    private BlogService blogService;
 //    @BeforeEach
 //    public void setup() {
 //        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -83,11 +97,11 @@ public class BlogControllerTest {
 //        ThreadContext.bind(subject);
 //    }
 //
-//    @MockBean
-//    private BlogService blogService;
+//
 //
 //    @Test
 //    public void testAddBlog() throws Exception {
+//        Mockito.when(userUtil.getUser()).thenReturn();
 //        Mockito.when(blogService.addBlog(Mockito.any())).thenReturn(null);
 //        BlogContentDTO blogContentDTO = new BlogContentDTO("123456", null);
 //        String requestJson = JSONObject.toJSONString(blogContentDTO);
