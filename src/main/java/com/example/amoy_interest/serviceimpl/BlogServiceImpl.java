@@ -232,9 +232,9 @@ public class BlogServiceImpl implements BlogService {
     public Integer deleteByBlog_id(Integer blog_id) {
         Integer user_id = userUtil.getUserId();
         Blog blog = blogDao.findBlogByBlog_id(blog_id);
-        if(blog == null) {
-            return 0;
-        }
+//        if(blog == null) {
+//            return 0;
+//        }
         blog.set_deleted(true);//逻辑删除
         blog = blogDao.saveBlog(blog);
         esBlogRepository.save(new ESBlog(blog));
