@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @ApiModel(value = "SimUserDTO", description = "相似用户")
 public class SimUserDTO {
+    @ApiModelProperty(value = "用户id", required = true)
+    private Integer user_id;
     @ApiModelProperty(value = "昵称", required = true)
     private String nickname;
     @ApiModelProperty(value = "个人头像", required = true)
