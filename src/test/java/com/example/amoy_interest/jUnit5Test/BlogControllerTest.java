@@ -42,9 +42,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.example.amoy_interest.constant.Constant.TEST_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,15 +69,20 @@ public class BlogControllerTest {
 //
 //    @BeforeAll
 //    public void init() {
+//        Date date = new Date();
+//        Calendar calendar = new GregorianCalendar();
+//        calendar.setTime(date);
+//        calendar.add(calendar.DATE,1); //把日期往后增加一天,整数  往后推,负数往前移动
+//        date=calendar.getTime();
 ////        Date future = (new Date()).getTime() + 60*60;
 //        testAuth2.setUserBan(new UserBan(1,new Date(),new Date()));
 //    }
-    @MockBean
-    private UserUtil userUtil;
-    @MockBean
-    private FinderUtil finderUtil;
-    @MockBean
-    private BlogService blogService;
+//    @MockBean
+//    private UserUtil userUtil;
+//    @MockBean
+//    private FinderUtil finderUtil;
+//    @MockBean
+//    private BlogService blogService;
 //    @BeforeEach
 //    public void setup() {
 //        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -101,10 +104,14 @@ public class BlogControllerTest {
 //
 //    @Test
 //    public void testAddBlog() throws Exception {
-//        Mockito.when(userUtil.getUser()).thenReturn();
-//        Mockito.when(blogService.addBlog(Mockito.any())).thenReturn(null);
+//        Mockito.when(userUtil.getUser()).thenReturn(testAuth);
+//        BlogAddDTO blogAddDTO = new BlogAddDTO("你好",null,)
 //        BlogContentDTO blogContentDTO = new BlogContentDTO("123456", null);
 //        String requestJson = JSONObject.toJSONString(blogContentDTO);
+//        mockMvc.perform(post("/blogs"))
+//        Mockito.when(blogService.addBlog(Mockito.any())).thenReturn(null);
+//
+//
 //        mockMvc.perform(post("/blogs")
 //                .contentType(MediaType.APPLICATION_JSON)
 //                .content(requestJson))
