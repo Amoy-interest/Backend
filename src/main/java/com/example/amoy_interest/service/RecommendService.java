@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface RecommendService {
-    List<BlogDTO> getRecommendBlogsUsingUser_id(Integer user_id, int limit_count);
+    List<BlogDTO> getRecommendBlogsUsingUser_id(Integer user_id, Integer pageNum, Integer pageSize);
     List<BlogDTO> getSimBlogUsingBlog_id(Integer blog_id, int limit_count);
     List<SimUserDTO> getSimUserUsingUser_id(Integer my_user_id, Integer user_id, int limit_count);
 }

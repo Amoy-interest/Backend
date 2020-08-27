@@ -4,6 +4,7 @@ import com.example.amoy_interest.dao.*;
 import com.example.amoy_interest.dto.BlogDTO;
 import com.example.amoy_interest.dto.SimUserDTO;
 import com.example.amoy_interest.entity.*;
+import com.example.amoy_interest.service.BlogService;
 import com.example.amoy_interest.service.RecommendService;
 import com.example.amoy_interest.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,15 +36,21 @@ public class RecommendServiceImpl implements RecommendService {
     private BlogVoteDao blogVoteDao;
     @Autowired
     private BlogCountDao blogCountDao;
+    @Autowired
+    private BlogService blogService;
 
     @Override
     @Transactional
-    public List<BlogDTO> getRecommendBlogsUsingUser_id(Integer user_id, int limit_count) {
-        Pageable pageable = PageRequest.of(0, limit_count);
+    public List<BlogDTO> getRecommendBlogsUsingUser_id(Integer user_id, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(0, pageSize);
         List<Blog> recBlogs = (recommendBlogsDao.getRecommendBlogsUsingUser_id(user_id, pageable)).getContent();
-        List<Integer> list = recBlogs.stream().map(Blog::getBlog_id).collect(Collectors.toList());
-        recommendBlogsDao.updateRecommendBlogs(user_id, list);
-        return convertToBlogDTOList(recBlogs);
+        if (recBlogs.size() == 0) {
+            return (blogService.getBlogPageOrderByHot(pageNum, pageSize)).getContent();
+        } else {
+            List<Integer> list = recBlogs.stream().map(Blog::getBlog_id).collect(Collectors.toList());
+            recommendBlogsDao.updateRecommendBlogs(user_id, list);
+            return convertToBlogDTOList(recBlogs);
+        }
     }
 
     @Override

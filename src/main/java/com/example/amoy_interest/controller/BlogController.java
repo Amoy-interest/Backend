@@ -222,9 +222,10 @@ public class BlogController {
     @RequiresAuthentication
     @ApiOperation(value = "获取推荐博文")
     @GetMapping(value = "/recommend")
-    public Msg<List<BlogDTO>> getRecommendBlog(@RequestParam(required = false, defaultValue = "5") Integer limit_count) {
+    public Msg<List<BlogDTO>> getRecommendBlog(@@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                               @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         Integer user_id = userUtil.getUserId();
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, recommendService.getRecommendBlogsUsingUser_id(user_id, limit_count));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, recommendService.getRecommendBlogsUsingUser_id(user_id, pageNum, pageSize));
     }
 
     @RequiresAuthentication
