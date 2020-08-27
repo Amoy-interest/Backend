@@ -88,8 +88,8 @@ public class AdminControllerTest {
     @MockBean
     private CountService countService;
 
-//    private ObjectMapper om = new ObjectMapper();
-//
+    private ObjectMapper om = new ObjectMapper();
+
 //    @BeforeEach
 //    public void setUp() {
 //        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();

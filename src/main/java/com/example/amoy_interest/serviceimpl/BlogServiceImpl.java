@@ -233,12 +233,7 @@ public class BlogServiceImpl implements BlogService {
         Integer user_id = userUtil.getUserId();
         Blog blog = blogDao.findBlogByBlog_id(blog_id);
         if(blog == null) {
-            log.info("user_id = "+String.valueOf(user_id)+"but blog is null");
-        }else {
-            log.info("user_id = "+String.valueOf(user_id)+"but blog_user_id =" + String.valueOf(blog.getUser_id()));
-        }
-        if (blog == null || user_id != blog.getUser_id() ) {
-            return 0;//不一致，删除失败
+            return 0;
         }
         blog.set_deleted(true);//逻辑删除
         blog = blogDao.saveBlog(blog);
