@@ -14,7 +14,7 @@ from collections import defaultdict
 import math
 from sklearn.linear_model import LogisticRegression
 
-def getDataFromBlogVote(cursor1):
+def getDataFromBlogVote(cursor1, user_len, blog_len):
 
 	#sql = "select user_id,blog_id from blog_vote where user_id < 3 and create_time >= date_sub(curdate(), interval 7 day)"
 	sql = "select user_id,blog_id from blog_vote where create_time >= date_sub(curdate(), interval 7 day)"
@@ -23,17 +23,17 @@ def getDataFromBlogVote(cursor1):
 
 	result0 = list(cursor1.fetchall())
 
-	user_vote = [list() for i in range(10335)]
+	user_vote = [list() for i in range(user_len + 1)]
 
 	for item in result0:
 		user_vote[item[0]].append(item[1])
 
 	return user_vote
 
-def recall(cursor1, user_group):
-	result1 = getDataFromBlogVote(cursor1)
+def recall(cursor1, user_group, user_len, blog_len):
+	result1 = getDataFromBlogVote(cursor1, user_len, blog_len)
 
-	top_n = [ [] * 1000 for row in range(10335)]
+	top_n = [ [] * 1000 for row in range(user_len + 1)]
 
 	for i in range(1, 32):
 		user_list = []
@@ -46,30 +46,33 @@ def recall(cursor1, user_group):
 		for user_id in user_list:
 			top_n[user_id].extend(random.sample(tlist, 500))
 
-	print(len(top_n[1]))
 	print("finish recall")
 
 	return top_n
 
-
-def build_blog_vector(cursor1):
+def build_blog_vector(cursor1, user_len, blog_len):
 
 	#sql = "select * from topic_blog where blog_id < 3"
+
 	sql = "select * from topic_blog"
 
 	cursor1.execute(sql)
 
 	result = cursor1.fetchall()
 
-	blog_vectors = [ [] * 5 for row in range(10021)]
+	blog_vectors = [ [] * 5 for row in range(blog_len+1)]
 
 	for row in result:
 
-		blog_vectors[row[1]].append(row[0])
+		if (row[1] <= blog_len):
+
+			blog_vectors[row[1]].append(row[0])
+
+	print("finish build blog vectors")
 
 	return blog_vectors
 
-def build_user_vector(cursor1, blog_vectors):
+def build_user_vector(cursor1, blog_vectors, user_len, blog_len):
 
 	sql = "select blog_id,user_id,create_time from blog_vote where create_time >= date_sub(curdate(), interval 7 day)"
 	#sql = "select blog_id,user_id,create_time from blog_vote where user_id < 3 and create_time >= date_sub(curdate(), interval 7 day)"
@@ -83,7 +86,7 @@ def build_user_vector(cursor1, blog_vectors):
 
 
 	#for i in range(0, 3):
-	for i in range(0, 10335):
+	for i in range(0, user_len + 1):
 
 		user_vectors.append([0] * 310)
 
@@ -99,15 +102,16 @@ def build_user_vector(cursor1, blog_vectors):
 
 			user_vectors[row[1]][(int)((blog_vectors[row[0]][k] - 1)/ 10)] += factor
 
-	'''		
+	'''
 	for i in range(0, 5):
 
 		print(user_vectors[1][i])
 	'''
+	print("finish build user_vectors")
 
 	return user_vectors
 
-def get_user_recommend(cursor1):
+def get_user_recommend(cursor1, user_len, blog_len):
 
 	#sql = "select user_id, recommend_blogs from recommend_history where user_id < 3 and create_time >= date_sub(curdate(), interval 6 day)"
 
@@ -119,7 +123,7 @@ def get_user_recommend(cursor1):
 
 	result1 = cursor1.fetchall()
 
-	result_list = [list() for i in range(10335)]
+	result_list = [list() for i in range(user_len + 1)]
 
 	for row in result1:
 
@@ -127,30 +131,27 @@ def get_user_recommend(cursor1):
 
 	return result_list
 
+def predictCTR(conn, cursor1, reData, blog_vectors, user_group, user_len, blog_len):
 
-def predictCTR(conn, cursor1, reData, blog_vectors, user_group):
-
-	user_vectors = build_user_vector(cursor1, blog_vectors)
-
-	print("finish build user_vectors")
+	user_vectors = build_user_vector(cursor1, blog_vectors, user_len, blog_len)
 
 	#获取训练集点赞数据
-	user_vote = getDataFromBlogVote(cursor1)
+	user_vote = getDataFromBlogVote(cursor1, user_len, blog_len)
 
 	# 获取训练集推荐数据
-	user_recommend = get_user_recommend(cursor1) 
+	user_recommend = get_user_recommend(cursor1, user_len, blog_len)
 
 	user_recommend_2 = []
 
 	user_recommend_2.append([])
 
-	for user_id in range(1, 10335):
+	for user_id in range(1, user_len + 1):
 
 		user_recommend_2.append([i for i in user_recommend[user_id] if i not in user_vote[user_id]])
 
 	# 构建矩阵
 
-	weight = [[0] * 1000 for i in range(0, 10335)]
+	weight = [[0] * 1000 for i in range(0, user_len + 1)]
 
 	for i in range(1, 32):
 		user_list = []
@@ -201,11 +202,11 @@ def predictCTR(conn, cursor1, reData, blog_vectors, user_group):
 				data_y.append([0])
 
 		print("finish build matrix")
-		
+
 		# 拟合
 
 		lr = LogisticRegression()
-		lr.fit(data_x, data_y) 
+		lr.fit(data_x, data_y)
 
 		print("finish lr fit")
 
@@ -245,7 +246,7 @@ def predictCTR(conn, cursor1, reData, blog_vectors, user_group):
 
 	conn.commit()
 
-	for user_id in range(1, 10335):
+	for user_id in range(1, user_len + 1):
 
 		slist = (np.argsort(weight[user_id]))[800: 1000]
 
@@ -270,7 +271,7 @@ def predictCTR(conn, cursor1, reData, blog_vectors, user_group):
 
 	conn.commit()
 
-def update_user_group(conn, cursor1, blog_vectors):
+def update_user_group(conn, cursor1, blog_vectors, user_len, blog_len):
 
 	sql = "select blog_id,user_id,create_time from blog_vote where create_time >= date_sub(curdate(), interval 7 day)"
 	#sql = "select blog_id,user_id,create_time from blog_vote where user_id < 3 and create_time >= date_sub(curdate(), interval 7 day)"
@@ -284,7 +285,7 @@ def update_user_group(conn, cursor1, blog_vectors):
 
 
 	#for i in range(0, 3):
-	for i in range(0, 10335):
+	for i in range(0, user_len + 1):
 
 		user_vectors.append([0] * 32)
 
@@ -302,7 +303,7 @@ def update_user_group(conn, cursor1, blog_vectors):
 
 	user_group = [list() for i in range(32)]
 
-	for user_id in range(1, 10335):
+	for user_id in range(1, user_len + 1):
 
 		groups = (np.argsort(user_vectors[user_id]))[30: 32]
 
@@ -316,11 +317,9 @@ def update_user_group(conn, cursor1, blog_vectors):
 			print(np.argsort(user_vectors[user_id]))
 		'''
 
-	print(len(user_group[1]))
-
 	return user_group
 
-def cal_sim_user(conn, cursor1):
+def cal_sim_user(conn, cursor1, user_len, blog_len):
 
 	sql = "delete from sim_user"
 
@@ -328,9 +327,9 @@ def cal_sim_user(conn, cursor1):
 
 	conn.commit()
 
-	follow_list = [list() for i in range(10335)]
+	follow_list = [list() for i in range(user_len + 1)]
 
-	user_list = [list() for i in range(10335)]
+	user_list = [list() for i in range(user_len + 1)]
 
 	sql = "select * from user_follow"
 
@@ -344,9 +343,9 @@ def cal_sim_user(conn, cursor1):
 
 		user_list[item[1]].append(item[0])
 
-	for user_id in range(1, 10335):
+	for user_id in range(1, user_len + 1):
 
-		weight = [0] * 10335
+		weight = [0] * (user_len + 1)
 
 		for fan_id in user_list[user_id]:
 
@@ -357,7 +356,7 @@ def cal_sim_user(conn, cursor1):
 
 		cand_list = []
 
-		for i in range(1, 10335):
+		for i in range(1, user_len + 1):
 
 			if (weight[i] != 0):
 
@@ -375,8 +374,7 @@ def cal_sim_user(conn, cursor1):
 
 	conn.commit()
 
-
-def cal_sim_blog(conn, cursor1):
+def cal_sim_blog(conn, cursor1, user_len, blog_len):
 
 	sql = "delete from sim_blog"
 
@@ -390,9 +388,9 @@ def cal_sim_blog(conn, cursor1):
 
 	vote_list = list(cursor1.fetchall())
 
-	blog_list = [list() for i in range(10335)]
+	blog_list = [list() for i in range(user_len + 1)]
 
-	user_list = [list() for i in range(10021)]
+	user_list = [list() for i in range(blog_len + 1)]
 
 	for item in vote_list:
 
@@ -400,9 +398,9 @@ def cal_sim_blog(conn, cursor1):
 
 		user_list[item[0]].append(item[1])
 
-	for blog_id in range(1, 10021):
+	for blog_id in range(1, blog_len + 1):
 
-		weight = [0] * 10021
+		weight = [0] * (blog_len + 1)
 
 		for user_id in user_list[blog_id]:
 
@@ -413,7 +411,7 @@ def cal_sim_blog(conn, cursor1):
 
 		cand_list = []
 
-		for i in range(1, 10021):
+		for i in range(1, blog_len + 1):
 
 			if (weight[i] != 0):
 
@@ -436,26 +434,37 @@ def cal_sim_blog(conn, cursor1):
 def recommend_sys():
 
 	conn = pymysql.connect(
-	    host="mycat",
-		#"106.14.19.68",
-	    port=8066,
-	    user="root",
-	    password="amoy123",
-	    database="amoy",
-	    charset="utf8")
+	    host="106.14.19.68",
+	     port=8066,
+	     user="root",
+	     password="amoy123",
+	     database="amoy",
+	     charset="utf8")
 	cursor1 = conn.cursor()
 
-	blog_vectors = build_blog_vector(cursor1)
+	sql1 = "SELECT count(*) FROM user"
 
-	user_group = update_user_group(conn, cursor1, blog_vectors)
+	cursor1.execute(sql1)
 
-	top_n = recall(cursor1, user_group)
+	user_len = (list(cursor1.fetchone()))[0]
 
-	predictCTR(conn, cursor1, top_n, blog_vectors, user_group)
+	sql2 = "SELECT count(*) FROM blog"
 
-	cal_sim_user(conn, cursor1)
+	cursor1.execute(sql2)
 
-	cal_sim_blog(conn, cursor1)
+	blog_len = (list(cursor1.fetchone()))[0]
+
+	blog_vectors = build_blog_vector(cursor1, user_len, blog_len)
+
+	user_group = update_user_group(conn, cursor1, blog_vectors, user_len, blog_len)
+
+	top_n = recall(cursor1, user_group, user_len, blog_len)
+
+	predictCTR(conn, cursor1, top_n, blog_vectors, user_group, user_len, blog_len)
+
+	cal_sim_user(conn, cursor1, user_len, blog_len)
+
+	cal_sim_blog(conn, cursor1, user_len, blog_len)
 
 	timer = threading.Timer(85200, recommend_sys)
 
@@ -465,7 +474,7 @@ if __name__ == "__main__":
 
 	now_time = datetime.datetime.now()
 
-	next_time = now_time + datetime.timedelta(days=+1)
+	next_time = now_time + datetime.timedelta(days=0)
 
 	next_year = next_time.date().year
 
@@ -473,7 +482,7 @@ if __name__ == "__main__":
 
 	next_day = next_time.date().day
 
-	next_time = datetime.datetime.strptime(str(next_year)+"-"+str(next_month)+"-"+str(next_day)+" 17:27:00", "%Y-%m-%d %H:%M:%S")
+	next_time = datetime.datetime.strptime(str(next_year)+"-"+str(next_month)+"-"+str(next_day)+" 10:20:00", "%Y-%m-%d %H:%M:%S")
 
 	print("start_time:", next_time)
 
