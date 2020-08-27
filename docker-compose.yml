@@ -108,6 +108,8 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     container_name: amoy_dev3
+    volumes:
+      - /workspace/amoy-dev3.1/logs:/logs/
     # build: .
     ports:
       - "8082:8082"
