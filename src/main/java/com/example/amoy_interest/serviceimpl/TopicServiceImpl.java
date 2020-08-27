@@ -49,6 +49,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Transactional
     public TopicDTO addTopic(String topic_name) {
         if(topicDao.getTopicByName(topic_name) == null) {
             Topic topic = new Topic(topic_name,new Date(),0,0,null,null,null);
@@ -169,5 +170,10 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public void updateAllTopicHeat() {
 
+    }
+
+    @Override
+    public Topic getTopicByName(String topic_name) {
+        return topicDao.getTopicByName(topic_name);
     }
 }

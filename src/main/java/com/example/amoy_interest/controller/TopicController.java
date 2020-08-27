@@ -1,6 +1,7 @@
 package com.example.amoy_interest.controller;
 
 import com.example.amoy_interest.dto.*;
+import com.example.amoy_interest.entity.Topic;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
@@ -52,14 +53,14 @@ public class TopicController {
                                              @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                              @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                              @RequestParam(required = false, defaultValue = "0") Integer orderType) {
-        Integer topic_id = topicService.getTopic_idByName(topic_name);
-        if (topic_id == null) {
-            return new Msg<>(MsgCode.ERROR, "该话题不存在", null);
+        Topic topic = topicService.getTopicByName(topic_name);
+        if (topic == null || topic.getCheck_status() == 2) {
+            return new Msg<>(MsgCode.ERROR, "该话题不存在或被删除", null);
         }
         if (orderType == 0) {
-            return new Msg<CommonPage<BlogDTO>>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getListByTopic_id(topic_id, pageNum, pageSize)));
+            return new Msg<CommonPage<BlogDTO>>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getListByTopic_id(topic.getTopic_id(), pageNum, pageSize)));
         }
-        return new Msg<CommonPage<BlogDTO>>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getHotBlogPageByTopic_id(topic_id, pageNum, pageSize)));
+        return new Msg<CommonPage<BlogDTO>>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getHotBlogPageByTopic_id(topic.getTopic_id(), pageNum, pageSize)));
     }
 
     @RequiresAuthentication
@@ -72,7 +73,8 @@ public class TopicController {
     @RequiresAuthentication
     @ApiOperation(value = "新增话题")
     @PostMapping(value = "")
-    public Msg AddTopic(@NotNull(message = "话题名不能为空")
+    public Msg AddTopic(@RequestParam(required = true)
+                        @NotNull(message = "话题名不能为空")
                         @NotEmpty(message = "话题名不能为空字符串")
                         @Length(max = 40, message = "话题名不能大于40位") String topic_name) {
         topicService.addTopic(topic_name);

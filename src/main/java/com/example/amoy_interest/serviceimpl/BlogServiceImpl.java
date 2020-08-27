@@ -229,7 +229,7 @@ public class BlogServiceImpl implements BlogService {
     @Transactional
     public Integer deleteByBlog_id(Integer blog_id) {
         Integer user_id = userUtil.getUserId();
-        Blog blog = findBlogByBlog_id(blog_id);
+        Blog blog = blogDao.findBlogByBlog_id(blog_id);
         if (user_id != blog.getUser_id() || blog == null) {
             return 0;//不一致，删除失败
         }
