@@ -17,5 +17,6 @@ public interface TopicDao {
     List<Topic> getReportedTopic();
     Page<Topic> getReportedTopicPage(Pageable pageable);
     Page<Topic> searchReportedTopicPage(String keyword,Pageable pageable);
+    Page<String> searchTopicsPage(String keyword, Pageable pageable);
     List<TopicHeatParam> getAllTopicCount();
 }

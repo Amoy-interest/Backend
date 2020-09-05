@@ -16,6 +16,7 @@ public interface TopicService {
     boolean reportTopicByName(String topic_name);
     Page<TopicReportDTO> getReportedTopicsPage(Integer pageNum,Integer pageSize,Integer orderType);
     Page<TopicReportDTO> searchReportedTopicsPage(String keyword,Integer pageNum,Integer pageSize,Integer orderType);
+    Page<String> searchTopicsPage(String keyword,Integer pageNum,Integer pageSize);
     TopicDTO addTopic(String topic_name);
     TopicDTO modifyTopic(TopicModifyParam topicModifyParam);
     void updateTopicHeat();

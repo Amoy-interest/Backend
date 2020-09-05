@@ -7,6 +7,7 @@ import com.example.amoy_interest.dto.UserInfoDTO;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
+import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.service.UserService;
 import com.example.amoy_interest.utils.CommonPage;
 import io.swagger.annotations.Api;
@@ -30,6 +31,8 @@ import javax.validation.constraints.NotNull;
 public class SearchController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private TopicService topicService;
 
     @RequiresAuthentication
     @ApiOperation(value = "预搜索")
@@ -41,5 +44,17 @@ public class SearchController {
                                               @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                               @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, CommonPage.restPage(userService.searchUsersPage(keyword, pageNum, pageSize)));
+    }
+
+    @RequiresAuthentication
+    @ApiOperation(value = "标签预搜索")
+    @RequestMapping(value = "/pre/topic", method = RequestMethod.GET)
+    public Msg<CommonPage<String>> TopicPreSearch(@RequestParam(required = true)
+                                                  @NotNull(message = "关键词不能为空")
+                                                  @NotEmpty(message = "关键词不能为空字符串")
+                                                  @Length(max = 40, message = "关键词不能大于40位") String keyword,
+                                                  @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                                  @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, CommonPage.restPage(topicService.searchTopicsPage(keyword, pageNum, pageSize)));
     }
 }
