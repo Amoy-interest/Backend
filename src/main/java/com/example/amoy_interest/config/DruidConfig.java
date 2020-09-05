@@ -28,6 +28,7 @@ public class DruidConfig {
     public ServletRegistrationBean statViewServlet(){
         ServletRegistrationBean servletRegistrationBean =new ServletRegistrationBean(new StatViewServlet(),"/druid/*");
         //IP白名单
+        servletRegistrationBean.addInitParameter("allow","*");
         servletRegistrationBean.addInitParameter("allow","192.168.3.107,192.168.3.111,192.168.3.113");
         //IP黑名单
         servletRegistrationBean.addInitParameter("deny","192.168.3.10");

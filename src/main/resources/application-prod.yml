@@ -3,7 +3,7 @@ server:
   context-path: /
 spring:
   datasource:
-    url: jdbc:mysql://mycat:8066/amoy?useSSL=false&useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://mycat:8066/amoy?useSSL=false&useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&useLocalSessionState=true
     #?characterEncoding=utf8&useSSL=false&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true&&serverTimezone=GMT%2B8
     username: root
     password: amoy123
@@ -28,12 +28,12 @@ spring:
     testOnBorrow: false
     testOnReturn: false
     # 打开PSCache，并且指定每个连接上PSCache的大小
-    poolPreparedStatements: true
-    maxOpenPreparedStatements: 20
+    poolPreparedStatements: false
+#    maxOpenPreparedStatements: 20
     #    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
-    #    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
     # 合并多个DruidDataSource的监控数据
-  #    useGlobalDataSourceStat: true
+    useGlobalDataSourceStat: true
   redis:
     # Redis服务器地址
     host: amoy_redis
