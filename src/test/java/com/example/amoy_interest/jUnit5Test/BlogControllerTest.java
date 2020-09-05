@@ -252,7 +252,7 @@ public class BlogControllerTest {
         when(blogService.deleteByBlog_id(Mockito.any())).thenReturn(1);
         mockMvc.perform(delete("/blogs?blog_id=1"))
                 .andExpect(status().isOk()).andReturn();
-//        verify(blogService, times(1)).deleteByBlog_id(1);
+        verify(blogService, times(1)).deleteByBlog_id(1);
     }
 
     @Test
@@ -268,13 +268,13 @@ public class BlogControllerTest {
     }
 
 
-//    @Test
-//    public void testDeleteComment() throws Exception {
-//        doNothing().when(blogService).deleteCommentByComment_id(any());
-//        mockMvc.perform(delete("/blogs/comments?comment_id=1"))
-//                .andExpect(status().isOk()).andReturn();
-//        verify(blogService, times(1)).deleteCommentByComment_id(any());
-//    }
+    @Test
+    public void testDeleteComment() throws Exception {
+        when(blogService.deleteCommentByComment_id(any())).thenReturn(true);
+        mockMvc.perform(delete("/blogs/comments?comment_id=1"))
+                .andExpect(status().isOk()).andReturn();
+        verify(blogService, times(1)).deleteCommentByComment_id(any());
+    }
 
     @Test
     public void testGetLevel1Comments() throws Exception {
@@ -355,6 +355,7 @@ public class BlogControllerTest {
     @Test
     public void testGetFollowBlogs() throws Exception {
         when(userUtil.getUserId()).thenReturn(1);
+//        when()
 //        when(blogService.getFollowBlogPageByUser_idOrderByTime(any(),any(),any())).thenReturn()
     }
 
