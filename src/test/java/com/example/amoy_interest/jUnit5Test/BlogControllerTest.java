@@ -342,18 +342,20 @@ public class BlogControllerTest {
 
     @Test
     public void testGetSimBlog() throws Exception{
-        when(recommendService.getRecommendBlogsUsingUser_id(any(),any(),any())).thenReturn(new ArrayList<>());
-        when(userUtil.getUserId()).thenReturn(1);
-
+        when(recommendService.getSimBlogUsingBlog_id(any(),any())).thenReturn(new ArrayList<>());
+        mockMvc.perform(get("blogs/sim")).andExpect(status().isOk());
     }
     @Test
     public void testGetRecommendBlog() throws Exception {
-
+        when(userUtil.getUserId()).thenReturn(1);
+        when(recommendService.getRecommendBlogsUsingUser_id(any(),any(),any())).thenReturn(new ArrayList<>());
+        mockMvc.perform(get("blogs/recommend")).andExpect(status().isOk());
     }
 
     @Test
     public void testGetFollowBlogs() throws Exception {
-
+        when(userUtil.getUserId()).thenReturn(1);
+//        when(blogService.getFollowBlogPageByUser_idOrderByTime(any(),any(),any())).thenReturn()
     }
 
     @Test
