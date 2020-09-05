@@ -99,7 +99,7 @@ public class BlogController {
     public Msg ForwardBlog(@RequestBody @Valid BlogForwardDTO blogForwardDTO) {
         UserAuth userAuth = userUtil.getUser();
         if (userAuth.getIs_ban() == 1 && userAuth.getUserBan().getBan_time().after(new Date())) {
-            return new Msg<>(MsgCode.ERROR, MsgUtil.USER_BAN_MSG);
+            return new Msg<>(402, MsgUtil.USER_BAN_MSG);
         }
         Set<String> stringSet = FinderUtil.find(blogForwardDTO.getText());
         if (!stringSet.isEmpty())

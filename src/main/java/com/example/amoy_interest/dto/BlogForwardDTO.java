@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@ApiModel(value = "BlogForwardDto", description = "新建博文所需内容")
+@ApiModel(value = "BlogForwardDTO", description = "新建博文所需内容")
 public class BlogForwardDTO {
     @ApiModelProperty(value = "发博用户id(不用传过来,后端从token中取)",required = false)
     private Integer user_id;

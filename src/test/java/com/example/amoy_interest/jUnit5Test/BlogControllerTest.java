@@ -5,6 +5,7 @@ import com.example.amoy_interest.config.shiro.jwt.JwtToken;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.msgutils.Msg;
+import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
 import com.example.amoy_interest.service.BlogService;
 import com.example.amoy_interest.service.RecommendService;
@@ -12,6 +13,7 @@ import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.serviceimpl.BlogServiceImpl;
 import com.example.amoy_interest.serviceimpl.TopicServiceImpl;
 import com.example.amoy_interest.serviceimpl.UserServiceImpl;
+import com.example.amoy_interest.utils.CommonPage;
 import com.example.amoy_interest.utils.UserUtil;
 import com.example.amoy_interest.utils.sensitivefilter2.FinderUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -68,6 +70,8 @@ public class BlogControllerTest {
     @Autowired
     private SecurityManager securityManager;
 
+    private ObjectMapper om = new ObjectMapper();
+
     //
     @BeforeAll
     public static void init() {
@@ -84,8 +88,8 @@ public class BlogControllerTest {
 
     @MockBean
     private UserUtil userUtil;
-    @MockBean
-    private FinderUtil finderUtil;
+//    @MockBean
+//    private FinderUtil finderUtil;
     @MockBean
     private BlogService blogService;
     @MockBean
@@ -122,15 +126,27 @@ public class BlogControllerTest {
         verify(blogService, times(1)).addBlog(Mockito.any());
 
         Mockito.when(userUtil.getUser()).thenReturn(testAuth2);
-        mockMvc.perform(post("/blogs").contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson)).andExpect(status().is4xxClientError());
-
+        MvcResult result = mockMvc.perform(post("/blogs").contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson)).andReturn();
+        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+        String resultContent = result.getResponse().getContentAsString();
+        Msg msg = om.readValue(resultContent, new TypeReference<Msg>() {
+        });
+        assertEquals(402, msg.getStatus());
+        assertEquals(MsgUtil.USER_BAN_MSG, msg.getMsg());
         Mockito.when(userUtil.getUser()).thenReturn(testAuth);
         blogAddDTO.setText("去他的");
-        mockMvc.perform(post("/blogs")
+        requestJson = JSONObject.toJSONString(blogAddDTO);
+        MvcResult result2 = mockMvc.perform(post("/blogs")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
-                .andExpect(status().is4xxClientError());
+                .andReturn();
+        result2.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+        String resultContent2 = result2.getResponse().getContentAsString();
+        Msg msg2 = om.readValue(resultContent2, new TypeReference<Msg>() {
+        });
+        assertEquals(402, msg2.getStatus());
+        assertEquals("内容含有敏感词", msg2.getMsg());
     }
 
     @Test
@@ -138,47 +154,117 @@ public class BlogControllerTest {
         Mockito.when(blogService.getAllBlogDetail(1)).thenReturn(testBlogDTO);
         mockMvc.perform(get("/blogs?blog_id=1"))//.header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
                 .andExpect(status().isOk()).andReturn();
+        verify(blogService,times(1)).getAllBlogDetail(1);
     }
 
     @Test
     public void testPutBlog() throws Exception {
         Mockito.when(blogService.findBlogByBlog_id(1)).thenReturn(testBlog);
         Mockito.when(blogService.updateBlog(Mockito.any())).thenReturn(null);
+        Mockito.when(userUtil.getUser()).thenReturn(testAuth2);
         BlogPutDTO blogPutDTO = new BlogPutDTO(1, "dest", null);
         String requestJson = JSONObject.toJSONString(blogPutDTO);
+        MvcResult result = mockMvc.perform(put("/blogs")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isOk()).andReturn();
+        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+        String resultContent = result.getResponse().getContentAsString();
+        Msg msg = om.readValue(resultContent, new TypeReference<Msg>() {
+        });
+        assertEquals(402, msg.getStatus());
+        assertEquals(MsgUtil.USER_BAN_MSG, msg.getMsg());
+
+        Mockito.when(userUtil.getUser()).thenReturn(testAuth);
         mockMvc.perform(put("/blogs")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
                 .andExpect(status().isOk()).andReturn();
+
+
+        blogPutDTO.setText("去他的");
+        requestJson = JSONObject.toJSONString(blogPutDTO);
+        result = mockMvc.perform(put("/blogs")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andReturn();
+        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+        resultContent = result.getResponse().getContentAsString();
+        msg = om.readValue(resultContent, new TypeReference<Msg>() {
+        });
+        assertEquals(402, msg.getStatus());
+        assertEquals("内容含有敏感词", msg.getMsg());
+
         verify(blogService, times(1)).updateBlog(Mockito.any());
     }
 
     @Test
     public void testForwardBlog() throws Exception {
+        Mockito.when(userUtil.getUser()).thenReturn(testAuth2);
+        BlogForwardDTO blogForwardDTO = new BlogForwardDTO(1,"DEST",1);
+        String requestJson = JSONObject.toJSONString(blogForwardDTO);
+        MvcResult result = mockMvc.perform(post("/blogs/forward")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isOk())
+                .andReturn();
+        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
 
+        String resultContent = result.getResponse().getContentAsString();
+        Msg msg = om.readValue(resultContent, new TypeReference<Msg>() {
+        });
+        assertEquals(402, msg.getStatus());
+        assertEquals(MsgUtil.USER_BAN_MSG, msg.getMsg());
+
+        Mockito.when(userUtil.getUser()).thenReturn(testAuth);
+        mockMvc.perform(post("/blogs/forward")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isOk()).andReturn();
+
+
+        blogForwardDTO.setText("去他的");
+        requestJson = JSONObject.toJSONString(blogForwardDTO);
+        result = mockMvc.perform(post("/blogs/forward")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andReturn();
+        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+        resultContent = result.getResponse().getContentAsString();
+        msg = om.readValue(resultContent, new TypeReference<Msg>() {
+        });
+        assertEquals(402, msg.getStatus());
+        assertEquals("内容含有敏感词", msg.getMsg());
+        verify(blogService, times(1)).forwardBlog(Mockito.any());
     }
 
     @Test
     public void testDeleteBlog() throws Exception {
-        doNothing().when(blogService).deleteByBlog_id(Mockito.any());
+        when(blogService.deleteByBlog_id(Mockito.any())).thenReturn(0);
+        MvcResult result = mockMvc.perform(delete("/blogs?blog_id=1"))
+                .andExpect(status().isOk()).andReturn();
+        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+        String resultContent = result.getResponse().getContentAsString();
+        Msg msg = om.readValue(resultContent, new TypeReference<Msg>() {
+        });
+        assertEquals(-1, msg.getStatus());
+        assertEquals("你无权删除", msg.getMsg());
+        when(blogService.deleteByBlog_id(Mockito.any())).thenReturn(1);
         mockMvc.perform(delete("/blogs?blog_id=1"))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
                 .andExpect(status().isOk()).andReturn();
         verify(blogService, times(1)).deleteByBlog_id(1);
     }
 
     @Test
     public void testComment() throws Exception {
+        when(userUtil.getUserId()).thenReturn(1);
         when(blogService.addBlogComment(Mockito.any())).thenReturn(null);
-//        CommentPostDTO commentPostDTO = new CommentPostDTO(1, 1, "dd", "ddd", "test");
-//        String requestJson = JSONObject.toJSONString(commentPostDTO);
-//        mockMvc.perform(post("/blogs/comments")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(requestJson)
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
-//                .andExpect(status().isOk()).andReturn();
-//        verify(blogService, times(1)).addBlogComment(Mockito.any());
+        CommentPostDTO commentPostDTO = new CommentPostDTO(1, 1, 1, 1, "test");
+        String requestJson = JSONObject.toJSONString(commentPostDTO);
+        mockMvc.perform(post("/blogs/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson)).andExpect(status().isOk()).andReturn();
+        verify(blogService, times(1)).addBlogComment(Mockito.any());
     }
 
 
@@ -186,19 +272,20 @@ public class BlogControllerTest {
     public void testDeleteComment() throws Exception {
         doNothing().when(blogService).deleteCommentByComment_id(any());
         mockMvc.perform(delete("/blogs/comments?comment_id=1"))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
                 .andExpect(status().isOk()).andReturn();
         verify(blogService, times(1)).deleteCommentByComment_id(any());
     }
 
     @Test
     public void testGetLevel1Comments() throws Exception {
-
+        when(blogService.getLevel1CommentPage(1,0,5)).thenReturn(new PageImpl<>(new ArrayList<>(),PageRequest.of(0,5),0));
+        mockMvc.perform(get("/blogs/comments/level1?blog_id=1")).andExpect(status().isOk());
     }
 
     @Test
     public void testGetMultiComments() throws Exception {
-
+        when(blogService.getMultiLevelCommentPage(1,0,5)).thenReturn(new PageImpl<>(new ArrayList<>(),PageRequest.of(0,5),0));
+        mockMvc.perform(get("/blogs/comments/multilevel?root_comment_id=1")).andExpect(status().isOk());
     }
 
     @Test
@@ -210,7 +297,6 @@ public class BlogControllerTest {
         mockMvc.perform(post("/blogs/vote")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
                 .andExpect(status().isOk()).andReturn();
         verify(blogService, times(1)).incrVoteCount(Mockito.any());
         VoteDTO voteDTO1 = new VoteDTO(2, 1);
@@ -218,7 +304,6 @@ public class BlogControllerTest {
         mockMvc.perform(post("/blogs/vote")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson1))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
                 .andExpect(status().isOk()).andReturn();
         verify(blogService, times(1)).incrCommentVoteCount(Mockito.any());
     }
@@ -232,7 +317,6 @@ public class BlogControllerTest {
         mockMvc.perform(delete("/blogs/vote")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
                 .andExpect(status().isOk()).andReturn();
         verify(blogService, times(1)).decrVoteCount(Mockito.any());
         VoteDTO voteDTO1 = new VoteDTO(2, 1);
@@ -240,7 +324,6 @@ public class BlogControllerTest {
         mockMvc.perform(delete("/blogs/vote")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson1))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
                 .andExpect(status().isOk()).andReturn();
         verify(blogService, times(1)).decrCommentVoteCount(Mockito.any());
     }
@@ -249,19 +332,22 @@ public class BlogControllerTest {
     @Test
     public void testSearch() throws Exception {
         List<BlogDTO> blogList = new ArrayList<>();
-//        blogList.add(new Blog(1, 1, 0, 0,null, "abbcdde",  false, 1, 0));
-//        blogList.add(new Blog(2, 1, 0, 0,null, "abcdde",  false, 1, 0));
         Pageable pageable = PageRequest.of(0, 5);
         Page<BlogDTO> page = new PageImpl<>(blogList, pageable, 0);
         Mockito.when(blogService.getSearchListByBlog_text("abbc", 0, 5)).thenReturn(page);
         mockMvc.perform(get("/blogs/search?keyword=abbc"))
-//                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us"))
                 .andExpect(status().isOk()).andReturn();
         verify(blogService, times(1)).getSearchListByBlog_text("abbc", 0, 5);
     }
 
     @Test
-    public void testGetRecommendBlogs() throws Exception {
+    public void testGetSimBlog() throws Exception{
+        when(recommendService.getRecommendBlogsUsingUser_id(any(),any(),any())).thenReturn(new ArrayList<>());
+        when(userUtil.getUserId()).thenReturn(1);
+
+    }
+    @Test
+    public void testGetRecommendBlog() throws Exception {
 
     }
 
