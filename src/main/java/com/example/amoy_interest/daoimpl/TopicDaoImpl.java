@@ -62,6 +62,11 @@ public class TopicDaoImpl implements TopicDao {
     }
 
     @Override
+    public Page<String> searchTopicsPage(String keyword, Pageable pageable) {
+        return topicRepository.searchTopicsPage(keyword, pageable);
+    }
+
+    @Override
     public List<TopicHeatParam> getAllTopicCount() {
         List<Object[]> list = topicRepository.getAllTopicCount();
         List<TopicHeatParam> topicHeatParamList = new ArrayList<>();
