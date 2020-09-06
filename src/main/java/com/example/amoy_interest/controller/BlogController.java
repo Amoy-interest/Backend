@@ -267,8 +267,8 @@ public class BlogController {
 
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
-//    @GetMapping(value = "/test")
-//    public void test(){
-//        blogService.insertToES();
-//    }
+    @GetMapping(value = "/test")
+    public void test(){
+        blogService.insertToES();
+    }
 }
