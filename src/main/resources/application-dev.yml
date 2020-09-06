@@ -64,6 +64,8 @@ spring:
   elasticsearch:
     rest:
       uris: http://localhost:9200
+#      username: elastic
+#      password: VpEszoE3peaL7RazXQAO
 
 management:
   endpoint:
@@ -75,3 +77,6 @@ management:
     web:
       exposure:
         include: '*'
+es:
+  host: localhost
+  port: 9200
