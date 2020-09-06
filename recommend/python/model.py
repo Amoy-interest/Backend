@@ -189,7 +189,12 @@ def predictCTR(conn, cursor1, reData, blog_vectors, user_group, user_len, blog_l
 
 		for user_id in user_list:
 
-			rec_blogs = random.sample(user_recommend_2[user_id], 40)
+			if (len(user_recommend_2[user_id]) > 40):
+
+				rec_blogs = random.sample(user_recommend_2[user_id], 40)
+
+			else:
+				rec_blogs = user_recommend_2[user_id]
 
 			for blog_id in rec_blogs:
 
