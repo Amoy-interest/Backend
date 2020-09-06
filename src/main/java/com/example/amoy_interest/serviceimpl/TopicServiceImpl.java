@@ -8,16 +8,28 @@ import com.example.amoy_interest.entity.Topic;
 import com.example.amoy_interest.entity.TopicHeat;
 import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.utils.HotRank;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.WrapperQueryBuilder;
+import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.range.ParsedDateRange;
+import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -25,6 +37,8 @@ public class TopicServiceImpl implements TopicService {
     private TopicDao topicDao;
     @Autowired
     private TopicHeatDao topicHeatDao;
+    @Autowired
+    private RestHighLevelClient client;
 //    @Autowired
 //    private BlogDao blogDao;
 
@@ -175,8 +189,57 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public void updateAllTopicHeat() {
+    public void updateAllTopicHeat() throws IOException {
+        String str =
+                "{\"bool\": {\n" +
+                "  \"filter\": [\n" +
+                "    {\n" +
+                "      \"range\": {\n" +
+                "        \"@timestamp\": {\n" +
+                "          \"gte\": \"now-2d\",\n" +
+                "          \"lte\": \"now\"\n" +
+                "        }\n" +
+                "      }\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"term\": {\n" +
+                "        \"http_code\" : \"200\"\n" +
+                "      }\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"match_phrase\": {\n" +
+                "        \"methods\": \"GET\"\n" +
+                "      }\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"match_phrase\": {\n" +
+                "        \"api\": \"/topics\"\n" +
+                "      }\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}}";
+        WrapperQueryBuilder wrapperQueryBuilder = QueryBuilders.wrapperQuery(str);
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(wrapperQueryBuilder);
+        AggregationBuilder aggregationBuilder = AggregationBuilders.terms("result").field("query_param0_content.keyword").size(50).subAggregation(AggregationBuilders.dateRange("time_scale").field("@timestamp").addRange("range_0_12h","now-12h","now").addRange("range_12_24h","now-1d","now-12h").addRange("range_24_48h","now-2d","now-1d"));
+        searchSourceBuilder.aggregation(aggregationBuilder);
+        searchSourceBuilder.size(0);
 
+        SearchRequest searchRequest = new SearchRequest("filebeat-7.6.2-nginx-*");
+        searchRequest.source(searchSourceBuilder);
+        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);//client.prepareSearch(StudentTaskStatusDocument.INDEX_NAME)
+        Terms result = searchResponse.getAggregations().get("result");
+        List<TopicHeat> list = new ArrayList<>();
+        for (Terms.Bucket bucket : result.getBuckets()) {
+            String topicName = bucket.getKeyAsString(); // 聚合字段列的值
+            Topic topic = topicDao.getTopicByName(topicName);
+            if(topic == null) continue;
+            ParsedDateRange subTerms = bucket.getAggregations().get("time_scale");
+            Integer heat = Math.toIntExact(subTerms.getBuckets().get(0).getDocCount() * 1 + subTerms.getBuckets().get(1).getDocCount() * 2 + subTerms.getBuckets().get(2).getDocCount() * 5);
+            TopicHeat topicHeat = new TopicHeat(topic.getTopic_id(),heat);
+            list.add(topicHeat);
+        }
+        topicHeatDao.saveAll(list);
     }
 
     @Override
