@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 
 @Api(tags = "话题or热榜模块")
 @RequestMapping("/topics")
@@ -110,5 +111,11 @@ public class TopicController {
         topicService.reportTopicByName(topic_name);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
+
+//    @ApiOperation(value = "test")
+//    @GetMapping(value = "/test")
+//    public void Test() throws IOException {
+//        topicService.updateAllTopicHeat();
+//    }
 
 }

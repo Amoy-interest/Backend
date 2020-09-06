@@ -3,6 +3,7 @@ package com.example.amoy_interest.config;
 import com.example.amoy_interest.task.CountTask;
 import com.example.amoy_interest.task.BlogHeatTask;
 import com.example.amoy_interest.task.BlogHeatTask2;
+import com.example.amoy_interest.task.TopicHeatTask;
 import org.quartz.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,7 @@ public class QuartzConfig {
     private static final String COUNT_TASK_IDENTITY = "CountTaskQuartz";
     private static final String BLOG_HEAT_TASK_IDENTITY = "BlogHeatQuartz";
     private static final String BLOG_HEAT_TASK_2_IDENTITY = "BlogHeat2Quartz";
-
+    private static final String TOPIC_HEAT_TASL_IDENTITY = "TopicHeatQuartz";
     @Bean
     public JobDetail jobDetail1() {
         return JobBuilder.newJob(CountTask.class).withIdentity(COUNT_TASK_IDENTITY).storeDurably().build();
@@ -31,6 +32,11 @@ public class QuartzConfig {
     @Bean
     public JobDetail jobDetail3() {
         return JobBuilder.newJob(BlogHeatTask2.class).withIdentity(BLOG_HEAT_TASK_2_IDENTITY).storeDurably().build();
+    }
+
+    @Bean
+    public JobDetail jobDetail4() {
+        return JobBuilder.newJob(TopicHeatTask.class).withIdentity(TOPIC_HEAT_TASL_IDENTITY).storeDurably().build();
     }
 
     @Bean
@@ -65,6 +71,15 @@ public class QuartzConfig {
                 .repeatForever();
         return TriggerBuilder.newTrigger().forJob(jobDetail3())
                 .withIdentity(BLOG_HEAT_TASK_2_IDENTITY)
+                .withSchedule(scheduleBuilder)
+                .build();
+    }
+
+    @Bean
+    public Trigger quartzTrigger4() {
+        SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(1).repeatForever();
+        return TriggerBuilder.newTrigger().forJob(jobDetail4())
+                .withIdentity(TOPIC_HEAT_TASL_IDENTITY)
                 .withSchedule(scheduleBuilder)
                 .build();
     }

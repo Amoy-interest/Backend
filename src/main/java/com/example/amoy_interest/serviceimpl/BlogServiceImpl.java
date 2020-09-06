@@ -179,17 +179,16 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public int insertToES() {
-//        Pageable pageable = PageRequest.of(1,10);
-//        Page<Blog> blogPage = blogDao.getAllBlogPage(pageable);
-        List<Blog> blogList = blogDao.getAllBlogs();
-        List<ESBlog> esBlogList = new ArrayList<>();
-        int ret = 0;
-        for (Blog blog : blogList) {
-            ret++;
-            esBlogList.add(new ESBlog(blog));
-        }
-        esBlogRepository.saveAll(esBlogList);
-        return ret;
+//        List<Blog> blogList = blogDao.getAllBlogs();
+//        List<ESBlog> esBlogList = new ArrayList<>();
+//        int ret = 0;
+//        for (Blog blog : blogList) {
+//            ret++;
+//            esBlogList.add(new ESBlog(blog));
+//        }
+//        esBlogRepository.saveAll(esBlogList);
+//        return ret;
+        return 0;
     }
 
     @Override

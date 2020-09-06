@@ -139,7 +139,7 @@ public class AdminController {
     @RequiresRoles(logical = Logical.AND, value = {"admin"})
     @ApiOperation(value = "用户解禁", notes = "对用户解除禁言")
     @RequestMapping(value = "/users/unban", method = RequestMethod.PUT)
-    public Msg Unban(@RequestBody
+    public Msg Unban(@RequestParam(required = true)
                      @NotNull(message = "用户id不能为空")
                      @Min(value = 1, message = "用户id不能小于1") Integer user_id) {
         userService.unban(user_id);
@@ -157,7 +157,7 @@ public class AdminController {
     @RequiresRoles(logical = Logical.AND, value = {"admin"})
     @ApiOperation(value = "用户解封", notes = "对用户解除封号")
     @RequestMapping(value = "/users/permit", method = RequestMethod.PUT)
-    public Msg Permit(@RequestBody
+    public Msg Permit(@RequestParam(required = true)
                       @NotNull(message = "用户id不能为空")
                       @Min(value = 1, message = "用户id不能小于1") Integer user_id) {
         userService.permit(user_id);

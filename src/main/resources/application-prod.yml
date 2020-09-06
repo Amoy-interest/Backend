@@ -83,3 +83,7 @@ logging:
   file:
     path: /logs/
     name: mylog.log
+es:
+  host: 106.14.19.68
+  port: 9200
+

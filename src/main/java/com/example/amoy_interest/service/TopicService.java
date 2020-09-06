@@ -4,6 +4,7 @@ import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.Topic;
 import org.springframework.data.domain.Page;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface TopicService {
@@ -21,5 +22,5 @@ public interface TopicService {
     TopicDTO modifyTopic(TopicModifyParam topicModifyParam);
     void updateTopicHeat();
     Page<TopicHeatResult> getHotList(Integer pageNum,Integer pageSize);
-    void updateAllTopicHeat();
+    void updateAllTopicHeat() throws IOException;
 }
