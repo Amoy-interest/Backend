@@ -945,7 +945,6 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Cacheable(value = "blog")
     public Page<BlogDTO> getBlogPageOrderByHot(Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<Blog> blogPage = blogHeatDao.getHotBlog(pageable);
