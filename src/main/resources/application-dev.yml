@@ -64,8 +64,8 @@ spring:
   elasticsearch:
     rest:
       uris: http://localhost:9200
-#      username: elastic
-#      password: VpEszoE3peaL7RazXQAO
+      username:
+      password:
 
 management:
   endpoint:
