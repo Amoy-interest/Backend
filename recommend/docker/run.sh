@@ -4,4 +4,4 @@ pip install --upgrade pip && pip install -i https://mirrors.aliyun.com/pypi/simp
 
 # 运行API入口脚本
 
-python /python/model.py
+python -u /python/model.py
