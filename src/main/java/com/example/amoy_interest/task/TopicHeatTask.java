@@ -26,6 +26,6 @@ public class TopicHeatTask extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         log.info("HeatTask-------- {}", sdf.format(new Date()));
-//        topicService.updateAllTopicHeat();
+        topicService.updateAllTopicHeat();
     }
 }
