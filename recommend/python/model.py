@@ -14,12 +14,46 @@ from collections import defaultdict
 import math
 from sklearn.linear_model import LogisticRegression
 
-def getDataFromBlogVote(cursor1, user_len, blog_len):
+class DB:
+    
+    conn = pymysql.connect(
+             host="mycat",
+	     	 port=8066,
+             user="root",
+             password="amoy123",
+             database="amoy",
+             charset="utf8")
+
+    def connect(self):
+        self.conn = pymysql.connect(
+             host="mycat",
+	     	 port=8066,
+             user="root",
+             password="amoy123",
+             database="amoy",
+             charset="utf8")
+
+    def Exe(self, sql):
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute(sql)
+            self.conn.commit()
+        except pymysql.OperationalError:
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(sql)
+            self.conn.commit()
+        return cursor
+
+db = DB()
+
+
+def getDataFromBlogVote(user_len, blog_len):
 
 	#sql = "select user_id,blog_id from blog_vote where user_id < 3 and create_time >= date_sub(curdate(), interval 7 day)"
 	sql = "select user_id,blog_id from blog_vote where create_time >= date_sub(curdate(), interval 7 day)"
 
-	cursor1.execute(sql)
+	cursor1 = db.Exe(sql)
 
 	result0 = list(cursor1.fetchall())
 
@@ -30,8 +64,8 @@ def getDataFromBlogVote(cursor1, user_len, blog_len):
 
 	return user_vote
 
-def recall(cursor1, user_group, user_len, blog_len):
-	result1 = getDataFromBlogVote(cursor1, user_len, blog_len)
+def recall(user_group, user_len, blog_len):
+	result1 = getDataFromBlogVote(user_len, blog_len)
 
 	top_n = [ [] * 1000 for row in range(user_len + 1)]
 
@@ -50,13 +84,13 @@ def recall(cursor1, user_group, user_len, blog_len):
 
 	return top_n
 
-def build_blog_vector(cursor1, user_len, blog_len):
+def build_blog_vector(user_len, blog_len):
 
 	#sql = "select * from topic_blog where blog_id < 3"
 
 	sql = "select * from topic_blog"
 
-	cursor1.execute(sql)
+	cursor1 = db.Exe(sql)
 
 	result = cursor1.fetchall()
 
@@ -72,11 +106,11 @@ def build_blog_vector(cursor1, user_len, blog_len):
 
 	return blog_vectors
 
-def build_user_vector(cursor1, blog_vectors, user_len, blog_len):
+def build_user_vector(blog_vectors, user_len, blog_len):
 
 	sql = "select blog_id,user_id,create_time from blog_vote where create_time >= date_sub(curdate(), interval 7 day)"
 	#sql = "select blog_id,user_id,create_time from blog_vote where user_id < 3 and create_time >= date_sub(curdate(), interval 7 day)"
-	cursor1.execute(sql)
+	cursor1 = db.Exe(sql)
 
 	result = cursor1.fetchall()
 
@@ -111,7 +145,7 @@ def build_user_vector(cursor1, blog_vectors, user_len, blog_len):
 
 	return user_vectors
 
-def get_user_recommend(cursor1, user_len, blog_len):
+def get_user_recommend(user_len, blog_len):
 
 	#sql = "select user_id, recommend_blogs from recommend_history where user_id < 3 and create_time >= date_sub(curdate(), interval 6 day)"
 
@@ -119,7 +153,7 @@ def get_user_recommend(cursor1, user_len, blog_len):
 
 	sql = "select user_id, blog_id from recommend_blogs"
 
-	cursor1.execute(sql)
+	cursor1 = db.Exe(sql)
 
 	result1 = cursor1.fetchall()
 
@@ -131,15 +165,15 @@ def get_user_recommend(cursor1, user_len, blog_len):
 
 	return result_list
 
-def predictCTR(conn, cursor1, reData, blog_vectors, user_group, user_len, blog_len):
+def predictCTR(reData, blog_vectors, user_group, user_len, blog_len):
 
-	user_vectors = build_user_vector(cursor1, blog_vectors, user_len, blog_len)
+	user_vectors = build_user_vector(blog_vectors, user_len, blog_len)
 
 	#获取训练集点赞数据
-	user_vote = getDataFromBlogVote(cursor1, user_len, blog_len)
+	user_vote = getDataFromBlogVote(user_len, blog_len)
 
 	# 获取训练集推荐数据
-	user_recommend = get_user_recommend(cursor1, user_len, blog_len)
+	user_recommend = get_user_recommend(user_len, blog_len)
 
 	user_recommend_2 = []
 
@@ -253,9 +287,7 @@ def predictCTR(conn, cursor1, reData, blog_vectors, user_group, user_len, blog_l
 
 	sql = "delete from recommend_blogs"
 
-	cursor1.execute(sql)
-
-	conn.commit()
+	db.Exe(sql)
 
 	for user_id in range(1, user_len + 1):
 
@@ -276,17 +308,15 @@ def predictCTR(conn, cursor1, reData, blog_vectors, user_group, user_len, blog_l
 
 			sql = "insert into recommend_blogs values(%d, %d, 0)" %(user_id, rec_id)
 
-			cursor1.execute(sql)
+			db.Exe(sql)
 
 	print("finish recommend blog")
 
-	conn.commit()
-
-def update_user_group(conn, cursor1, blog_vectors, user_len, blog_len):
+def update_user_group(blog_vectors, user_len, blog_len):
 
 	sql = "select blog_id,user_id,create_time from blog_vote where create_time >= date_sub(curdate(), interval 7 day)"
 	#sql = "select blog_id,user_id,create_time from blog_vote where user_id < 3 and create_time >= date_sub(curdate(), interval 7 day)"
-	cursor1.execute(sql)
+	cursor1 = db.Exe(sql)
 
 	result = cursor1.fetchall()
 
@@ -330,13 +360,11 @@ def update_user_group(conn, cursor1, blog_vectors, user_len, blog_len):
 
 	return user_group
 
-def cal_sim_user(conn, cursor1, user_len, blog_len):
+def cal_sim_user(user_len, blog_len):
 
 	sql = "delete from sim_user"
 
-	cursor1.execute(sql)
-
-	conn.commit()
+	db.Exe(sql)
 
 	follow_list = [list() for i in range(user_len + 1)]
 
@@ -344,7 +372,7 @@ def cal_sim_user(conn, cursor1, user_len, blog_len):
 
 	sql = "select * from user_follow"
 
-	cursor1.execute(sql)
+	cursor1 = db.Exe(sql)
 
 	user_follow = list(cursor1.fetchall())
 
@@ -381,21 +409,17 @@ def cal_sim_user(conn, cursor1, user_len, blog_len):
 
 		sql = "insert into sim_user values(%d, %d),(%d, %d),(%d, %d),(%d, %d),(%d, %d),(%d, %d),(%d, %d)" % (user_id, sim_user[0], user_id, sim_user[1],user_id, sim_user[2],user_id, sim_user[3],user_id, sim_user[4],user_id, sim_user[5],user_id, sim_user[6])
 
-		cursor1.execute(sql)
+		db.Exe(sql)
 
-	conn.commit()
-
-def cal_sim_blog(conn, cursor1, user_len, blog_len):
+def cal_sim_blog(user_len, blog_len):
 
 	sql = "delete from sim_blog"
 
-	cursor1.execute(sql)
-
-	conn.commit()
+	db.Exe(sql)
 
 	sql = "select blog_id,user_id from blog_vote where create_time >= date_sub(curdate(), interval 7 day)"
 
-	cursor1.execute(sql)
+	cursor1 = db.Exe(sql)
 
 	vote_list = list(cursor1.fetchall())
 
@@ -437,35 +461,21 @@ def cal_sim_blog(conn, cursor1, user_len, blog_len):
 		blogs_str = ','.join([str(x) for x in sim_blog])
 
 		sql = "insert into sim_blog values(%d, %d),(%d, %d),(%d, %d),(%d, %d),(%d, %d),(%d, %d),(%d, %d)" % (blog_id, sim_blog[0], blog_id, sim_blog[1],blog_id, sim_blog[2],blog_id, sim_blog[3],blog_id, sim_blog[4],blog_id, sim_blog[5],blog_id, sim_blog[6])
-		cursor1.execute(sql)
-
-	conn.commit()
-
+		db.Exe(sql)
 
 def recommend_sys():
 
 	print("begin")
 
-	conn = pymysql.connect(
-	    host="mycat",
-	     port=8066,
-	     user="root",
-	     password="amoy123",
-	     database="amoy",
-	     charset="utf8")
-	cursor1 = conn.cursor()
-
-	print("connect to db")
-
 	sql1 = "SELECT count(*) FROM user"
 
-	cursor1.execute(sql1)
+	cursor1 = db.Exe(sql1)
 
 	user_len = (list(cursor1.fetchone()))[0]
 
 	sql2 = "SELECT count(*) FROM blog"
 
-	cursor1.execute(sql2)
+	cursor1 = db.Exe(sql2)
 
 	blog_len = (list(cursor1.fetchone()))[0]
 
@@ -473,17 +483,17 @@ def recommend_sys():
 
 	print("user_len", user_len)
 
-	blog_vectors = build_blog_vector(cursor1, user_len, blog_len)
+	blog_vectors = build_blog_vector(user_len, blog_len)
 
-	user_group = update_user_group(conn, cursor1, blog_vectors, user_len, blog_len)
+	user_group = update_user_group(blog_vectors, user_len, blog_len)
 
-	top_n = recall(cursor1, user_group, user_len, blog_len)
+	top_n = recall(user_group, user_len, blog_len)
 
-	predictCTR(conn, cursor1, top_n, blog_vectors, user_group, user_len, blog_len)
+	predictCTR(top_n, blog_vectors, user_group, user_len, blog_len)
 
-	cal_sim_user(conn, cursor1, user_len, blog_len)
+	cal_sim_user(user_len, blog_len)
 
-	cal_sim_blog(conn, cursor1, user_len, blog_len)
+	cal_sim_blog(user_len, blog_len)
 
 	timer = threading.Timer(85200, recommend_sys)
 
