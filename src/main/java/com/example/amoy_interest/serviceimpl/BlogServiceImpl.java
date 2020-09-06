@@ -37,6 +37,7 @@ import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 
@@ -528,7 +529,7 @@ public class BlogServiceImpl implements BlogService {
             queryBuilder.field("blog_text");
             //构建高亮体
             HighlightBuilder highlightBuilder = new HighlightBuilder();
-            highlightBuilder.preTags("<span style=\"color:red\">");
+            highlightBuilder.preTags("<span style={{color:'#FF5722'}}>");
             highlightBuilder.postTags("</span>");
             //高亮字段
             highlightBuilder.field("blog_text");
@@ -944,6 +945,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    @Cacheable(value = "blog")
     public Page<BlogDTO> getBlogPageOrderByHot(Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<Blog> blogPage = blogHeatDao.getHotBlog(pageable);

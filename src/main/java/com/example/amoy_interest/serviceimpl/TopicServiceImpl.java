@@ -224,7 +224,6 @@ public class TopicServiceImpl implements TopicService {
         AggregationBuilder aggregationBuilder = AggregationBuilders.terms("result").field("query_param0_content.keyword").size(50).subAggregation(AggregationBuilders.dateRange("time_scale").field("@timestamp").addRange("range_0_12h","now-12h","now").addRange("range_12_24h","now-1d","now-12h").addRange("range_24_48h","now-2d","now-1d"));
         searchSourceBuilder.aggregation(aggregationBuilder);
         searchSourceBuilder.size(0);
-
         SearchRequest searchRequest = new SearchRequest("filebeat-7.6.2-nginx-*");
         searchRequest.source(searchSourceBuilder);
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);//client.prepareSearch(StudentTaskStatusDocument.INDEX_NAME)
