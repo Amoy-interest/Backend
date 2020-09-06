@@ -59,5 +59,8 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
             countQuery = "SELECT count(b.blog_id) FROM Blog b where b.is_deleted = false and b.check_status <> 2")
     Page<Blog> getAllBlogPage(Pageable pageable);
 
+    @Query(value = "select b from Blog b join BlogHeat bh on b.blog_id = bh.blog_id where b.blog_id in (select distinct(tb.blog_id) from Topic t join TopicBlog tb on t.topic_id = tb.topic_id where t.group_name = ?1) order by bh.heat DESC",
+            countQuery = "select count(b.blog_id) from Blog b join BlogHeat bh on b.blog_id = bh.blog_id where b.blog_id in (select distinct(tb.blog_id) from Topic t join TopicBlog tb on t.topic_id = tb.topic_id where t.group_name = ?1) order by bh.heat DESC")
+    Page<Blog> getBlogPageByGroupName(String groupName, Pageable pageable);
 
 }

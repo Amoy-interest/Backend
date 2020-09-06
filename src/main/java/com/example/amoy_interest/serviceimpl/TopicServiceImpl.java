@@ -153,6 +153,13 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    public Page<String> searchTopicsPage(String keyword, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        return topicDao.searchTopicsPage(keyword, pageable);
+
+    }
+
+    @Override
     @Transactional
     public void updateTopicHeat() {
         List<TopicHeatParam> topicHeatParamList = topicDao.getAllTopicCount();

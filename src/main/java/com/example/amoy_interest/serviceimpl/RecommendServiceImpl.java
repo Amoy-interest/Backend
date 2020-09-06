@@ -9,6 +9,7 @@ import com.example.amoy_interest.service.RecommendService;
 import com.example.amoy_interest.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,29 +42,31 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Override
     @Transactional
-    public List<BlogDTO> getRecommendBlogsUsingUser_id(Integer user_id, Integer pageNum, Integer pageSize) {
+    public Page<BlogDTO> getRecommendBlogsUsingUser_id(Integer user_id, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(0, pageSize);
-        List<Blog> recBlogs = (recommendBlogsDao.getRecommendBlogsUsingUser_id(user_id, pageable)).getContent();
+        Page<Blog> page = recommendBlogsDao.getRecommendBlogsUsingUser_id(user_id, pageable);
+        List<Blog> recBlogs = page.getContent();
         if (recBlogs.size() == 0) {
-            return (blogService.getBlogPageOrderByHot(pageNum, pageSize)).getContent();
+            return blogService.getBlogPageOrderByHot(pageNum, pageSize);
         } else {
             List<Integer> list = recBlogs.stream().map(Blog::getBlog_id).collect(Collectors.toList());
             recommendBlogsDao.updateRecommendBlogs(user_id, list);
-            return convertToBlogDTOList(recBlogs);
+            return  new PageImpl<>(convertToBlogDTOList(recBlogs), page.getPageable(), page.getTotalElements());
+
         }
     }
 
     @Override
-    public List<BlogDTO> getSimBlogUsingBlog_id(Integer blog_id, int limit_count) {
+    public Page<BlogDTO> getSimBlogUsingBlog_id(Integer blog_id, int limit_count) {
         Pageable pageable = PageRequest.of(0, limit_count);
         Page<Blog> recBlogs = simBlogDao.getSimBlogUsingBlog_id(blog_id, pageable);
-        return convertToBlogDTOList(recBlogs.getContent());
+        return new PageImpl<>(convertToBlogDTOList(recBlogs.getContent()), recBlogs.getPageable(), recBlogs.getTotalElements());
     }
 
     @Override
-    public List<SimUserDTO> getSimUserUsingUser_id(Integer my_user_id, Integer user_id, int limit_count) {
+    public Page<SimUserDTO> getSimUserUsingUser_id(Integer my_user_id, Integer user_id, int limit_count) {
         Pageable pageable = PageRequest.of(0, limit_count);
-        return (simUserDao.getSimUserUsingUser_id(my_user_id, user_id, pageable)).getContent();
+        return simUserDao.getSimUserUsingUser_id(my_user_id, user_id, pageable);
     }
 
     private List<BlogDTO> convertToBlogDTOList(List<Blog> blogList) {

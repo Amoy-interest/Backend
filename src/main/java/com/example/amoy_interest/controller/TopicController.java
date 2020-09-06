@@ -65,6 +65,18 @@ public class TopicController {
     }
 
     @RequiresAuthentication
+    @ApiOperation(value = "按照分页形式查看大类博文")
+    @RequestMapping(value = "/blogs/group", method = RequestMethod.GET)
+    public Msg<CommonPage<BlogDTO>> GetGroupBlogs(@NotNull(message = "大类名不能为空")
+                                             @NotEmpty(message = "大类名不能为空字符串")
+                                             @Length(max = 40, message = "大类名不能大于40位")
+                                             @RequestParam(required = true) String group_name,
+                                             @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                             @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+        return new Msg<CommonPage<BlogDTO>>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(blogService.getBlogPageByGroupName(group_name, pageNum, pageSize)));
+    }
+
+    @RequiresAuthentication
     @ApiOperation(value = "编辑话题")
     @PutMapping(value = "")
     public Msg<TopicDTO> ModifyTopicIntro(@RequestBody @Valid TopicModifyParam topicModifyParam) {

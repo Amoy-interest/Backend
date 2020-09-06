@@ -217,17 +217,17 @@ public class BlogController {
     @RequiresAuthentication
     @ApiOperation(value = "获取相似博文")
     @GetMapping(value = "/sim")
-    public Msg<List<BlogDTO>> getSimBlog(@RequestParam(required = true) Integer blog_id, @RequestParam(required = false, defaultValue = "5") Integer limit_count) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, recommendService.getSimBlogUsingBlog_id(blog_id, limit_count));
-    }
+    public Msg<CommonPage<BlogDTO>> getSimBlog(@RequestParam(required = true) Integer blog_id, @RequestParam(required = false, defaultValue = "5") Integer limit_count) {
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(recommendService.getSimBlogUsingBlog_id(blog_id, limit_count)));
+}
 
     @RequiresAuthentication
     @ApiOperation(value = "获取推荐博文")
     @GetMapping(value = "/recommend")
-    public Msg<List<BlogDTO>> getRecommendBlog(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+    public Msg<CommonPage<BlogDTO>> getRecommendBlog(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         Integer user_id = userUtil.getUserId();
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, recommendService.getRecommendBlogsUsingUser_id(user_id, pageNum, pageSize));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(recommendService.getRecommendBlogsUsingUser_id(user_id, pageNum, pageSize)));
     }
 
     @RequiresAuthentication

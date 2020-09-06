@@ -62,6 +62,11 @@ public class BlogDaoImpl implements BlogDao {
     }
 
     @Override
+    public Page<Blog> getBlogPageByGroupName(String groupName, Pageable pageable) {
+        return blogRepository.getBlogPageByGroupName(groupName, pageable);
+    }
+
+    @Override
     public Page<Blog> findReportedBlogsPage(Pageable pageable) {
         return blogRepository.findReportedBlogsPage(pageable);
     }
