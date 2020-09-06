@@ -28,15 +28,15 @@ public class DruidConfig {
     public ServletRegistrationBean statViewServlet(){
         ServletRegistrationBean servletRegistrationBean =new ServletRegistrationBean(new StatViewServlet(),"/druid/*");
         //IP白名单
-        servletRegistrationBean.addInitParameter("allow","*");
-        servletRegistrationBean.addInitParameter("allow","192.168.3.107,192.168.3.111,192.168.3.113");
+//        servletRegistrationBean.addInitParameter("allow","*");
+//        servletRegistrationBean.addInitParameter("allow","192.168.3.107,192.168.3.111,192.168.3.113");
         //IP黑名单
-        servletRegistrationBean.addInitParameter("deny","192.168.3.10");
+//        servletRegistrationBean.addInitParameter("deny","192.168.3.10");
         //控制台管理用户
         servletRegistrationBean.addInitParameter("loginUsername","druid");
         servletRegistrationBean.addInitParameter("loginPassword","1234");
         //是否能够重置数据
-        servletRegistrationBean.addInitParameter("resetEnable","false");
+        servletRegistrationBean.addInitParameter("resetEnable","true");
         return servletRegistrationBean;
     }
 

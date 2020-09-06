@@ -32,7 +32,7 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public SensitiveWord updateSensitiveWord(String oldWord,String newWord) {
         sensitiveWordDao.deleteByKeyword(oldWord);
         SensitiveWord sensitiveWord = new SensitiveWord(newWord);
@@ -42,7 +42,7 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void deleteByKeyword(String keyword) {
         Finder.removeSensitiveWords(keyword);
         sensitiveWordDao.deleteByKeyword(keyword);

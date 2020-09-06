@@ -63,7 +63,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public TopicDTO addTopic(String topic_name) {
         if(topicDao.getTopicByName(topic_name) == null) {
             Topic topic = new Topic(topic_name,new Date(),0,0,null,null,null);
@@ -106,7 +106,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional(readOnly = false)
     public boolean reportTopicByName(String topic_name) {
         Topic topic = topicDao.getTopicByName(topic_name);
         topic.setReport_count(topic.getReport_count()+1);
@@ -160,7 +160,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void updateTopicHeat() {
         List<TopicHeatParam> topicHeatParamList = topicDao.getAllTopicCount();
         List<TopicHeat> topicHeatList = new ArrayList<>();
@@ -224,7 +224,6 @@ public class TopicServiceImpl implements TopicService {
         AggregationBuilder aggregationBuilder = AggregationBuilders.terms("result").field("query_param0_content.keyword").size(50).subAggregation(AggregationBuilders.dateRange("time_scale").field("@timestamp").addRange("range_0_12h","now-12h","now").addRange("range_12_24h","now-1d","now-12h").addRange("range_24_48h","now-2d","now-1d"));
         searchSourceBuilder.aggregation(aggregationBuilder);
         searchSourceBuilder.size(0);
-
         SearchRequest searchRequest = new SearchRequest("filebeat-7.6.2-nginx-*");
         searchRequest.source(searchSourceBuilder);
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);//client.prepareSearch(StudentTaskStatusDocument.INDEX_NAME)
