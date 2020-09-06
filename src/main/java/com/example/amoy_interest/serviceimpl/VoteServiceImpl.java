@@ -34,13 +34,13 @@ public class VoteServiceImpl implements VoteService {
     private BlogCountDao blogCountDao;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public BlogVote save(BlogVote blogVote) {
         return blogVoteDao.save(blogVote);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public List<BlogVote> saveAll(List<BlogVote> list) {
         return blogVoteDao.saveAll(list);
     }
@@ -61,7 +61,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void transVoteFromRedis2DB() {
         List<BlogVote> list = redisService.getVoteDataFromRedis();
 //        for (BlogVote blogVote : list) {
@@ -77,7 +77,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void transVoteCountFromRedis2DB() {
         List<BlogVoteCountDTO> list = redisService.getVoteCountFromRedis();
         List<BlogCount> blogCountList = new ArrayList<>();

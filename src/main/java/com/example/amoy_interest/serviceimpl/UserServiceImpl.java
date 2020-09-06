@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public UserInfoDTO register(RegisterDTO registerDTO) {
         UserAuth userAuth = new UserAuth(registerDTO.getUsername(), registerDTO.getPassword(), 0, 0, 0);
         userAuth = userAuthDao.insert(userAuth);
@@ -201,7 +201,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public Page<UserInfoDTO> getUserFanPage(Integer my_user_id, Integer user_id, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<UserFollow> userFanPage = userFollowDao.findFollowPageByFollow_id(user_id, pageable);
@@ -220,7 +220,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public boolean unfollow(Integer user_id, Integer unfollow_id) {
         UserFollow userFollow = new UserFollow(user_id, unfollow_id);
         Optional<UserFollow> userFollow1 = userFollowDao.findByUser_idAndFollow_id(user_id, unfollow_id);
@@ -319,7 +319,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public boolean modifyUser(UserModifyParam userModifyParam) {
         User user = userDao.getById(userModifyParam.getUser_id());
         if(user == null) {
