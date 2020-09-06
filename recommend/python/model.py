@@ -163,7 +163,13 @@ def predictCTR(conn, cursor1, reData, blog_vectors, user_group, user_len, blog_l
 
 		for user_id in user_list:
 
-			vote_blogs = random.sample(user_vote[user_id], 20)
+			if (len(user_vote[user_id]) > 20):
+
+				vote_blogs = random.sample(user_vote[user_id], 20)
+
+			else:
+
+				vote_blogs = user_vote[user_id]
 
 			for blog_id in vote_blogs:
 
