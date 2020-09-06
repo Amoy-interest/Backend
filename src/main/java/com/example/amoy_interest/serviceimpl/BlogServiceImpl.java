@@ -594,6 +594,14 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    public Page<BlogDTO> getBlogPageByGroupName(String groupName, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Page<Blog> blogPage = blogDao.getBlogPageByGroupName(groupName, pageable);
+        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
+        return new PageImpl<BlogDTO>(blogDTOList, blogPage.getPageable(), blogPage.getTotalElements());
+    }
+
+    @Override
     public Page<BlogCommentLevel1DTO> getLevel1CommentPage(Integer blog_id, Integer pageNum, Integer pageSize) {
         Sort sort = Sort.by(Sort.Direction.DESC, "comment_time");
         Pageable pageable = PageRequest.of(pageNum, pageSize);

@@ -24,6 +24,7 @@ public class Topic {
     private Integer host_id;
     private String logo_path;
     private String topic_intro;
+    private String group_name;
 
     public Topic(String topic_name,Date topic_time,int check_status,int report_count,Integer host_id,String logo_path,String topic_intro){
         this.topic_name = topic_name;
