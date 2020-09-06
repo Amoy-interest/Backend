@@ -35,7 +35,7 @@ public class CountServiceImpl implements CountService {
     @Autowired
     private RedisService redisService;
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void transBlogCountDataFromRedis2DB() {
         List<BlogSingleCountDTO> list = redisService.getBlogCommentCountFromRedis();
         List<BlogCount> list1 = new ArrayList<>();
@@ -70,7 +70,7 @@ public class CountServiceImpl implements CountService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void transBlogReportDataFromRedis2DB() {
         List<BlogReport> blogReportList = redisService.getBlogReportDataFromRedis();
         blogReportDao.saveAll(blogReportList);
@@ -89,7 +89,7 @@ public class CountServiceImpl implements CountService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void transUserReporterDataFromRedis2DB() {
         List<UserReport> userReportlist = redisService.getUserReportDataFromRedis();
         userReportDao.saveAll(userReportlist);
@@ -108,7 +108,7 @@ public class CountServiceImpl implements CountService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void transUserCountDataFromRedis2DB() {
         List<UserSingleCountDTO> list = redisService.getUserBlogCountFromRedis();
         List<UserCount> list1 = new ArrayList<>();

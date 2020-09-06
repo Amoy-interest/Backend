@@ -1,5 +1,6 @@
 package com.example.amoy_interest.serviceimpl;
 
+import com.alibaba.fastjson.JSON;
 import com.auth0.jwt.JWT;
 import com.example.amoy_interest.dao.*;
 import com.example.amoy_interest.dto.*;
@@ -15,31 +16,36 @@ import com.example.amoy_interest.utils.HotRank;
 import com.example.amoy_interest.utils.UserUtil;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.lucene.search.function.FunctionScoreQuery;
 import org.elasticsearch.common.util.concurrent.EsAbortPolicy;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
 import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
+import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 
-import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -77,7 +83,9 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     private ESBlogRepository esBlogRepository;
     @Autowired
-    private ElasticsearchRestTemplate elasticsearchRestTemplate;
+    private RestHighLevelClient client;
+    //    @Autowired
+//    private ElasticsearchRestTemplate elasticsearchRestTemplate;
     @Autowired
     private TopicBlogDao topicBlogDao;
     @Autowired
@@ -133,7 +141,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public BlogDTO forwardBlog(BlogForwardDTO blogForwardDTO) {
         Blog blog = new Blog();
         Integer user_id = blogForwardDTO.getUser_id();
@@ -192,7 +200,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public BlogDTO updateBlog(BlogPutDTO blogPutDTO) {
         Integer user_id = userUtil.getUserId();
         Integer blog_id = blogPutDTO.getBlog_id();
@@ -229,7 +237,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public Integer deleteByBlog_id(Integer blog_id) {
         Integer user_id = userUtil.getUserId();
         Blog blog = blogDao.findBlogByBlog_id(blog_id);
@@ -249,7 +257,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void incrVoteCount(Integer blog_id) {
         Integer user_id = userUtil.getUserId();
 
@@ -280,13 +288,13 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void incrCommentVoteCount(Integer comment_id) {
         blogCommentDao.incrCommentVoteCount(comment_id);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void decrVoteCount(Integer blog_id) {
         Integer user_id = userUtil.getUserId();
         Integer status = redisService.findStatusFromRedis(blog_id, user_id);
@@ -315,14 +323,14 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void decrCommentVoteCount(Integer comment_id) {
         blogCommentDao.decrCommentVoteCount(comment_id);
     }
 
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public BlogCommentMultiLevelDTO addBlogComment(CommentPostDTO commentPostDTO) {
         Integer blog_id = commentPostDTO.getBlog_id();
         Integer root_comment_id = commentPostDTO.getRoot_comment_id();
@@ -362,7 +370,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public boolean deleteCommentByComment_id(Integer comment_id) {
         Integer user_id = userUtil.getUserId();
         BlogComment blogComment = blogCommentDao.findCommentByComment_id(comment_id);
@@ -407,7 +415,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public boolean checkReportedBlog(BlogCheckDTO blogCheckDTO) {
         Blog blog = blogDao.findBlogByBlog_id(blogCheckDTO.getBlog_id());
         blog.setCheck_status(blogCheckDTO.getCheck_status());
@@ -476,7 +484,7 @@ public class BlogServiceImpl implements BlogService {
 
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public boolean reportBlog(BlogReportDTO blogReportDTO) {
         Integer user_id = userUtil.getUserId();
         Integer blog_id = blogReportDTO.getBlog_id();
@@ -499,47 +507,59 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public Page<BlogDTO> getSearchListByBlog_text(String keyword, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
-        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
-        //分页
-        nativeSearchQueryBuilder.withPageable(pageable);
-        List<FunctionScoreQueryBuilder.FilterFunctionBuilder> filterFunctionBuilders = new ArrayList<>();
-        filterFunctionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("blog_text", keyword),
-                ScoreFunctionBuilders.weightFactorFunction(10)));//权重，可以多权重来搜索
-        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
-                .must(new MatchQueryBuilder("is_deleted", false)).mustNot(new MatchQueryBuilder("check_status", 2));
-        FunctionScoreQueryBuilder.FilterFunctionBuilder[] builders = new FunctionScoreQueryBuilder.FilterFunctionBuilder[filterFunctionBuilders.size()];
-        filterFunctionBuilders.toArray(builders);
-        FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(builders)
-                .scoreMode(FunctionScoreQuery.ScoreMode.SUM)
-                .setMinScore(2);//设置最低分数
-        nativeSearchQueryBuilder.withQuery(functionScoreQueryBuilder);
-        nativeSearchQueryBuilder.withSort(SortBuilders.scoreSort().order(SortOrder.DESC));//按相关度排名
-        NativeSearchQuery searchQuery = nativeSearchQueryBuilder
-                .withQuery(boolQueryBuilder)
-                .withHighlightFields(
-                        new HighlightBuilder.Field("blog_text"),new HighlightBuilder.Field("topics_name"))
-                .withHighlightBuilder(new HighlightBuilder().preTags("<span style='color:red'>").postTags("</span>")).build();
-        SearchHits<ESBlog> searchHits = elasticsearchRestTemplate.search(searchQuery, ESBlog.class);
-        if (searchHits.getTotalHits() <= 0) {
-            return new PageImpl<>(null, pageable, 0);
-        }
+        SearchRequest searchRequest = new SearchRequest("blog");
         List<ESBlog> esBlogList = new ArrayList<>();
-//        List<ESBlog> esBlogList = searchHits.stream().map(SearchHit::getContent).collect(Collectors.toList());
-//        for(ESBlog esBlog:esBlogList) {
-//            esBlog.setBlog_text(searchHits.getSearchHit().getContent());
-//        }
-        List<SearchHit<ESBlog>> list = searchHits.getSearchHits();
-        for (SearchHit<ESBlog> searchHit : list) {
-            Map<String, List<String>> highlightFields = searchHit.getHighlightFields();
-            ESBlog esBlog = searchHit.getContent();
-            System.out.println(searchHit.toString());
-            System.out.println(searchHit.getHighlightFields().toString());
-            String text = highlightFields.get("blog_text") == null ? searchHit.getContent().getBlog_text() : highlightFields.get("blog_text").get(0);
-            esBlog.setBlog_text(text);
-            esBlogList.add(esBlog);
+        long total = 0;
+        try {
+            List<FunctionScoreQueryBuilder.FilterFunctionBuilder> filterFunctionBuilders = new ArrayList<>();
+            filterFunctionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("blog_text", keyword),ScoreFunctionBuilders.weightFactorFunction(10)));
+            FunctionScoreQueryBuilder.FilterFunctionBuilder[] builders = new FunctionScoreQueryBuilder.FilterFunctionBuilder[filterFunctionBuilders.size()];
+            filterFunctionBuilders.toArray(builders);
+            FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(builders)
+                    .scoreMode(FunctionScoreQuery.ScoreMode.SUM)
+                    .setMinScore(2);//设置最低分数
+            BoolQueryBuilder boolBuilder = new BoolQueryBuilder()
+                    .must(new MatchQueryBuilder("is_deleted", false)).mustNot(new MatchQueryBuilder("check_status", 2));
+            boolBuilder.filter(functionScoreQueryBuilder);
+            SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+            searchSourceBuilder.from((pageNum) * pageSize);
+            searchSourceBuilder.size(pageSize);
+            QueryStringQueryBuilder queryBuilder = new QueryStringQueryBuilder(keyword);
+            queryBuilder.field("blog_text");
+            //构建高亮体
+            HighlightBuilder highlightBuilder = new HighlightBuilder();
+            highlightBuilder.preTags("<span style=\"color:red\">");
+            highlightBuilder.postTags("</span>");
+            //高亮字段
+            highlightBuilder.field("blog_text");
+            //搜索体（添加多个搜索参数）
+            searchSourceBuilder.highlighter(highlightBuilder);
+            searchSourceBuilder.query(queryBuilder);
+            searchSourceBuilder.sort(SortBuilders.scoreSort().order(SortOrder.DESC));
+            searchRequest.source(searchSourceBuilder);
+            //执行查询
+            SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
+            //获取搜索的文档结果
+            SearchHits hit = response.getHits();
+            total = hit.getTotalHits().value;
+            SearchHit[] hits = hit.getHits();
+            for (SearchHit searchHit : hits) {
+                //将文档中的每一个对象转换json串值
+                String sourceAsString = searchHit.getSourceAsString();
+                //将json串值转换成对应的实体对象
+                ESBlog esBlog = JSON.parseObject(sourceAsString, ESBlog.class);
+                //获取对应的高亮域
+                Map<String, HighlightField> highlightFields = searchHit.getHighlightFields();
+                //高亮字段
+                HighlightField highlight = highlightFields.get("blog_text");
+                if (highlight != null)
+                    esBlog.setBlog_text(highlight.fragments()[0].toString());
+                esBlogList.add(esBlog);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        //blogDao.findBlogListByBlog_text(keyword,pageable);
-//        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
         List<BlogDTO> blogDTOList = new ArrayList<>();
 //        List<ESBlog> esBlogList = blogPage.getContent();
         Integer user_id = userUtil.getUserId();
@@ -571,7 +591,80 @@ public class BlogServiceImpl implements BlogService {
             }
 //            blogDTOList.add(new BlogDTO(blog));
         }
-        return new PageImpl<BlogDTO>(blogDTOList, pageable, searchHits.getTotalHits());
+        return new PageImpl<BlogDTO>(blogDTOList, pageable, total);
+//        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+//        //分页
+//        nativeSearchQueryBuilder.withPageable(pageable);
+//        List<FunctionScoreQueryBuilder.FilterFunctionBuilder> filterFunctionBuilders = new ArrayList<>();
+//        filterFunctionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("blog_text", keyword),
+//                ScoreFunctionBuilders.weightFactorFunction(10)));//权重，可以多权重来搜索
+//        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
+//                .must(new MatchQueryBuilder("is_deleted", false)).mustNot(new MatchQueryBuilder("check_status", 2));
+//        FunctionScoreQueryBuilder.FilterFunctionBuilder[] builders = new FunctionScoreQueryBuilder.FilterFunctionBuilder[filterFunctionBuilders.size()];
+//        filterFunctionBuilders.toArray(builders);
+//        FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(builders)
+//                .scoreMode(FunctionScoreQuery.ScoreMode.SUM)
+//                .setMinScore(2);//设置最低分数
+//        nativeSearchQueryBuilder.withQuery(functionScoreQueryBuilder);
+//        nativeSearchQueryBuilder.withSort(SortBuilders.scoreSort().order(SortOrder.DESC));//按相关度排名
+//        NativeSearchQuery searchQuery = nativeSearchQueryBuilder
+//                .withQuery(boolQueryBuilder)
+//                .withHighlightFields(
+//                        new HighlightBuilder.Field("blog_text"),new HighlightBuilder.Field("topics_name"))
+//                .withHighlightBuilder(new HighlightBuilder().preTags("<span style='color:red'>").postTags("</span>")).build();
+//        SearchHits<ESBlog> searchHits = elasticsearchRestTemplate.search(searchQuery, ESBlog.class);
+//        if (searchHits.getTotalHits() <= 0) {
+//            return new PageImpl<>(null, pageable, 0);
+//        }
+//        List<ESBlog> esBlogList = new ArrayList<>();
+////        List<ESBlog> esBlogList = searchHits.stream().map(SearchHit::getContent).collect(Collectors.toList());
+////        for(ESBlog esBlog:esBlogList) {
+////            esBlog.setBlog_text(searchHits.getSearchHit().getContent());
+////        }
+//        List<SearchHit<ESBlog>> list = searchHits.getSearchHits();
+//        for (SearchHit<ESBlog> searchHit : list) {
+//            Map<String, List<String>> highlightFields = searchHit.getHighlightFields();
+//            ESBlog esBlog = searchHit.getContent();
+//            System.out.println(searchHit.toString());
+//            System.out.println(searchHit.getHighlightFields().toString());
+//            String text = highlightFields.get("blog_text") == null ? searchHit.getContent().getBlog_text() : highlightFields.get("blog_text").get(0);
+//            esBlog.setBlog_text(text);
+//            esBlogList.add(esBlog);
+//        }
+        //blogDao.findBlogListByBlog_text(keyword,pageable);
+//        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
+//        List<BlogDTO> blogDTOList = new ArrayList<>();
+////        List<ESBlog> esBlogList = blogPage.getContent();
+//        Integer user_id = userUtil.getUserId();
+//        for (ESBlog esBlog : esBlogList) {
+//            Integer blog_id = esBlog.getId();
+//            Integer result = redisService.findStatusFromRedis(blog_id, user_id);
+//            //统计博文数据
+//            BlogCount blogCount = getBlogCount(blog_id);
+//
+//            User user = userDao.getById(esBlog.getUser_id());
+//            List<BlogImage> blogImageList = blogImageDao.findBlogImageByBlog_id(esBlog.getId());
+//            Blog reply = blogDao.findBlogByBlog_id(esBlog.getReply_blog_id());
+//            if (result == 1) {
+//                blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, true));
+//            } else if (result == 0) {
+//                blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, false));
+//            } else {//redis里没有数据,去数据库拿
+//                BlogVote blogVote = blogVoteDao.getByBlogIdAndUserId(blog_id, user_id);
+//                if (blogVote == null) {
+//                    blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, false));
+//                } else {
+//                    if (blogVote.getStatus() == 0) {
+//                        blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, false));
+//
+//                    } else {
+//                        blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, true));
+//                    }
+//                }
+//            }
+////            blogDTOList.add(new BlogDTO(blog));
+//        }
+//        return new PageImpl<BlogDTO>(blogDTOList, pageable, total.value);
     }
 
     @Override
