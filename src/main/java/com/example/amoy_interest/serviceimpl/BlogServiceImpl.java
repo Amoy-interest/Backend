@@ -44,6 +44,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -95,7 +96,7 @@ public class BlogServiceImpl implements BlogService {
     private CountService countService;
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public BlogDTO addBlog(BlogAddDTO blogAddDTO) {
         Integer user_id = blogAddDTO.getUser_id();
         Blog blog = new Blog();
@@ -142,7 +143,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public BlogDTO forwardBlog(BlogForwardDTO blogForwardDTO) {
         Blog blog = new Blog();
         Integer user_id = blogForwardDTO.getUser_id();
@@ -201,7 +202,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public BlogDTO updateBlog(BlogPutDTO blogPutDTO) {
         Integer user_id = userUtil.getUserId();
         Integer blog_id = blogPutDTO.getBlog_id();
@@ -238,7 +239,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public Integer deleteByBlog_id(Integer blog_id) {
         Integer user_id = userUtil.getUserId();
         Blog blog = blogDao.findBlogByBlog_id(blog_id);
@@ -258,7 +259,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public void incrVoteCount(Integer blog_id) {
         Integer user_id = userUtil.getUserId();
 
@@ -289,13 +290,13 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public void incrCommentVoteCount(Integer comment_id) {
         blogCommentDao.incrCommentVoteCount(comment_id);
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public void decrVoteCount(Integer blog_id) {
         Integer user_id = userUtil.getUserId();
         Integer status = redisService.findStatusFromRedis(blog_id, user_id);
@@ -324,14 +325,14 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public void decrCommentVoteCount(Integer comment_id) {
         blogCommentDao.decrCommentVoteCount(comment_id);
     }
 
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public BlogCommentMultiLevelDTO addBlogComment(CommentPostDTO commentPostDTO) {
         Integer blog_id = commentPostDTO.getBlog_id();
         Integer root_comment_id = commentPostDTO.getRoot_comment_id();
@@ -371,7 +372,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public boolean deleteCommentByComment_id(Integer comment_id) {
         Integer user_id = userUtil.getUserId();
         BlogComment blogComment = blogCommentDao.findCommentByComment_id(comment_id);
@@ -416,7 +417,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public boolean checkReportedBlog(BlogCheckDTO blogCheckDTO) {
         Blog blog = blogDao.findBlogByBlog_id(blogCheckDTO.getBlog_id());
         blog.setCheck_status(blogCheckDTO.getCheck_status());
@@ -485,7 +486,7 @@ public class BlogServiceImpl implements BlogService {
 
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public boolean reportBlog(BlogReportDTO blogReportDTO) {
         Integer user_id = userUtil.getUserId();
         Integer blog_id = blogReportDTO.getBlog_id();

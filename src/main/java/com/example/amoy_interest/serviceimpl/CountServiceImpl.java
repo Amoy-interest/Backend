@@ -12,6 +12,7 @@ import com.example.amoy_interest.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class CountServiceImpl implements CountService {
     @Autowired
     private RedisService redisService;
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public void transBlogCountDataFromRedis2DB() {
         List<BlogSingleCountDTO> list = redisService.getBlogCommentCountFromRedis();
         List<BlogCount> list1 = new ArrayList<>();
@@ -70,7 +71,7 @@ public class CountServiceImpl implements CountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public void transBlogReportDataFromRedis2DB() {
         List<BlogReport> blogReportList = redisService.getBlogReportDataFromRedis();
         blogReportDao.saveAll(blogReportList);
@@ -89,7 +90,7 @@ public class CountServiceImpl implements CountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public void transUserReporterDataFromRedis2DB() {
         List<UserReport> userReportlist = redisService.getUserReportDataFromRedis();
         userReportDao.saveAll(userReportlist);
@@ -108,7 +109,7 @@ public class CountServiceImpl implements CountService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public void transUserCountDataFromRedis2DB() {
         List<UserSingleCountDTO> list = redisService.getUserBlogCountFromRedis();
         List<UserCount> list1 = new ArrayList<>();
