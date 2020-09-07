@@ -27,14 +27,14 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(readOnly = false)
     public SensitiveWord addSensitiveWord(SensitiveWord sensitiveWord) {
         Finder.addSensitiveWords(sensitiveWord.getKeyword());//可以用消息队列完成
         return sensitiveWordDao.saveSensitiveWord(sensitiveWord);
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(readOnly = false)
     public SensitiveWord updateSensitiveWord(String oldWord,String newWord) {
         sensitiveWordDao.deleteByKeyword(oldWord);
         SensitiveWord sensitiveWord = new SensitiveWord(newWord);
@@ -44,7 +44,7 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(readOnly = false)
     public void deleteByKeyword(String keyword) {
         Finder.removeSensitiveWords(keyword);
         sensitiveWordDao.deleteByKeyword(keyword);
