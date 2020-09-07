@@ -27,6 +27,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -65,6 +66,12 @@ public class BlogServiceTest{
     public void init() {
         when(userUtil.getUserId()).thenReturn(1);
 //        when()
+    }
+
+    @Test
+    public void testGetBlogPageByGroupName() {
+        Page<Blog> blogPage
+        when(blogDao.getBlogPageByGroupName(any(),any())).thenReturn()
     }
 //    @Test
 //    public void testAddBlog() {
