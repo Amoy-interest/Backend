@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -35,17 +34,16 @@ public class VoteServiceImpl implements VoteService {
     private BlogCountDao blogCountDao;
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(readOnly = false)
     public BlogVote save(BlogVote blogVote) {
         return blogVoteDao.save(blogVote);
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(readOnly = false)
     public List<BlogVote> saveAll(List<BlogVote> list) {
         return blogVoteDao.saveAll(list);
     }
-
     @Override
     public Page<BlogVote> getVoteListByBlogId(Integer blog_id, Pageable pageable) {
         return null;
@@ -62,7 +60,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(readOnly = false)
     public void transVoteFromRedis2DB() {
         List<BlogVote> list = redisService.getVoteDataFromRedis();
 //        for (BlogVote blogVote : list) {
@@ -78,7 +76,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(readOnly = false)
     public void transVoteCountFromRedis2DB() {
         List<BlogVoteCountDTO> list = redisService.getVoteCountFromRedis();
         List<BlogCount> blogCountList = new ArrayList<>();

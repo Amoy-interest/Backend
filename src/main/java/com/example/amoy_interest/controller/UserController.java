@@ -190,12 +190,12 @@ public class UserController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, userService.getUserDTO(userUtil.getUserId(), user_id));
     }
 
-    @ApiOperation(value = "根据账号密码计算出加密的密码（手动存入数据库）")
-    @GetMapping(value = "/cal")
-    public Msg<String> CalculatePassword(@RequestParam(required = true) String username,
-                                         @RequestParam(required = true) String password) {
-        return new Msg(HttpStatus.OK.value(), "计算成功", AesCipherUtil.enCrypto(username + password));
-    }
+//    @ApiOperation(value = "根据账号密码计算出加密的密码（手动存入数据库）")
+//    @GetMapping(value = "/cal")
+//    public Msg<String> CalculatePassword(@RequestParam(required = true) String username,
+//                                         @RequestParam(required = true) String password) {
+//        return new Msg(HttpStatus.OK.value(), "计算成功", AesCipherUtil.enCrypto(username + password));
+//    }
 
     @RequiresAuthentication
     @ApiModelProperty(value = "用户编辑")
