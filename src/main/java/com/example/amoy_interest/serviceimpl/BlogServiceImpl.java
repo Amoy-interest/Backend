@@ -137,7 +137,7 @@ public class BlogServiceImpl implements BlogService {
             redisService.setUserBlogCount(user_id, blog_count);
         }
         redisService.incrementUserBlogCount(user_id);
-        esBlogRepository.save(new ESBlog(blog));
+        //esBlogRepository.save(new ESBlog(blog));
         return blogDTO;
     }
 
@@ -182,7 +182,7 @@ public class BlogServiceImpl implements BlogService {
             redisService.setBlogForwardCount(reply_blog_id, forward);
         }
         redisService.incrementBlogForwardCount(reply_blog_id);
-        esBlogRepository.save(new ESBlog(blog));
+        //esBlogRepository.save(new ESBlog(blog));
         return blogDTO;
     }
 

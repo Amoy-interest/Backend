@@ -17,8 +17,8 @@ from sklearn.linear_model import LogisticRegression
 class DB:
     
     conn = pymysql.connect(
-             host="mycat",
-	     	 port=8066,
+             host="106.14.19.68",
+	     	 port=33065,
              user="root",
              password="amoy123",
              database="amoy",
@@ -26,8 +26,8 @@ class DB:
 
     def connect(self):
         self.conn = pymysql.connect(
-             host="mycat",
-	     	 port=8066,
+             host="106.14.19.68",
+	     	 port=33065,
              user="root",
              password="amoy123",
              database="amoy",
@@ -132,7 +132,7 @@ def build_user_vector(blog_vectors, user_len, blog_len):
 
 		# 怎么返回一个数组啊
 
-		for k in range(0, 5):
+		for k in range(len(blog_vectors[row[0]])):
 
 			user_vectors[row[1]][(int)((blog_vectors[row[0]][k] - 1)/ 10)] += factor
 
@@ -212,7 +212,7 @@ def predictCTR(reData, blog_vectors, user_group, user_len, blog_len):
 
 				row_part2 = [0] * 310
 
-				for j in range(0, 5):
+				for j in range(len(blog_vectors[blog_id])):
 
 					row_part2[(int)((blog_vectors[blog_id][j] - 1)/ 10)] += 0.1
 
@@ -237,7 +237,7 @@ def predictCTR(reData, blog_vectors, user_group, user_len, blog_len):
 
 				row_part2 = [0] * 310
 
-				for j in range(0, 5):
+				for j in range(len(blog_vectors[blog_id])):
 
 					row_part2[(int)((blog_vectors[blog_id][j] - 1)/ 10)] += 0.1
 
@@ -247,6 +247,8 @@ def predictCTR(reData, blog_vectors, user_group, user_len, blog_len):
 				data_y.append([0])
 
 		print("finish build matrix")
+
+		print("datax len:", len(data_x), "datay len:", len(data_y))
 
 		# 拟合
 
@@ -271,7 +273,7 @@ def predictCTR(reData, blog_vectors, user_group, user_len, blog_len):
 
 				row_part2 = [0] * 310
 
-				for j in range(0, 5):
+				for j in range(len(blog_vectors[blog_id])):
 
 					row_part2[(int)((blog_vectors[blog_id][j] - 1)/ 10)] += 0.1
 
@@ -301,6 +303,8 @@ def predictCTR(reData, blog_vectors, user_group, user_len, blog_len):
 		for i in range(0, 200):
 
 			rec_list.append(reData[user_id][slist[i]])
+
+		rec_list = list(set(rec_list))
 
 		dt = datetime.date.today()
 
@@ -338,7 +342,7 @@ def update_user_group(blog_vectors, user_len, blog_len):
 
 		# 怎么返回一个数组啊
 
-		for k in range(0, 5):
+		for k in range(len(blog_vectors[row[0]])):
 
 			user_vectors[row[1]][(int)((blog_vectors[row[0]][k] - 1)/ 100) + 1] += factor
 
