@@ -66,6 +66,10 @@ spring:
       uris: http://localhost:9200
       username:
       password:
+  jpa:
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
 
 management:
   endpoint:

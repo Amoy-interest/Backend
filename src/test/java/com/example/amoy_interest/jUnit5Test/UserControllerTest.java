@@ -23,6 +23,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -32,9 +36,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
 
 import static com.example.amoy_interest.constant.Constant.TEST_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,7 +73,7 @@ public class UserControllerTest {
     private RecommendService recommendService;
 
     @BeforeAll
-    public void init() {
+    public static void init() {
         user.setUserAuth(userAuth);
         Date date = new Date();
         Calendar calendar = new GregorianCalendar();
@@ -202,6 +204,77 @@ public class UserControllerTest {
 
     @Test
     public void testUnFollow() throws Exception {
+        when(userUtil.getUserId()).thenReturn(1);
+        when(userService.unfollow(1, 2)).thenReturn(true);
+        mockMvc.perform(post("/users/unfollow?follow_id=2")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+    }
+
+    @Test
+    public void testGetFollow() throws Exception {
+        when(userUtil.getUserId()).thenReturn(1);
+        List<UserInfoDTO> list = new ArrayList<>();
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<UserInfoDTO> userInfoDTOPage = new PageImpl<>(list, pageable, 0);
+        when(userService.getUserFollowPage(any(), any(), any(), any())).thenReturn(userInfoDTOPage);
+        mockMvc.perform(get("/users/follow?user_id=2")).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetFan() throws Exception {
+        when(userUtil.getUserId()).thenReturn(1);
+        List<UserInfoDTO> list = new ArrayList<>();
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<UserInfoDTO> userInfoDTOPage = new PageImpl<>(list, pageable, 0);
+        when(userService.getUserFanPage(any(), any(), any(), any())).thenReturn(userInfoDTOPage);
+        mockMvc.perform(get("/users/fans?user_id=2")).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetUserInfo() throws Exception {
+        when(userUtil.getUserId()).thenReturn(1);
+        when(userService.getUserDTO(any(), any())).thenReturn(null);
+        mockMvc.perform(get("/users?user_id=2")).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testModifyUser() throws Exception {
+        when(userUtil.getUserId()).thenReturn(1);
+        when(userService.modifyUser(any())).thenReturn(true);
+        UserModifyParam userModifyParam = new UserModifyParam(2,0,"广东","没烦恼","logo.jpg");
+        String requestJson = JSONObject.toJSONString(userModifyParam);
+        mockMvc.perform(put("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isOk()).andReturn();
+        when(userService.modifyUser(any())).thenReturn(false);
+        mockMvc.perform(put("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isOk()).andReturn();
+    }
+
+    @Test
+    public void testReportUser() throws Exception {
+        when(userUtil.getUserId()).thenReturn(1);
+        UserReportParam userReportParam = new UserReportParam(2,"not good",1);
+        String requestJson = JSONObject.toJSONString(userReportParam);;
+        mockMvc.perform(post("/users/report")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isOk()).andReturn();
+    }
+
+    @Test
+    public void testGetSimUser() throws Exception {
+        when(userUtil.getUserId()).thenReturn(1);
+        List<SimUserDTO> list = new ArrayList<>();
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<SimUserDTO> simUserDTOPage = new PageImpl<>(list, pageable, 0);
+        when(recommendService.getSimUserUsingUser_id(any(),any(),anyInt())).thenReturn(simUserDTOPage);
+        mockMvc.perform(get("/users/sim?user_id=2")).andExpect(status().isOk());
 
     }
+
 }

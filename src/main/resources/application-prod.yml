@@ -3,7 +3,7 @@ server:
   context-path: /
 spring:
   datasource:
-    url: jdbc:mysql://mycat:8066/amoy?useSSL=false&useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&useLocalSessionState=true
+    url: jdbc:mysql://mysql-master:33065/amoy?useSSL=false&useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&useLocalSessionState=true
     #?characterEncoding=utf8&useSSL=false&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true&&serverTimezone=GMT%2B8
     username: root
     password: amoy123
@@ -68,6 +68,10 @@ spring:
       uris: http://106.14.19.68:9200
       username: elastic
       password: VpEszoE3peaL7RazXQAO
+  jpa:
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
 management:
   endpoint:
     health:
