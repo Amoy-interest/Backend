@@ -86,11 +86,13 @@ public class UserController {
     public Msg Logout() {
         String username = userUtil.getUsername();
         if (JedisUtil.exists(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username)) {
-            if (JedisUtil.delKey(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username) > 0) {
-                return new Msg(HttpStatus.OK.value(), "登出成功(Logout Success)", null);
-            }
+            JedisUtil.delKey(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username);
+//            if (JedisUtil.delKey(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username) > 0) {
+//                return new Msg(HttpStatus.OK.value(), "登出成功(Logout Success)", null);
+//            }
         }
-        throw new CustomException("登出失败，Username不存在(Logout Failed. Username does not exist.)");
+        return new Msg(HttpStatus.OK.value(), "登出成功(Logout Success)", null);
+//        throw new CustomException("登出失败，Username不存在(Logout Failed. Username does not exist.)");
     }
 
     @ApiOperation(value = "注册", notes = "注册")
