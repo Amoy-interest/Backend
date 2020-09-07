@@ -2,10 +2,7 @@ package com.example.amoy_interest.jUnit5Test;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.amoy_interest.dao.*;
-import com.example.amoy_interest.daoimpl.BlogCommentDaoImpl;
-import com.example.amoy_interest.daoimpl.BlogCountDaoImpl;
-import com.example.amoy_interest.daoimpl.BlogDaoImpl;
-import com.example.amoy_interest.daoimpl.BlogImageDaoImpl;
+import com.example.amoy_interest.daoimpl.*;
 import com.example.amoy_interest.dto.*;
 import com.example.amoy_interest.entity.*;
 import com.example.amoy_interest.msgutils.Msg;
@@ -15,15 +12,22 @@ import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.serviceimpl.BlogServiceImpl;
 import com.example.amoy_interest.serviceimpl.TopicServiceImpl;
 import com.example.amoy_interest.serviceimpl.UserServiceImpl;
+import com.example.amoy_interest.utils.UserUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -40,10 +44,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
-public class BlogServiceTest{
+public class BlogServiceTest {
     @InjectMocks
     private BlogServiceImpl blogService;
+
+    private static Page<Blog> blogPage = new PageImpl<>(new ArrayList<>(), PageRequest.of(0, 5), 0);
 
     @Mock
     private BlogDaoImpl blogDao;
@@ -54,14 +61,30 @@ public class BlogServiceTest{
     @Mock
     private BlogCommentDaoImpl blogCommentDao;
     @Mock
-    private UserDao userDao;
+    private UserDaoImpl userDao;
+    @Mock
+    private UserUtil userUtil;
+//    @Mock
+//    private Blog
 
-////    @Test
-////    public void testAddBlog() {
-////        when(blogDao.saveBlog(any())).thenReturn(null);
-//////        blogService.addBlog(new Blog(1, 1, 0, 0,null, "666",  false, 1, -1));
-////        verify(blogDao, times(1)).saveBlog(any());
-////    }
+    @BeforeEach
+    public void init() {
+        when(userUtil.getUserId()).thenReturn(1);
+//        when()
+    }
+
+    @Test
+    public void testGetBlogPageByGroupName() {
+        when(blogDao.getBlogPageByGroupName(any(), any())).thenReturn(blogPage);
+        blogService.getBlogPageByGroupName("你好",0,5);
+    }
+
+    @Test
+    public void testAddBlog() {
+        when(blogDao.saveBlog(any())).thenReturn(null);
+//        blogService.addBlog(new Blog(1, 1, 0, 0,null, "666",  false, 1, -1));
+        verify(blogDao, times(1)).saveBlog(any());
+    }
 //
 //    @Test
 //    public void testUpdateBlog() {

@@ -104,8 +104,6 @@ public class BlogController {
         Set<String> stringSet = FinderUtil.find(blogForwardDTO.getText());
         if (!stringSet.isEmpty())
             return new Msg<>(402, "内容含有敏感词", stringSet);
-//        if(WordFilter.isContains(blogForwardDTO.getText()))
-//            return new Msg<>(403,"内容含有敏感词，请修改");
         blogForwardDTO.setUser_id(userAuth.getUser_id());
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, blogService.forwardBlog(blogForwardDTO));
     }
@@ -205,15 +203,6 @@ public class BlogController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, CommonPage.restPage(blogService.getSearchListByBlog_text(keyword, pageNum, pageSize)));
     }
 
-//    @RequiresAuthentication
-//    @ApiOperation(value = "分页获取推荐blog（未实现热度,现在等于未登录前的blog）")
-//    @GetMapping(value = "/recommend")
-//    public Msg<CommonPage<BlogDTO>> GetRecommendBlogs(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
-//                                                      @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-//        Integer user_id = userUtil.getUserId();
-//        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.getAllBlogPageOrderByTime(pageNum, pageSize)));
-//    }
-
     @RequiresAuthentication
     @ApiOperation(value = "获取相似博文")
     @GetMapping(value = "/sim")
@@ -267,8 +256,8 @@ public class BlogController {
 
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
     }
-    @GetMapping(value = "/test")
-    public void test(){
-        blogService.insertToES();
-    }
+//    @GetMapping(value = "/test")
+//    public void test(){
+//        blogService.insertToES();
+//    }
 }

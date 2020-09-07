@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.amoy_interest.utils.UserUtil;
 
@@ -57,14 +58,14 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     @Override
-    public Page<BlogDTO> getSimBlogUsingBlog_id(Integer blog_id, int limit_count) {
+    public Page<BlogDTO> getSimBlogUsingBlog_id(Integer blog_id, Integer limit_count) {
         Pageable pageable = PageRequest.of(0, limit_count);
         Page<Blog> recBlogs = simBlogDao.getSimBlogUsingBlog_id(blog_id, pageable);
         return new PageImpl<>(blogService.convertToBlogDTOList(recBlogs.getContent()), recBlogs.getPageable(), recBlogs.getTotalElements());
     }
 
     @Override
-    public Page<SimUserDTO> getSimUserUsingUser_id(Integer my_user_id, Integer user_id, int limit_count) {
+    public Page<SimUserDTO> getSimUserUsingUser_id(Integer my_user_id, Integer user_id, Integer limit_count) {
         Pageable pageable = PageRequest.of(0, limit_count);
         return simUserDao.getSimUserUsingUser_id(my_user_id, user_id, pageable);
     }

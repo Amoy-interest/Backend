@@ -86,11 +86,13 @@ public class UserController {
     public Msg Logout() {
         String username = userUtil.getUsername();
         if (JedisUtil.exists(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username)) {
-            if (JedisUtil.delKey(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username) > 0) {
-                return new Msg(HttpStatus.OK.value(), "登出成功(Logout Success)", null);
-            }
+            JedisUtil.delKey(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username);
+//            if (JedisUtil.delKey(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username) > 0) {
+//                return new Msg(HttpStatus.OK.value(), "登出成功(Logout Success)", null);
+//            }
         }
-        throw new CustomException("登出失败，Username不存在(Logout Failed. Username does not exist.)");
+        return new Msg(HttpStatus.OK.value(), "登出成功(Logout Success)", null);
+//        throw new CustomException("登出失败，Username不存在(Logout Failed. Username does not exist.)");
     }
 
     @ApiOperation(value = "注册", notes = "注册")
@@ -188,12 +190,12 @@ public class UserController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, userService.getUserDTO(userUtil.getUserId(), user_id));
     }
 
-    @ApiOperation(value = "根据账号密码计算出加密的密码（手动存入数据库）")
-    @GetMapping(value = "/cal")
-    public Msg<String> CalculatePassword(@RequestParam(required = true) String username,
-                                         @RequestParam(required = true) String password) {
-        return new Msg(HttpStatus.OK.value(), "计算成功", AesCipherUtil.enCrypto(username + password));
-    }
+//    @ApiOperation(value = "根据账号密码计算出加密的密码（手动存入数据库）")
+//    @GetMapping(value = "/cal")
+//    public Msg<String> CalculatePassword(@RequestParam(required = true) String username,
+//                                         @RequestParam(required = true) String password) {
+//        return new Msg(HttpStatus.OK.value(), "计算成功", AesCipherUtil.enCrypto(username + password));
+//    }
 
     @RequiresAuthentication
     @ApiModelProperty(value = "用户编辑")

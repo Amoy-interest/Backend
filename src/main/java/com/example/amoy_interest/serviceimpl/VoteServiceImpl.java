@@ -44,7 +44,6 @@ public class VoteServiceImpl implements VoteService {
     public List<BlogVote> saveAll(List<BlogVote> list) {
         return blogVoteDao.saveAll(list);
     }
-
     @Override
     public Page<BlogVote> getVoteListByBlogId(Integer blog_id, Pageable pageable) {
         return null;

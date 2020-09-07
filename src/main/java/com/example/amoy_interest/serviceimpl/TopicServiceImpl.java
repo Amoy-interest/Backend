@@ -75,6 +75,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public TopicDTO modifyTopic(TopicModifyParam topicModifyParam) {
         Topic topic = topicDao.getTopicByName(topicModifyParam.getTopic_name());
         if(topic == null) {
@@ -189,6 +190,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void updateAllTopicHeat() throws IOException {
         String str =
                 "{\"bool\": {\n" +
@@ -238,6 +240,7 @@ public class TopicServiceImpl implements TopicService {
             TopicHeat topicHeat = new TopicHeat(topic.getTopic_id(),heat);
             list.add(topicHeat);
         }
+        topicHeatDao.deleteAll();
         topicHeatDao.saveAll(list);
     }
 
