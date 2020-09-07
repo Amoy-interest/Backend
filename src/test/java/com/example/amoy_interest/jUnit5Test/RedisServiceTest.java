@@ -91,15 +91,34 @@ public class RedisServiceTest {
         redisService.getBlogCommentCountFromRedis();
         redisService.getBlogForwardCountFromRedis(1);
         redisService.getBlogForwardCountFromRedis();
+        redisService.getBlogReportCountFromRedis();
+        redisService.getBlogReportDataFromRedis();
         redisService.getVoteDataFromRedis();
         redisService.getVoteCountFromRedis(1);
         redisService.getVoteCountFromRedis();
-        //redisService.get
+        redisService.getUserBlogCountFromRedis();
+        redisService.getUserBlogCountFromRedis(1);
+        redisService.getUserFanCountFromRedis(1);
+        redisService.getUserFanCountFromRedis();
+        redisService.getUserFollowCountFromRedis();
+        redisService.getUserFollowCountFromRedis(1);
+        redisService.getUserReportCountFromRedis();
+        redisService.getUserReportDataFromRedis();
 
         //全部cancel
         redisService.cancelVoteFromRedis(1,1);
 
         //全部delete
         redisService.deleteVoteFromRedis(1, 1);
+        List<Integer> list = new ArrayList<>(Collections.singletonList(1));
+        redisService.deleteVoteCount(list);
+        redisService.deleteBlogCommentCount(list);
+        redisService.deleteBlogForwardCount(list);
+        redisService.deleteUserBlogCount(list);
+        redisService.deleteUserFollowCount(list);
+
+        //其他
+        redisService.findStatusFromRedis(1, 1);
+        redisService.blogIsReported(1, 1);
     }
 }
