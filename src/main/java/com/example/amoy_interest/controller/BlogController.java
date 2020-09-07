@@ -227,7 +227,7 @@ public class BlogController {
     public Msg<CommonPage<BlogDTO>> getRecommendBlog(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         Integer user_id = userUtil.getUserId();
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(recommendService.getRecommendBlogsUsingUser_id(user_id, pageNum, pageSize)));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_BLOG_SUCCESS_MSG, CommonPage.restPage(recommendService.takeRecommendBlogsUsingUser_id(user_id, pageNum, pageSize)));
     }
 
     @RequiresAuthentication

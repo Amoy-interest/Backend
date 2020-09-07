@@ -42,7 +42,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Override
     @Transactional(readOnly = false)
-    public Page<BlogDTO> getRecommendBlogsUsingUser_id(Integer user_id, Integer pageNum, Integer pageSize) {
+    public Page<BlogDTO> takeRecommendBlogsUsingUser_id(Integer user_id, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(0, pageSize);
         Page<Blog> page = recommendBlogsDao.getRecommendBlogsUsingUser_id(user_id, pageable);
         List<Blog> recBlogs = page.getContent();
