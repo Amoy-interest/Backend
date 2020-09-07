@@ -52,7 +52,7 @@ public class RecommendServiceImpl implements RecommendService {
         } else {
             List<Integer> list = recBlogs.stream().map(Blog::getBlog_id).collect(Collectors.toList());
             recommendBlogsDao.updateRecommendBlogs(user_id, list);
-            return  new PageImpl<>(convertToBlogDTOList(recBlogs), page.getPageable(), page.getTotalElements());
+            return  new PageImpl<>(blogService.convertToBlogDTOList(recBlogs), page.getPageable(), page.getTotalElements());
 
         }
     }
@@ -61,7 +61,7 @@ public class RecommendServiceImpl implements RecommendService {
     public Page<BlogDTO> getSimBlogUsingBlog_id(Integer blog_id, Integer limit_count) {
         Pageable pageable = PageRequest.of(0, limit_count);
         Page<Blog> recBlogs = simBlogDao.getSimBlogUsingBlog_id(blog_id, pageable);
-        return new PageImpl<>(convertToBlogDTOList(recBlogs.getContent()), recBlogs.getPageable(), recBlogs.getTotalElements());
+        return new PageImpl<>(blogService.convertToBlogDTOList(recBlogs.getContent()), recBlogs.getPageable(), recBlogs.getTotalElements());
     }
 
     @Override
@@ -70,65 +70,4 @@ public class RecommendServiceImpl implements RecommendService {
         return simUserDao.getSimUserUsingUser_id(my_user_id, user_id, pageable);
     }
 
-    private List<BlogDTO> convertToBlogDTOList(List<Blog> blogList) {
-        List<BlogDTO> blogDTOList = new ArrayList<>();
-        boolean flag = false;
-        Integer user_id = null;
-        if(userUtil.getUserId() == null) {
-            flag = true;
-        }else {
-            user_id = userUtil.getUserId();
-        }
-        for (Blog blog : blogList) {
-            Integer blog_id = blog.getBlog_id();
-            Integer result = 0;
-            if(!flag) {
-                result = redisService.findStatusFromRedis(blog_id, user_id);
-            }
-            //统计数据
-            BlogCount blogCount = getBlogCount(blog_id);
-            if (result == 1) {
-                blogDTOList.add(new BlogDTO(blog, blogCount, true));
-            } else if (result == 0) {
-                blogDTOList.add(new BlogDTO(blog, blogCount, false));
-            } else {//redis里没有数据,去数据库拿
-                BlogVote blogVote = blogVoteDao.getByBlogIdAndUserId(blog_id, user_id);
-                if (blogVote == null || blogVote.getStatus() == 0) {
-                    blogDTOList.add(new BlogDTO(blog, blogCount, false));
-                } else {
-                    blogDTOList.add(new BlogDTO(blog, blogCount, true));
-                }
-            }
-        }
-        return blogDTOList;
-    }
-
-    private BlogCount getBlogCount(Integer blog_id) {
-        BlogCount blogCount = null;
-        Integer forward = redisService.getBlogForwardCountFromRedis(blog_id);
-        Integer comment = redisService.getBlogCommentCountFromRedis(blog_id);
-        Integer vote = redisService.getVoteCountFromRedis(blog_id);
-//        Integer report = redisService.getBlogReportCountFromRedis(blog_id);
-        if(forward == null || comment == null || vote == null ) {
-            blogCount = blogCountDao.findBlogCountByBlog_id(blog_id);
-            if(forward == null) {
-                forward = blogCount.getForward_count();
-                redisService.setBlogForwardCount(blog_id,forward);
-            }
-            if(comment == null) {
-                comment = blogCount.getComment_count();
-                redisService.setBlogCommentCount(blog_id,comment);
-            }
-            if(vote == null) {
-                vote = blogCount.getVote_count();
-                redisService.setVoteCount(blog_id,vote);
-            }
-//            if(report == null) {
-//                report = blogCount.getReport_count();
-//                redisService.setBlogReportCount(blog_id,report);
-//            }
-        }
-        blogCount = new BlogCount(blog_id,forward,comment,vote,0);
-        return blogCount;
-    }
 }

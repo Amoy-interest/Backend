@@ -798,8 +798,8 @@ public class BlogServiceImpl implements BlogService {
         return new PageImpl<>(blogDTOList, blogPage.getPageable(), blogPage.getTotalElements());
     }
 
-
-    private List<BlogDTO> convertToBlogDTOList(List<Blog> blogList) {
+    @Override
+    public List<BlogDTO> convertToBlogDTOList(List<Blog> blogList) {
         List<BlogDTO> blogDTOList = new ArrayList<>();
         boolean flag = false;
         Integer user_id = null;
@@ -832,7 +832,8 @@ public class BlogServiceImpl implements BlogService {
         return blogDTOList;
     }
 
-    private List<BlogDTO> convertToReportBlogDTOList(List<Blog> blogList) {
+    @Override
+    public List<BlogDTO> convertToReportBlogDTOList(List<Blog> blogList) {
         List<BlogDTO> blogDTOList = new ArrayList<>();
         boolean flag = false;
         Integer user_id = null;
@@ -865,7 +866,8 @@ public class BlogServiceImpl implements BlogService {
         return blogDTOList;
     }
 
-    private BlogCount getBlogCount(Integer blog_id) {
+    @Override
+    public BlogCount getBlogCount(Integer blog_id) {
         BlogCount blogCount = null;
         Integer forward = redisService.getBlogForwardCountFromRedis(blog_id);
         Integer comment = redisService.getBlogCommentCountFromRedis(blog_id);
@@ -894,7 +896,8 @@ public class BlogServiceImpl implements BlogService {
         return blogCount;
     }
 
-    private BlogCount getReportBlogCount(Integer blog_id) {
+    @Override
+    public BlogCount getReportBlogCount(Integer blog_id) {
         BlogCount blogCount = null;
         Integer forward = redisService.getBlogForwardCountFromRedis(blog_id);
         Integer comment = redisService.getBlogCommentCountFromRedis(blog_id);
