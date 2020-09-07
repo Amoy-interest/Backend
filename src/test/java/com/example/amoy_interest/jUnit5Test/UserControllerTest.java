@@ -1,4 +1,5 @@
 package com.example.amoy_interest.jUnit5Test;
+
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.JWT;
 import com.example.amoy_interest.config.shiro.jwt.JwtToken;
@@ -47,10 +48,10 @@ public class UserControllerTest {
     private MockMvc mockMvc;
     private final static String token1 = TEST_TOKEN;
 
-    private static User user = new User(1,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"啥都不会",null);
-    private static User user2 = new User(1,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"啥都不会",null);
-    private static UserAuth userAuth = new UserAuth(1,"鲁迅","NkRDOThDQkU4NUMwRDA5NkRENjY1QjhFMDQzRTZBRjk=",0,0,0,user,null);
-    private static UserAuth userAuth2 = new UserAuth(1,"鲁迅","NkRDOThDQkU4NUMwRDA5NkRENjY1QjhFMDQzRTZBRjk=",0,1,1,user,null);
+    private static User user = new User(1, "mok", "mokkkkk@sjtu.edu.cn", 0, "上海市闵行区", 100, "啥都不会", null);
+    private static User user2 = new User(1, "mok", "mokkkkk@sjtu.edu.cn", 0, "上海市闵行区", 100, "啥都不会", null);
+    private static UserAuth userAuth = new UserAuth(1, "鲁迅", "NkRDOThDQkU4NUMwRDA5NkRENjY1QjhFMDQzRTZBRjk=", 0, 0, 0, user, null);
+    private static UserAuth userAuth2 = new UserAuth(1, "鲁迅", "NkRDOThDQkU4NUMwRDA5NkRENjY1QjhFMDQzRTZBRjk=", 0, 1, 1, user, null);
 
     @Autowired
     private WebApplicationContext context;
@@ -80,6 +81,7 @@ public class UserControllerTest {
         userAuth2.setUserBan(new UserBan(1, date, date));
         user.setUserAuth(userAuth2);
     }
+
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -98,11 +100,11 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testLogin() throws Exception{
+    public void testLogin() throws Exception {
 //        user.setUserAuth(userAuth);
 //        UserInfoDTO userInfoDTO = new UserInfoDTO(100,"mok",0,"上海市闵行区","啥都不会",null,0,false);
 //        when(userService.findUserAuthByUsername("admin")).thenReturn(userAuth);
-        LoginDTO loginDTO = new LoginDTO("鲁迅","123456");
+        LoginDTO loginDTO = new LoginDTO("鲁迅", "123456");
         //登录无相关用户情况
         when(userService.findUserAuthByUsername(any())).thenReturn(null);
         String requestJson = JSONObject.toJSONString(loginDTO);
@@ -110,20 +112,32 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
                 .andReturn();
-        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
-        String resultContent = result.getResponse().getContentAsString();
-        Msg<UserInfoDTO> msg = om.readValue(resultContent,new TypeReference<Msg<UserInfoDTO>>() {});
-        System.out.println(msg.getMsg());
+//        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+//        String resultContent = result.getResponse().getContentAsString();
+//        Msg<UserInfoDTO> msg = om.readValue(resultContent,new TypeReference<Msg<UserInfoDTO>>() {});
+//        System.out.println(msg.getMsg());
 
         //登录账号密码正确情况
         when(userService.findUserAuthByUsername(any())).thenReturn(userAuth);
         mockMvc.perform(post("/users/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
+                .content(requestJson)).andExpect(status().isOk())
                 .andReturn();
 
-        //登录账号密码不正确情况
+        //登录账号被封号情况
         when(userService.findUserAuthByUsername(any())).thenReturn(userAuth2);
+        mockMvc.perform(post("/users/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andReturn();
+        //登录账号密码不正确
+        loginDTO.setPassword("1234567");
+        requestJson = JSONObject.toJSONString(loginDTO);
+        when(userService.findUserAuthByUsername(any())).thenReturn(userAuth);
+        mockMvc.perform(post("/users/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andReturn();
 //        assertEquals(0,msg.getStatus());
 //        assertEquals(MsgUtil.LOGIN_SUCCESS_MSG,msg.getMsg());
 //        assertEquals(userInfoDTO,msg.getData().getUser());
@@ -133,15 +147,28 @@ public class UserControllerTest {
 //        assertEquals(userId,100);
 //        assertEquals(userType,0);
 
-        //测试时间？
     }
+
+    @Test
+    public void testLogout() throws Exception {
+        MvcResult result = mockMvc.perform(get("/users/logout")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+        String resultContent = result.getResponse().getContentAsString();
+
+//        Msg<UserDTO> msg = om.readValue(resultContent,new TypeReference<Msg<UserDTO>>() {});
+//        assertEquals(0,msg.getStatus());
+//        assertEquals(MsgUtil.LOGOUT_SUCCESS_MSG,msg.getMsg());
+    }
+
     @Test
     public void testRegister() throws Exception {
 
-        RegisterDTO registerDTO = new RegisterDTO("admin1111","mok","123456",0,"上海市闵行区","mokkkkk@sjtu.edu.cn");
-        User user = new User(100,"mok","mokkkkk@sjtu.edu.cn",0,"上海市闵行区",100,"啥都不会",null);
-        UserAuth userAuth = new UserAuth(100,"admin1111","123456",0,0,0,user,null);
-        UserInfoDTO userInfoDTO = new UserInfoDTO(100,"mok",0,"上海市闵行区","这个人很懒，什么都没留下",null,0,false);
+        RegisterDTO registerDTO = new RegisterDTO("admin1111", "mok", "123456", 0, "上海市闵行区", "mokkkkk@sjtu.edu.cn");
+        User user = new User(100, "mok", "mokkkkk@sjtu.edu.cn", 0, "上海市闵行区", 100, "啥都不会", null);
+        UserAuth userAuth = new UserAuth(100, "admin1111", "123456", 0, 0, 0, user, null);
+        UserInfoDTO userInfoDTO = new UserInfoDTO(100, "mok", 0, "上海市闵行区", "这个人很懒，什么都没留下", null, 0, false);
         when(userService.findUserAuthByUsername("admin1111")).thenReturn(null).thenReturn(userAuth);
         when(userService.register(registerDTO)).thenReturn(userInfoDTO);
 
@@ -164,23 +191,12 @@ public class UserControllerTest {
 //        assertEquals(userId,100);
 //        assertEquals(userType,0);
     }
+
     @Test
-    public void testLogout() throws Exception{
-        MvcResult result = mockMvc.perform(get("/users/logout")
-                .header("token","eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjEsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NzMwNDM0fQ.WutDjmVIq5i2obrVmf-_pA_0jcTPtY7zUTJC-Oc40E4")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn();
-        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
-        String resultContent = result.getResponse().getContentAsString();
-//        Msg<UserDTO> msg = om.readValue(resultContent,new TypeReference<Msg<UserDTO>>() {});
-//        assertEquals(0,msg.getStatus());
-//        assertEquals(MsgUtil.LOGOUT_SUCCESS_MSG,msg.getMsg());
-    }
-    @Test
-    public void testFollow() throws Exception{
-        when(userService.follow(1,2)).thenReturn(true);
+    public void testFollow() throws Exception {
+        when(userService.follow(1, 2)).thenReturn(true);
         MvcResult result = mockMvc.perform(post("/users/follow?follow_id=2")
-                .header("token","eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjEsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NzMwNDM0fQ.WutDjmVIq5i2obrVmf-_pA_0jcTPtY7zUTJC-Oc40E4")
+                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjEsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NzMwNDM0fQ.WutDjmVIq5i2obrVmf-_pA_0jcTPtY7zUTJC-Oc40E4")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
 //        verify(userService,times(1)).follow(1,2);
