@@ -92,10 +92,10 @@ public class RecommendServiceTest {
         Pageable pageable = PageRequest.of(0, 1);
         Page<Blog> page = new PageImpl<Blog>(blogs, pageable, blogs.size());
         when(recommendBlogsDao.getRecommendBlogsUsingUser_id(any(), any())).thenReturn(page);
-        recommendService.getRecommendBlogsUsingUser_id(1, 0, 5);
+        recommendService.takeRecommendBlogsUsingUser_id(1, 0, 5);
 
         when(recommendBlogsDao.getRecommendBlogsUsingUser_id(any(), any())).thenReturn(null);
-        recommendService.getRecommendBlogsUsingUser_id(1, 0, 5);
+        recommendService.takeRecommendBlogsUsingUser_id(1, 0, 5);
     }
 
     @Test
