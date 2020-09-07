@@ -241,7 +241,7 @@ public class AdminControllerTest {
     public void testUnban() throws Exception {
         Integer user_id = 1;
         String requestJson = JSONObject.toJSONString(user_id);
-        MvcResult result = mockMvc.perform(put("/admins/users/unban")
+        MvcResult result = mockMvc.perform(put("/admins/users/unban?user_id=1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
                 .andExpect(status().isOk()).andReturn();
@@ -275,7 +275,7 @@ public class AdminControllerTest {
     public void testPermit() throws Exception {
         Integer user_id = 1;
         String requestJson = JSONObject.toJSONString(user_id);
-        MvcResult result = mockMvc.perform(put("/admins/users/permit")
+        MvcResult result = mockMvc.perform(put("/admins/users/permit?user_id=1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
                 .andExpect(status().isOk()).andReturn();

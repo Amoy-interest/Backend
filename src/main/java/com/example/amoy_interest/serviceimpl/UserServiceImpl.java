@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public boolean follow(Integer user_id, Integer follow_id) {
         UserFollow userFollow = new UserFollow(user_id, follow_id);
         Optional<UserFollow> userFollow1 = userFollowDao.findByUser_idAndFollow_id(user_id, follow_id);
@@ -88,6 +89,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public boolean ban(UserCheckDTO userCheckDTO) {
         Date endTime = new Date(System.currentTimeMillis() + userCheckDTO.getTime() * 1000);
         Integer user_id = userCheckDTO.getUser_id();
@@ -107,6 +109,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public boolean unban(Integer user_id) {
         UserAuth userAuth = userAuthDao.findUserById(user_id);
         userAuth.setIs_ban(0);
@@ -115,6 +118,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public boolean forbid(UserCheckDTO userCheckDTO) {
         Date endTime = new Date(System.currentTimeMillis() + userCheckDTO.getTime() * 1000);
         Integer user_id = userCheckDTO.getUser_id();
@@ -134,6 +138,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public boolean permit(Integer user_id) {
         UserAuth userAuth = userAuthDao.findUserById(user_id);
         userAuth.setIs_forbidden(0);
@@ -201,7 +206,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false)
     public Page<UserInfoDTO> getUserFanPage(Integer my_user_id, Integer user_id, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<UserFollow> userFanPage = userFollowDao.findFollowPageByFollow_id(user_id, pageable);
@@ -334,6 +338,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void ReportUser(UserReportParam userReportParam) {
         Integer user_id = userReportParam.getUser_id();
         Integer reporter_id = userReportParam.getReporter_id();

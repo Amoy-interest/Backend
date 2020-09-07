@@ -75,6 +75,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public TopicDTO modifyTopic(TopicModifyParam topicModifyParam) {
         Topic topic = topicDao.getTopicByName(topicModifyParam.getTopic_name());
         if(topic == null) {
@@ -98,6 +99,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public boolean checkReportedTopic(TopicCheckDTO topicCheckDTO) {
         Topic topic = topicDao.getTopicByName(topicCheckDTO.getTopic_name());
         topic.setCheck_status(topicCheckDTO.getCheck_status());
