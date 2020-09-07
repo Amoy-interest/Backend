@@ -151,12 +151,14 @@ public class UserControllerTest {
 
     @Test
     public void testLogout() throws Exception {
-        MvcResult result = mockMvc.perform(get("/users/logout")
+        mockMvc.perform(get("/users/logout")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
-        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
-        String resultContent = result.getResponse().getContentAsString();
 
+//        先登录再登出
+//        LoginDTO loginDTO = new LoginDTO("鲁迅", "123456");
+//
+//        mockMvc.perform(get("/users/login"))
 //        Msg<UserDTO> msg = om.readValue(resultContent,new TypeReference<Msg<UserDTO>>() {});
 //        assertEquals(0,msg.getStatus());
 //        assertEquals(MsgUtil.LOGOUT_SUCCESS_MSG,msg.getMsg());
@@ -173,37 +175,33 @@ public class UserControllerTest {
         when(userService.register(registerDTO)).thenReturn(userInfoDTO);
 
         String requestJson = JSONObject.toJSONString(registerDTO);
-        MvcResult result = mockMvc.perform(post("/users/register")
+        mockMvc.perform(post("/users/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
                 .andExpect(status().isOk()).andReturn();
-        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
-        String resultContent = result.getResponse().getContentAsString();
-//        Msg<UserDTO> msg = om.readValue(resultContent,new TypeReference<Msg<UserDTO>>() {});
-////        verify(userService,times(2)).findUserAuthByUsername("admin");
-////        verify(userService,times(1)).register(registerDTO);
-////        assertEquals(0,msg.getStatus());
-//        assertEquals(MsgUtil.REGISTER_SUCCESS_MSG,msg.getMsg());
-//        assertEquals(userInfoDTO,msg.getData().getUser());
-//        String token = msg.getData().getToken();
-//        int userId = JWT.decode(token).getClaim("user_id").asInt();
-//        int userType = JWT.decode(token).getClaim("user_type").asInt();
-//        assertEquals(userId,100);
-//        assertEquals(userType,0);
+        //重复注册
+        mockMvc.perform(post("/users/register").contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson));
+
     }
 
     @Test
     public void testFollow() throws Exception {
+        when(userUtil.getUserId()).thenReturn(1);
         when(userService.follow(1, 2)).thenReturn(true);
-        MvcResult result = mockMvc.perform(post("/users/follow?follow_id=2")
-                .header("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjEsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NzMwNDM0fQ.WutDjmVIq5i2obrVmf-_pA_0jcTPtY7zUTJC-Oc40E4")
+//        MvcResult result =
+        mockMvc.perform(post("/users/follow?follow_id=2")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
-//        verify(userService,times(1)).follow(1,2);
-        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
-        String resultContent = result.getResponse().getContentAsString();
+//        result.getResponse().setCharacterEncoding("UTF-8"); //解决中文乱码
+//        String resultContent = result.getResponse().getContentAsString();
 //        Msg<UserDTO> msg = om.readValue(resultContent,new TypeReference<Msg<UserDTO>>() {});
 //        assertEquals(0,msg.getStatus());
 //        assertEquals(MsgUtil.SUCCESS_MSG,msg.getMsg());
+    }
+
+    @Test
+    public void testUnFollow() throws Exception {
+
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.amoy_interest.utils.UserUtil;
 
@@ -41,7 +42,7 @@ public class RecommendServiceImpl implements RecommendService {
     private BlogService blogService;
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public Page<BlogDTO> getRecommendBlogsUsingUser_id(Integer user_id, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(0, pageSize);
         Page<Blog> page = recommendBlogsDao.getRecommendBlogsUsingUser_id(user_id, pageable);

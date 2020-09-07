@@ -26,6 +26,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -63,7 +64,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public TopicDTO addTopic(String topic_name) {
         if(topicDao.getTopicByName(topic_name) == null) {
             Topic topic = new Topic(topic_name,new Date(),0,0,null,null,null);
@@ -75,7 +76,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public TopicDTO modifyTopic(TopicModifyParam topicModifyParam) {
         Topic topic = topicDao.getTopicByName(topicModifyParam.getTopic_name());
         if(topic == null) {
@@ -99,7 +100,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public boolean checkReportedTopic(TopicCheckDTO topicCheckDTO) {
         Topic topic = topicDao.getTopicByName(topicCheckDTO.getTopic_name());
         topic.setCheck_status(topicCheckDTO.getCheck_status());
@@ -108,7 +109,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public boolean reportTopicByName(String topic_name) {
         Topic topic = topicDao.getTopicByName(topic_name);
         topic.setReport_count(topic.getReport_count()+1);
@@ -162,7 +163,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public void updateTopicHeat() {
         List<TopicHeatParam> topicHeatParamList = topicDao.getAllTopicCount();
         List<TopicHeat> topicHeatList = new ArrayList<>();
@@ -191,7 +192,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public void updateAllTopicHeat() throws IOException {
         String str =
                 "{\"bool\": {\n" +

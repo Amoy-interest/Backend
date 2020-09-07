@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public UserInfoDTO register(RegisterDTO registerDTO) {
         UserAuth userAuth = new UserAuth(registerDTO.getUsername(), registerDTO.getPassword(), 0, 0, 0);
         userAuth = userAuthDao.insert(userAuth);
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public boolean follow(Integer user_id, Integer follow_id) {
         UserFollow userFollow = new UserFollow(user_id, follow_id);
         Optional<UserFollow> userFollow1 = userFollowDao.findByUser_idAndFollow_id(user_id, follow_id);
@@ -89,7 +90,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public boolean ban(UserCheckDTO userCheckDTO) {
         Date endTime = new Date(System.currentTimeMillis() + userCheckDTO.getTime() * 1000);
         Integer user_id = userCheckDTO.getUser_id();
@@ -109,7 +110,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public boolean unban(Integer user_id) {
         UserAuth userAuth = userAuthDao.findUserById(user_id);
         userAuth.setIs_ban(0);
@@ -118,7 +119,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public boolean forbid(UserCheckDTO userCheckDTO) {
         Date endTime = new Date(System.currentTimeMillis() + userCheckDTO.getTime() * 1000);
         Integer user_id = userCheckDTO.getUser_id();
@@ -138,7 +139,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public boolean permit(Integer user_id) {
         UserAuth userAuth = userAuthDao.findUserById(user_id);
         userAuth.setIs_forbidden(0);
@@ -224,7 +225,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public boolean unfollow(Integer user_id, Integer unfollow_id) {
         UserFollow userFollow = new UserFollow(user_id, unfollow_id);
         Optional<UserFollow> userFollow1 = userFollowDao.findByUser_idAndFollow_id(user_id, unfollow_id);
@@ -323,7 +324,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public boolean modifyUser(UserModifyParam userModifyParam) {
         User user = userDao.getById(userModifyParam.getUser_id());
         if(user == null) {
@@ -338,7 +339,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
     public void ReportUser(UserReportParam userReportParam) {
         Integer user_id = userReportParam.getUser_id();
         Integer reporter_id = userReportParam.getReporter_id();
