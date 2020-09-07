@@ -26,6 +26,7 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public SensitiveWord addSensitiveWord(SensitiveWord sensitiveWord) {
         Finder.addSensitiveWords(sensitiveWord.getKeyword());//可以用消息队列完成
         return sensitiveWordDao.saveSensitiveWord(sensitiveWord);
