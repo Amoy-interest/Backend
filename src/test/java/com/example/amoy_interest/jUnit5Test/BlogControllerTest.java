@@ -88,8 +88,6 @@ public class BlogControllerTest {
 
     @MockBean
     private UserUtil userUtil;
-//    @MockBean
-//    private FinderUtil finderUtil;
     @MockBean
     private BlogService blogService;
     @MockBean
@@ -252,7 +250,7 @@ public class BlogControllerTest {
         when(blogService.deleteByBlog_id(Mockito.any())).thenReturn(1);
         mockMvc.perform(delete("/blogs?blog_id=1"))
                 .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).deleteByBlog_id(1);
+        verify(blogService, times(2)).deleteByBlog_id(1);
     }
 
     @Test
@@ -340,37 +338,52 @@ public class BlogControllerTest {
         verify(blogService, times(1)).getSearchListByBlog_text("abbc", 0, 5);
     }
 
-//    @Test
-//    public void testGetSimBlog() throws Exception{
-//        when(recommendService.getSimBlogUsingBlog_id(any(),any())).thenReturn(new ArrayList<>());
-//        mockMvc.perform(get("blogs/sim")).andExpect(status().isOk());
-//    }
-//    @Test
-//    public void testGetRecommendBlog() throws Exception {
-//        when(userUtil.getUserId()).thenReturn(1);
-//        when(recommendService.getRecommendBlogsUsingUser_id(any(),any(),any())).thenReturn(new ArrayList<>());
-//        mockMvc.perform(get("blogs/recommend")).andExpect(status().isOk());
-//    }
+    @Test
+    public void testGetSimBlog() throws Exception{
+        Page<BlogDTO> page = new PageImpl<>(new ArrayList<>(),PageRequest.of(0,5),0);
+        when(recommendService.getSimBlogUsingBlog_id(any(),any())).thenReturn(page);
+        mockMvc.perform(get("/blogs/sim?blog_id=1")).andExpect(status().isOk());
+    }
+    @Test
+    public void testGetRecommendBlog() throws Exception {
+        Page<BlogDTO> page = new PageImpl<>(new ArrayList<>(),PageRequest.of(0,5),0);
+        when(userUtil.getUserId()).thenReturn(1);
+        when(recommendService.getRecommendBlogsUsingUser_id(any(),any(),any())).thenReturn(page);
+        mockMvc.perform(get("/blogs/recommend")).andExpect(status().isOk());
+    }
 
     @Test
     public void testGetFollowBlogs() throws Exception {
+        Page<BlogDTO> page = new PageImpl<>(new ArrayList<>(),PageRequest.of(0,5),0);
         when(userUtil.getUserId()).thenReturn(1);
-//        when()
-//        when(blogService.getFollowBlogPageByUser_idOrderByTime(any(),any(),any())).thenReturn()
+        when(blogService.getFollowBlogPageByUser_idOrderByTime(any(),any(),any())).thenReturn(page);
+        mockMvc.perform(get("/blogs/follow")).andExpect(status().isOk());
     }
 
     @Test
     public void testGetUserBlogs() throws Exception {
-
+        Page<BlogDTO> page = new PageImpl<>(new ArrayList<>(),PageRequest.of(0,5),0);
+        when(blogService.getBlogPageByUser_idOrderByTime(any(),any(),any())).thenReturn(page);
+        when(blogService.getHotBlogPageByUser_id(any(),any(),any())).thenReturn(page);
+        mockMvc.perform(get("/blogs/users?user_id=1&orderType=0")).andExpect(status().isOk());
+        mockMvc.perform(get("/blogs/users?user_id=1&orderType=1")).andExpect(status().isOk());
+//        verify(blogService.getBlogPageByUser_idOrderByTime(any(),any(),any()),times(1));
+//        verify(blogService.getHotBlogPageByUser_id(any(),any(),any()),times(1));
     }
 
     @Test
     public void testGetBeforeLoginBlogs() throws Exception {
-
+        Page<BlogDTO> page = new PageImpl<>(new ArrayList<>(),PageRequest.of(0,5),0);
+        when(blogService.getBlogPageOrderByHot(any(),any())).thenReturn(page);
+        mockMvc.perform(get("/blogs/beforeLogin")).andExpect(status().isOk());
     }
 
     @Test
     public void testReportBlog() throws Exception {
-
+        BlogReportDTO blogReportDTO = new BlogReportDTO(1,"bad");
+        when(blogService.reportBlog(any())).thenReturn(true);
+        String requestJson = JSONObject.toJSONString(blogReportDTO);
+        mockMvc.perform(post("/blogs/report").contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson)).andExpect(status().isOk());
     }
 }

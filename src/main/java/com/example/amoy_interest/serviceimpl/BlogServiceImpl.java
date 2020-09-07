@@ -529,7 +529,7 @@ public class BlogServiceImpl implements BlogService {
             queryBuilder.field("blog_text");
             //构建高亮体
             HighlightBuilder highlightBuilder = new HighlightBuilder();
-            highlightBuilder.preTags("<span style={{color:'#FF5722'}}>");
+            highlightBuilder.preTags("<span style=\"color:#FF5722;\">");
             highlightBuilder.postTags("</span>");
             //高亮字段
             highlightBuilder.field("blog_text");

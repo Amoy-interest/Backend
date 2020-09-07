@@ -6,6 +6,7 @@ import com.example.amoy_interest.repository.TopicHeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,5 +24,10 @@ public class TopicHeatDaoImpl implements TopicHeatDao {
     @Override
     public Page<TopicHeat> findByPage(Pageable pageable) {
         return topicHeatRepository.findAll(pageable);
+    }
+
+    @Override
+    public void deleteAll() {
+        topicHeatRepository.deleteAll();
     }
 }
