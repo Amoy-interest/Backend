@@ -15,15 +15,18 @@ import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.serviceimpl.BlogServiceImpl;
 import com.example.amoy_interest.serviceimpl.TopicServiceImpl;
 import com.example.amoy_interest.serviceimpl.UserServiceImpl;
+import com.example.amoy_interest.utils.UserUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -42,26 +45,33 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @SpringBootTest
 public class BlogServiceTest{
-    @InjectMocks
-    private BlogServiceImpl blogService;
+//    @InjectMocks
+//    private BlogServiceImpl blogService;
 
-    @Mock
-    private BlogDaoImpl blogDao;
-    @Mock
-    private BlogCountDaoImpl blogCountDao;
-    @Mock
-    private BlogImageDaoImpl blogImageDao;
-    @Mock
-    private BlogCommentDaoImpl blogCommentDao;
-    @Mock
+    @MockBean
+    private BlogDao blogDao;
+    @MockBean
+    private BlogCountDao blogCountDao;
+    @MockBean
+    private BlogImageDao blogImageDao;
+    @MockBean
+    private BlogCommentDao blogCommentDao;
+    @MockBean
     private UserDao userDao;
+    @MockBean
+    private UserUtil userUtil;
 
-////    @Test
-////    public void testAddBlog() {
-////        when(blogDao.saveBlog(any())).thenReturn(null);
-//////        blogService.addBlog(new Blog(1, 1, 0, 0,null, "666",  false, 1, -1));
-////        verify(blogDao, times(1)).saveBlog(any());
-////    }
+    @BeforeEach
+    public void init() {
+        when(userUtil.getUserId()).thenReturn(1);
+//        when()
+    }
+//    @Test
+//    public void testAddBlog() {
+//        when(blogDao.saveBlog(any())).thenReturn(null);
+////        blogService.addBlog(new Blog(1, 1, 0, 0,null, "666",  false, 1, -1));
+//        verify(blogDao, times(1)).saveBlog(any());
+//    }
 //
 //    @Test
 //    public void testUpdateBlog() {
