@@ -64,15 +64,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SpringBootTest
-//@ExtendWith(SpringExtension.class)
-//@ContextConfiguration(classes = {
-//        SecurityManager.class,
-//        WebApplicationContext.class
-//})
-//@RunWith(SpringRunner.class)
 public class AdminControllerTest {
     private MockMvc mockMvc;
 
@@ -80,8 +72,7 @@ public class AdminControllerTest {
     private final static Integer pageSize1 = 5;
     private final static Integer orderType1 = 1;
     private final static String token1 = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMSIsImN1cnJlbnRUaW1lTWlsbGlzIjoiMTU5ODQwODAyMTU0OSIsImV4cCI6MTkxMzc2ODAyMSwidXNlcm5hbWUiOiLpsoHov4UifQ.FSxvme-or5PLR23LYNfgcD4k6P7p_uqVbYegdJVA3HE";
-    //    @InjectMocks
-//    private AdminController adminController;
+
     @Autowired
     private WebApplicationContext context;
     @Autowired
