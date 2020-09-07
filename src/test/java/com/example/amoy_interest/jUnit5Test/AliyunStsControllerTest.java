@@ -1,21 +1,26 @@
 package com.example.amoy_interest.jUnit5Test;
 
-
 import com.alibaba.fastjson.JSONObject;
-import com.auth0.jwt.JWT;
 import com.example.amoy_interest.config.shiro.jwt.JwtToken;
+import com.example.amoy_interest.controller.AdminController;
 import com.example.amoy_interest.dto.*;
-import com.example.amoy_interest.entity.*;
+import com.example.amoy_interest.entity.Blog;
+import com.example.amoy_interest.entity.BlogCount;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgUtil;
-import com.example.amoy_interest.service.RecommendService;
-import com.example.amoy_interest.service.SensitiveWordService;
+import com.example.amoy_interest.service.BlogService;
+import com.example.amoy_interest.service.CountService;
 import com.example.amoy_interest.service.TopicService;
 import com.example.amoy_interest.service.UserService;
-import com.example.amoy_interest.utils.UserUtil;
+import com.example.amoy_interest.serviceimpl.BlogServiceImpl;
+import com.example.amoy_interest.serviceimpl.TopicServiceImpl;
+import com.example.amoy_interest.serviceimpl.UserServiceImpl;
+import com.example.amoy_interest.utils.CommonPage;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
@@ -23,9 +28,16 @@ import org.apache.shiro.web.subject.WebSubject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -34,38 +46,38 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-import static com.example.amoy_interest.constant.Constant.TEST_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 /**
  * @Author: Mok
- * @Date: 2020/9/7 21:09
+ * @Date: 2020/9/8 3:31
  */
 @SpringBootTest
-public class SensitiveWordControllerTest {
+public class AliyunStsControllerTest {
     private MockMvc mockMvc;
+
+    private final static String token1 = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMSIsImN1cnJlbnRUaW1lTWlsbGlzIjoiMTU5ODQwODAyMTU0OSIsImV4cCI6MTkxMzc2ODAyMSwidXNlcm5hbWUiOiLpsoHov4UifQ.FSxvme-or5PLR23LYNfgcD4k6P7p_uqVbYegdJVA3HE";
+
     @Autowired
     private WebApplicationContext context;
     @Autowired
     private SecurityManager securityManager;
-    private final static String token1 = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMSIsImN1cnJlbnRUaW1lTWlsbGlzIjoiMTU5ODQwODAyMTU0OSIsImV4cCI6MTkxMzc2ODAyMSwidXNlcm5hbWUiOiLpsoHov4UifQ.FSxvme-or5PLR23LYNfgcD4k6P7p_uqVbYegdJVA3HE";
-
-    @MockBean
-    private SensitiveWordService sensitiveWordService;
-
-    private ObjectMapper om = new ObjectMapper();
 
     @BeforeEach
     public void setUp() {
@@ -85,24 +97,8 @@ public class SensitiveWordControllerTest {
     }
 
     @Test
-    public void testGetSensitiveWords() throws Exception {
-        when(sensitiveWordService.getSensitiveWordsPage(any(),any())).thenReturn(null);
-        mockMvc.perform(get("/keywords/search?keyword=你好")).andExpect(status().isOk());
+    public void testGetOssToken() throws Exception {
+        mockMvc.perform(get("/aliyun/sts/oss/tokens")).andExpect(status().isOk());
     }
 
-    @Test
-    public void testAddSensitiveWord() throws Exception {
-        when(sensitiveWordService.addSensitiveWord(any())).thenReturn(null);
-        mockMvc.perform(post("/keywords?keyword=你好")).andExpect(status().isOk());
-    }
-
-    @Test
-    public void testPutSensitiveWord() throws Exception {
-        mockMvc.perform(put("/keywords?oldWord=你好&newWord=你不好")).andExpect(status().isOk());
-    }
-
-    @Test
-    public void testDeleteSensitiveWord() throws Exception {
-        mockMvc.perform(delete("/keywords?keyword=你好")).andExpect(status().isOk());
-    }
 }

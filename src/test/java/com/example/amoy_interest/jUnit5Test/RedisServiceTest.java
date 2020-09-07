@@ -47,6 +47,8 @@ import java.util.AbstractMap;
 public class RedisServiceTest {
     @InjectMocks
     private RedisServiceImpl redisService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Test
     public void testAll() {
