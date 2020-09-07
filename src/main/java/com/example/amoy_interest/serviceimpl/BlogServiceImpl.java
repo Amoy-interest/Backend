@@ -96,7 +96,7 @@ public class BlogServiceImpl implements BlogService {
     private CountService countService;
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = false)
     public BlogDTO addBlog(BlogAddDTO blogAddDTO) {
         Integer user_id = blogAddDTO.getUser_id();
         Blog blog = new Blog();
@@ -143,7 +143,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = false)
     public BlogDTO forwardBlog(BlogForwardDTO blogForwardDTO) {
         Blog blog = new Blog();
         Integer user_id = blogForwardDTO.getUser_id();
@@ -202,16 +202,16 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = false)
     public BlogDTO updateBlog(BlogPutDTO blogPutDTO) {
         Integer user_id = userUtil.getUserId();
         Integer blog_id = blogPutDTO.getBlog_id();
         String text = blogPutDTO.getText();
         Blog blog = blogDao.findBlogByBlog_id(blog_id);
         //id不一致，取消更新
-        if (blog.getUser_id() != user_id) {
-            return null;
-        }
+//        if (blog.getUser_id() != user_id) {
+//            return null;
+//        }
         blog.setBlog_text(text);
         //判断有无点赞
         Integer result = redisService.findStatusFromRedis(blog_id, user_id);
@@ -239,7 +239,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = false)
     public Integer deleteByBlog_id(Integer blog_id) {
         Integer user_id = userUtil.getUserId();
         Blog blog = blogDao.findBlogByBlog_id(blog_id);
@@ -259,7 +259,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = false)
     public void incrVoteCount(Integer blog_id) {
         Integer user_id = userUtil.getUserId();
 
@@ -290,13 +290,13 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = false)
     public void incrCommentVoteCount(Integer comment_id) {
         blogCommentDao.incrCommentVoteCount(comment_id);
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = false)
     public void decrVoteCount(Integer blog_id) {
         Integer user_id = userUtil.getUserId();
         Integer status = redisService.findStatusFromRedis(blog_id, user_id);
@@ -325,14 +325,14 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = false)
     public void decrCommentVoteCount(Integer comment_id) {
         blogCommentDao.decrCommentVoteCount(comment_id);
     }
 
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = false)
     public BlogCommentMultiLevelDTO addBlogComment(CommentPostDTO commentPostDTO) {
         Integer blog_id = commentPostDTO.getBlog_id();
         Integer root_comment_id = commentPostDTO.getRoot_comment_id();
@@ -372,11 +372,11 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = false)
     public boolean deleteCommentByComment_id(Integer comment_id) {
-        Integer user_id = userUtil.getUserId();
+//        Integer user_id = userUtil.getUserId();
         BlogComment blogComment = blogCommentDao.findCommentByComment_id(comment_id);
-        if (user_id != userUtil.getUserId() || blogComment == null) {
+        if (blogComment == null) {
             return false;
         }
         blogComment.set_deleted(true);//逻辑删除且不对评论数做处理，参考微博
@@ -403,21 +403,10 @@ public class BlogServiceImpl implements BlogService {
             }
         }
         return new BlogDTO(blog, getBlogCount(blog_id), flag);
-//        return null;
-//        List<BlogComment> blogComments = blogCommentDao.findLevel1CommentByBlog_id(blog_id);
-//        BlogCount blogCount = blogCountDao.findBlogCountByBlog_id(blog_id);
-//        List<BlogImage> blogImages = blogImageDao.findBlogImageByBlog_id(blog_id);
-//        Blog blogChild = new Blog();
-//        List<BlogImage> blogChildImages = null;
-//        if (blog.getBlog_type() > 0) {
-//            blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
-//            blogChildImages = blogImageDao.findBlogImageByBlog_id(blog.getReply_blog_id());
-//        }
-//        return new BlogDTO(blog, blogComments, blogCount, blogImages, blogChild, blogChildImages);
     }
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = false)
     public boolean checkReportedBlog(BlogCheckDTO blogCheckDTO) {
         Blog blog = blogDao.findBlogByBlog_id(blogCheckDTO.getBlog_id());
         blog.setCheck_status(blogCheckDTO.getCheck_status());
@@ -426,67 +415,9 @@ public class BlogServiceImpl implements BlogService {
         return true;
     }
 
-//    @Override
-//    public List<BlogDTO> getBlogsByUser_id(Integer user_id) {
-//        List<Blog> blogs = blogDao.getBlogsByUser_id(user_id);
-//        List<BlogDTO> blogDTOS = new ArrayList<>();
-//        for (Blog blog : blogs) {
-//            Blog blogChild = new Blog();
-//            List<BlogImage> blogChildImages = null;
-//            if (blog.getBlog_type() > 0) {
-////                blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
-//                blogChildImages = blogChild.getBlogImages();
-//            }
-//            blogDTOS.add(
-//                    new BlogDTO(blog, null, blog.getBlogCount(), blog.getBlogImages(), blogChild, blogChildImages)
-//            );
-//        }
-//        return blogDTOS;
-//    }
-
-//    @Override
-//    public List<BlogDTO> getRecommendBlogsByUser_id(Integer user_id) {
-//        List<Blog> blogs = blogDao.getAllBlogs();
-//        List<BlogDTO> blogDTOS = new ArrayList<>();
-//        for (Blog blog : blogs) {
-//            Blog blogChild = new Blog();
-//            List<BlogImage> blogChildImages = null;
-//            if (blog.getBlog_type() > 0) {
-////                blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
-//                blogChildImages = blogChild.getBlogImages();
-//            }
-//            blogDTOS.add(
-//                    new BlogDTO(blog, null, blog.getBlogCount(), blog.getBlogImages(), blogChild, blogChildImages)
-//            );
-//        }
-//        return blogDTOS;
-//    }
-//
-//    @Override
-//    public List<BlogDTO> getFollowBlogsByUser_id(Integer user_id) {
-//        User user = userDao.getById(user_id);
-//        List<UserFollow> userFollows= user.getUserFollow();
-//        List<BlogDTO> blogDTOS = new ArrayList<>();
-//        for (UserFollow userFollow : userFollows) {
-//            List<Blog> blogs = blogDao.getBlogsByUser_id(userFollow.getFollow_id());
-//            for (Blog blog : blogs) {
-//                Blog blogChild = new Blog();
-//                List<BlogImage> blogChildImages = null;
-//                if (blog.getBlog_type() > 0) {
-////                    blogChild = blogDao.findBlogByBlog_id(blog.getReply_blog_id());
-//                    blogChildImages = blogChild.getBlogImages();
-//                }
-//                blogDTOS.add(
-//                        new BlogDTO(blog, null, blog.getBlogCount(), blog.getBlogImages(), blogChild, blogChildImages)
-//                );
-//            }
-//        }
-//        return blogDTOS;
-//    }
-
 
     @Override
-    @Transactional(propagation= Propagation.NOT_SUPPORTED,readOnly = false)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = false)
     public boolean reportBlog(BlogReportDTO blogReportDTO) {
         Integer user_id = userUtil.getUserId();
         Integer blog_id = blogReportDTO.getBlog_id();
@@ -514,7 +445,7 @@ public class BlogServiceImpl implements BlogService {
         long total = 0;
         try {
             List<FunctionScoreQueryBuilder.FilterFunctionBuilder> filterFunctionBuilders = new ArrayList<>();
-            filterFunctionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("blog_text", keyword),ScoreFunctionBuilders.weightFactorFunction(10)));
+            filterFunctionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("blog_text", keyword), ScoreFunctionBuilders.weightFactorFunction(10)));
             FunctionScoreQueryBuilder.FilterFunctionBuilder[] builders = new FunctionScoreQueryBuilder.FilterFunctionBuilder[filterFunctionBuilders.size()];
             filterFunctionBuilders.toArray(builders);
             FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(builders)
@@ -580,93 +511,14 @@ public class BlogServiceImpl implements BlogService {
                 blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, false));
             } else {//redis里没有数据,去数据库拿
                 BlogVote blogVote = blogVoteDao.getByBlogIdAndUserId(blog_id, user_id);
-                if (blogVote == null) {
+                if (blogVote == null || blogVote.getStatus() == 0) {
                     blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, false));
                 } else {
-                    if (blogVote.getStatus() == 0) {
-                        blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, false));
-
-                    } else {
-                        blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, true));
-                    }
+                    blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, true));
                 }
             }
-//            blogDTOList.add(new BlogDTO(blog));
         }
         return new PageImpl<BlogDTO>(blogDTOList, pageable, total);
-//        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
-//        //分页
-//        nativeSearchQueryBuilder.withPageable(pageable);
-//        List<FunctionScoreQueryBuilder.FilterFunctionBuilder> filterFunctionBuilders = new ArrayList<>();
-//        filterFunctionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("blog_text", keyword),
-//                ScoreFunctionBuilders.weightFactorFunction(10)));//权重，可以多权重来搜索
-//        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder()
-//                .must(new MatchQueryBuilder("is_deleted", false)).mustNot(new MatchQueryBuilder("check_status", 2));
-//        FunctionScoreQueryBuilder.FilterFunctionBuilder[] builders = new FunctionScoreQueryBuilder.FilterFunctionBuilder[filterFunctionBuilders.size()];
-//        filterFunctionBuilders.toArray(builders);
-//        FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(builders)
-//                .scoreMode(FunctionScoreQuery.ScoreMode.SUM)
-//                .setMinScore(2);//设置最低分数
-//        nativeSearchQueryBuilder.withQuery(functionScoreQueryBuilder);
-//        nativeSearchQueryBuilder.withSort(SortBuilders.scoreSort().order(SortOrder.DESC));//按相关度排名
-//        NativeSearchQuery searchQuery = nativeSearchQueryBuilder
-//                .withQuery(boolQueryBuilder)
-//                .withHighlightFields(
-//                        new HighlightBuilder.Field("blog_text"),new HighlightBuilder.Field("topics_name"))
-//                .withHighlightBuilder(new HighlightBuilder().preTags("<span style='color:red'>").postTags("</span>")).build();
-//        SearchHits<ESBlog> searchHits = elasticsearchRestTemplate.search(searchQuery, ESBlog.class);
-//        if (searchHits.getTotalHits() <= 0) {
-//            return new PageImpl<>(null, pageable, 0);
-//        }
-//        List<ESBlog> esBlogList = new ArrayList<>();
-////        List<ESBlog> esBlogList = searchHits.stream().map(SearchHit::getContent).collect(Collectors.toList());
-////        for(ESBlog esBlog:esBlogList) {
-////            esBlog.setBlog_text(searchHits.getSearchHit().getContent());
-////        }
-//        List<SearchHit<ESBlog>> list = searchHits.getSearchHits();
-//        for (SearchHit<ESBlog> searchHit : list) {
-//            Map<String, List<String>> highlightFields = searchHit.getHighlightFields();
-//            ESBlog esBlog = searchHit.getContent();
-//            System.out.println(searchHit.toString());
-//            System.out.println(searchHit.getHighlightFields().toString());
-//            String text = highlightFields.get("blog_text") == null ? searchHit.getContent().getBlog_text() : highlightFields.get("blog_text").get(0);
-//            esBlog.setBlog_text(text);
-//            esBlogList.add(esBlog);
-//        }
-        //blogDao.findBlogListByBlog_text(keyword,pageable);
-//        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogPage.getContent());
-//        List<BlogDTO> blogDTOList = new ArrayList<>();
-////        List<ESBlog> esBlogList = blogPage.getContent();
-//        Integer user_id = userUtil.getUserId();
-//        for (ESBlog esBlog : esBlogList) {
-//            Integer blog_id = esBlog.getId();
-//            Integer result = redisService.findStatusFromRedis(blog_id, user_id);
-//            //统计博文数据
-//            BlogCount blogCount = getBlogCount(blog_id);
-//
-//            User user = userDao.getById(esBlog.getUser_id());
-//            List<BlogImage> blogImageList = blogImageDao.findBlogImageByBlog_id(esBlog.getId());
-//            Blog reply = blogDao.findBlogByBlog_id(esBlog.getReply_blog_id());
-//            if (result == 1) {
-//                blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, true));
-//            } else if (result == 0) {
-//                blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, false));
-//            } else {//redis里没有数据,去数据库拿
-//                BlogVote blogVote = blogVoteDao.getByBlogIdAndUserId(blog_id, user_id);
-//                if (blogVote == null) {
-//                    blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, false));
-//                } else {
-//                    if (blogVote.getStatus() == 0) {
-//                        blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, false));
-//
-//                    } else {
-//                        blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, true));
-//                    }
-//                }
-//            }
-////            blogDTOList.add(new BlogDTO(blog));
-//        }
-//        return new PageImpl<BlogDTO>(blogDTOList, pageable, total.value);
     }
 
     @Override
@@ -737,13 +589,6 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public Page<BlogDTO> getReportedBlogsPage(Integer pageNum, Integer pageSize, Integer orderType) {
-//        Sort sort = null;
-//        if(orderType == 1) {
-//            sort = Sort.by(Sort.Direction.DESC,"blog_time");
-//        }else {
-//            sort = Sort.by(Sort.Direction.DESC, "report_count");
-//        }
-//        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<Blog> blogPage = blogDao.findReportedBlogsPage(pageable);
         List<BlogDTO> blogDTOList = convertToReportBlogDTOList(blogPage.getContent());
@@ -785,17 +630,54 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public Page<BlogDTO> searchReportedBlogsPage(String keyword, Integer pageNum, Integer pageSize, Integer orderType) {
-//        Sort sort = null;
-//        if(orderType == 1) {
-//            sort = Sort.by(Sort.Direction.DESC,"blog_time");
-//        }else {
-//            sort = Sort.by(Sort.Direction.DESC, "report_count");
-//        }
-//        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<Blog> blogPage = blogDao.searchReportedBlogsPage(keyword, pageable);
         List<BlogDTO> blogDTOList = convertToReportBlogDTOList(blogPage.getContent());
         return new PageImpl<>(blogDTOList, blogPage.getPageable(), blogPage.getTotalElements());
+    }
+
+    @Override
+    public Page<BlogDTO> getHotBlogPageByTopic_id(Integer topic_id, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Page<Blog> blogPage = blogHeatDao.getHotBlogByTopic_id(topic_id, pageable);
+        List<Blog> blogList = blogPage.getContent();
+        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogList);
+        return new PageImpl<>(blogDTOList, blogPage.getPageable(), blogPage.getTotalElements());
+    }
+
+    @Override
+    public Page<BlogDTO> getHotBlogPageByUser_id(Integer user_id, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Page<Blog> blogPage = blogHeatDao.getHotBlogByUser_id(user_id, pageable);
+        List<Blog> blogList = blogPage.getContent();
+        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogList);
+        return new PageImpl<>(blogDTOList, blogPage.getPageable(), blogPage.getTotalElements());
+    }
+
+    @Override
+    public Page<BlogDTO> getBlogPageOrderByHot(Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Page<Blog> blogPage = blogHeatDao.getHotBlog(pageable);
+        List<Blog> blogList = blogPage.getContent();
+        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogList);
+        return new PageImpl<>(blogDTOList, blogPage.getPageable(), blogPage.getTotalElements());
+    }
+
+    @Override
+    public void updateAllBlogHeatAfterTime(Date afterTime) {
+        List<BlogHeatParam> list = new ArrayList<>();
+        if (afterTime == null) {
+            list = blogCountDao.getAllBlogHeatParam();
+        } else {
+            list = blogCountDao.getBlogHeatParamAfterTime(afterTime);
+        }
+        List<BlogHeat> blogHeatList = new ArrayList<>();
+        for (BlogHeatParam blogHeatParam : list) {
+            long up = blogHeatParam.getComment_count() * 5 + blogHeatParam.getVote_count() * 2 + blogHeatParam.getForward_count() * 10;
+            long score = (long) HotRank.getHotVal(up, 0, blogHeatParam.getCreate_time());
+            blogHeatList.add(new BlogHeat(blogHeatParam.getBlog_id(), (int) score));
+        }
+        blogHeatDao.saveAll(blogHeatList);
     }
 
     @Override
@@ -887,10 +769,6 @@ public class BlogServiceImpl implements BlogService {
                 vote = blogCount.getVote_count();
                 redisService.setVoteCount(blog_id, vote);
             }
-//            if(report == null) {
-//                report = blogCount.getReport_count();
-//                redisService.setBlogReportCount(blog_id,report);
-//            }
         }
         blogCount = new BlogCount(blog_id, forward, comment, vote, 0);
         return blogCount;
@@ -904,7 +782,6 @@ public class BlogServiceImpl implements BlogService {
         Integer vote = redisService.getVoteCountFromRedis(blog_id);
         blogCount = blogCountDao.findBlogCountByBlog_id(blog_id);
         Integer report = blogCount.getReport_count();
-//        Integer report = redisService.getBlogReportCountFromRedis(blog_id);
         if (forward == null || comment == null || vote == null) {
             blogCount = blogCountDao.findBlogCountByBlog_id(blog_id);
             if (forward == null) {
@@ -922,55 +799,5 @@ public class BlogServiceImpl implements BlogService {
         }
         blogCount = new BlogCount(blog_id, forward, comment, vote, report);
         return blogCount;
-    }
-
-    @Override
-    public Page<BlogDTO> getHotBlogPageByTopic_id(Integer topic_id, Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        Page<Blog> blogPage = blogHeatDao.getHotBlogByTopic_id(topic_id, pageable);
-        List<Blog> blogList = blogPage.getContent();
-        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogList);
-        return new PageImpl<>(blogDTOList, blogPage.getPageable(), blogPage.getTotalElements());
-//        List<BlogHeat> blogHeatList = blogHeatPage.getContent();
-//        List<Blog> blogList = new ArrayList<>();
-//        for(BlogHeat blogHeat: blogHeatList) {
-//            blogList.add(blogDao.findBlogByBlog_id(blogHeat.getBlog_id()));
-//        }
-//        return new PageImpl<>(convertToBlogDTOList(blogList), blogHeatPage.getPageable(), blogHeatPage.getTotalElements());
-    }
-
-    @Override
-    public Page<BlogDTO> getHotBlogPageByUser_id(Integer user_id, Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        Page<Blog> blogPage = blogHeatDao.getHotBlogByUser_id(user_id, pageable);
-        List<Blog> blogList = blogPage.getContent();
-        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogList);
-        return new PageImpl<>(blogDTOList, blogPage.getPageable(), blogPage.getTotalElements());
-    }
-
-    @Override
-    public Page<BlogDTO> getBlogPageOrderByHot(Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        Page<Blog> blogPage = blogHeatDao.getHotBlog(pageable);
-        List<Blog> blogList = blogPage.getContent();
-        List<BlogDTO> blogDTOList = convertToBlogDTOList(blogList);
-        return new PageImpl<>(blogDTOList, blogPage.getPageable(), blogPage.getTotalElements());
-    }
-
-    @Override
-    public void updateAllBlogHeatAfterTime(Date afterTime) {
-        List<BlogHeatParam> list = new ArrayList<>();
-        if (afterTime == null) {
-            list = blogCountDao.getAllBlogHeatParam();
-        } else {
-            list = blogCountDao.getBlogHeatParamAfterTime(afterTime);
-        }
-        List<BlogHeat> blogHeatList = new ArrayList<>();
-        for (BlogHeatParam blogHeatParam : list) {
-            long up = blogHeatParam.getComment_count() * 5 + blogHeatParam.getVote_count() * 2 + blogHeatParam.getForward_count() * 10;
-            long score = (long) HotRank.getHotVal(up, 0, blogHeatParam.getCreate_time());
-            blogHeatList.add(new BlogHeat(blogHeatParam.getBlog_id(), (int) score));
-        }
-        blogHeatDao.saveAll(blogHeatList);
     }
 }
