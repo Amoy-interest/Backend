@@ -507,7 +507,7 @@ if __name__ == "__main__":
 
 	now_time = datetime.datetime.now()
 
-	next_time = now_time + datetime.timedelta(days=0)
+	next_time = now_time + datetime.timedelta(days=+1)
 
 	next_year = next_time.date().year
 
@@ -515,7 +515,7 @@ if __name__ == "__main__":
 
 	next_day = next_time.date().day
 
-	next_time = datetime.datetime.strptime(str(next_year)+"-"+str(next_month)+"-"+str(next_day)+" 15:30:00", "%Y-%m-%d %H:%M:%S")
+	next_time = datetime.datetime.strptime(str(next_year)+"-"+str(next_month)+"-"+str(next_day)+" 03:30:00", "%Y-%m-%d %H:%M:%S")
 
 	print("start_time:", next_time)
 
