@@ -92,6 +92,7 @@ public class RedisServiceTest {
         redisService.getVoteDataFromRedis();
         redisService.getVoteCountFromRedis(1);
         redisService.getVoteCountFromRedis();
+        //redisService.get
 
         //全部cancel
         redisService.cancelVoteFromRedis(1,1);
