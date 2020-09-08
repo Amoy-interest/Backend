@@ -22,7 +22,7 @@ public class TopicDaoImpl implements TopicDao {
     private TopicRepository topicRepository;
 
     @Override
-    public Topic getTopicById(int topic_id) {
+    public Topic getTopicById(Integer topic_id) {
         return topicRepository.getOne(topic_id);
     }
 
