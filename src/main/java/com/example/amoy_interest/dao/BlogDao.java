@@ -19,6 +19,7 @@ public interface BlogDao {
     Page<Blog> getBlogPageByGroupName(String groupName, Pageable pageable);
     Page<Blog> findReportedBlogsPage(Pageable pageable);
     Page<Blog> searchReportedBlogsPage(String keyword,Pageable pageable);
+
     /**
      *
      * @param pageable

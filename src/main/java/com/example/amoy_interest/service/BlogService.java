@@ -104,4 +104,5 @@ public interface BlogService {
     BlogCount getBlogCount(Integer blog_id);
 
     BlogCount getReportBlogCount(Integer blog_id);
+
 }

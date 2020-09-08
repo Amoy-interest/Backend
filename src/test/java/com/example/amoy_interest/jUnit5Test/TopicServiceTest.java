@@ -75,10 +75,10 @@ public class TopicServiceTest {
     @Test
     public void testGetTopicDTOByName(){
         when(topicDao.getTopicByName(any())).thenReturn(topic);
-        topicService.getTopic_idByName("测试");
+        topicService.getTopicDTOByName("测试");
 
         when(topicDao.getTopicByName(any())).thenReturn(null);
-        topicService.getTopic_idByName("测试");
+        topicService.getTopicDTOByName("测试");
     }
     @Test
     public void testGetTopicByName() {
@@ -138,5 +138,14 @@ public class TopicServiceTest {
         Topic topic1 = new Topic("测试", new Date(), 0, 0, 0, null, null);
         when(topicDao.getTopicById(any())).thenReturn(topic1);
         topicService.getHotList(0, 1);
+    }
+
+    @Test
+    public void testAddTopic() {
+        when(topicDao.getTopicByName(any())).thenReturn(null);
+        topicService.addTopic("测试");
+
+        when(topicDao.getTopicByName(any())).thenReturn(topic);
+        topicService.addTopic("测试");
     }
 }
