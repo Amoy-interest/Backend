@@ -109,6 +109,13 @@ public class RedisServiceTest {
         redisService.getUserReportCountFromRedis();
         redisService.getUserReportDataFromRedis();
 
+        redisService.getBlogCommentCountFromRedis(10);
+        redisService.getBlogForwardCountFromRedis(10);
+        redisService.getVoteCountFromRedis(10);
+        redisService.getUserBlogCountFromRedis(10);
+        redisService.getUserFanCountFromRedis(10);
+        redisService.getUserFollowCountFromRedis(10);
+
         //全部cancel
         redisService.cancelVoteFromRedis(1,1);
 
@@ -120,9 +127,12 @@ public class RedisServiceTest {
         redisService.deleteBlogForwardCount(list);
         redisService.deleteUserBlogCount(list);
         redisService.deleteUserFollowCount(list);
+        redisService.deleteUserFanCount(list);
 
         //其他
         redisService.findStatusFromRedis(1, 1);
         redisService.blogIsReported(1, 1);
+        redisService.userIsReported(1, 1);
+
     }
 }
