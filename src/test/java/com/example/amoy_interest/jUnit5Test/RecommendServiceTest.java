@@ -88,19 +88,21 @@ public class RecommendServiceTest {
     @Test
     public void testGetRecommendBlogs() {
         List<Blog> blogs = new ArrayList<>();
-        blogs.add(new Blog(1, 1, 0, new Date("2020-09-07"), "test", false, 0, 0));
+        blogs.add(new Blog(1, 1, 0, new Date(), "test", false, 0, 0));
         Pageable pageable = PageRequest.of(0, 1);
         Page<Blog> page = new PageImpl<Blog>(blogs, pageable, blogs.size());
         when(recommendBlogsDao.getRecommendBlogsUsingUser_id(any(), any())).thenReturn(page);
         recommendService.takeRecommendBlogsUsingUser_id(1, 0, 5);
 
-        when(recommendBlogsDao.getRecommendBlogsUsingUser_id(any(), any())).thenReturn(null);
+        Page<Blog> page1 = new PageImpl<Blog>(new ArrayList<>());
+        when(recommendBlogsDao.getRecommendBlogsUsingUser_id(any(), any())).thenReturn(page1);
         recommendService.takeRecommendBlogsUsingUser_id(1, 0, 5);
     }
 
     @Test
     public void testGetSimBlogs() {
-        when(simUserDao.getSimUserUsingUser_id(any(), any(), any())).thenReturn(null);
+        Page<Blog> recBlogs = new PageImpl<>(new ArrayList<>());
+        when(simBlogDao.getSimBlogUsingBlog_id(any(), any())).thenReturn(recBlogs);
         recommendService.getSimBlogUsingBlog_id(1, 1);
     }
 

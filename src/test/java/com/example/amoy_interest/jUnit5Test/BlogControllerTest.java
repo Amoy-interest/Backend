@@ -348,7 +348,7 @@ public class BlogControllerTest {
     public void testGetRecommendBlog() throws Exception {
         Page<BlogDTO> page = new PageImpl<>(new ArrayList<>(),PageRequest.of(0,5),0);
         when(userUtil.getUserId()).thenReturn(1);
-        when(recommendService.getRecommendBlogsUsingUser_id(any(),any(),any())).thenReturn(page);
+        when(recommendService.takeRecommendBlogsUsingUser_id(any(),any(),any())).thenReturn(page);
         mockMvc.perform(get("/blogs/recommend")).andExpect(status().isOk());
     }
 

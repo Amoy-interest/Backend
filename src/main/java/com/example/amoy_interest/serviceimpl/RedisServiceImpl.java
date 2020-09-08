@@ -30,8 +30,6 @@ import java.util.Objects;
  */
 @Service
 public class RedisServiceImpl implements RedisService {
-    @Autowired
-    private VoteService voteService;
 
     @Autowired
     private RedisTemplate redisTemplate;
