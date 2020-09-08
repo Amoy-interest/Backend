@@ -15,6 +15,7 @@ import com.example.amoy_interest.serviceimpl.TopicServiceImpl;
 import com.example.amoy_interest.serviceimpl.UserServiceImpl;
 import com.example.amoy_interest.utils.CommonPage;
 import com.example.amoy_interest.utils.UserUtil;
+import com.example.amoy_interest.utils.sensitivefilter2.Finder;
 import com.example.amoy_interest.utils.sensitivefilter2.FinderUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -94,6 +95,8 @@ public class BlogControllerTest {
     private RecommendService recommendService;
     @BeforeEach
     public void setup() {
+        Finder.clearSensitiveWords();
+        Finder.addSensitiveWords("去他的");
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest(context.getServletContext());
         MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();

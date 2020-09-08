@@ -44,15 +44,6 @@ public class VoteServiceImpl implements VoteService {
     public List<BlogVote> saveAll(List<BlogVote> list) {
         return blogVoteDao.saveAll(list);
     }
-    @Override
-    public Page<BlogVote> getVoteListByBlogId(Integer blog_id, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public Page<BlogVote> getVoteListByUserId(Integer user_id, Pageable pageable) {
-        return null;
-    }
 
     @Override
     public BlogVote getByBlogIdAndUserId(Integer blog_id, Integer user_id) {
@@ -63,15 +54,6 @@ public class VoteServiceImpl implements VoteService {
     @Transactional(readOnly = false)
     public void transVoteFromRedis2DB() {
         List<BlogVote> list = redisService.getVoteDataFromRedis();
-//        for (BlogVote blogVote : list) {
-//            BlogVote bv = getByBlogIdAndUserId(blogVote.getBlog_id(), blogVote.getUser_id());
-//            if (bv == null) {
-//                save(blogVote);
-//            } else {
-//                bv.setStatus(blogVote.getStatus());
-//                save(bv);
-//            }
-//        }
         saveAll(list);
     }
 

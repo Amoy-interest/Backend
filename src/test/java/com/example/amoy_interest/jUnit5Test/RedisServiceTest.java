@@ -48,6 +48,8 @@ public class RedisServiceTest {
 //    @InjectMocks
     @Autowired
     private RedisServiceImpl redisService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 //    @Autowired
 //    private RedisTemplate redisTemplate;
