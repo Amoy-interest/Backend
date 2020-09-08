@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface TopicDao {
-    Topic getTopicById(int topic_id);
+    Topic getTopicById(Integer topic_id);
     Topic insert(Topic topic);
     Topic update(Topic topic);
     Topic getTopicByName(String topic_name);

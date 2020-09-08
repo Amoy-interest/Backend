@@ -161,20 +161,6 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public void updateTopicHeat() {
-        List<TopicHeatParam> topicHeatParamList = topicDao.getAllTopicCount();
-        List<TopicHeat> topicHeatList = new ArrayList<>();
-        for(TopicHeatParam topicHeatParam:topicHeatParamList) {
-            Integer ups = topicHeatParam.getForward_count()*30 + topicHeatParam.getVote_count()*10 + topicHeatParam.getComment_count()*1;
-            int score = (int)HotRank.getHotVal(ups,0,topicHeatParam.getTopic_time());
-            TopicHeat topicHeat = new TopicHeat(topicHeatParam.getTopic_id(),score);
-            topicHeatList.add(topicHeat);
-        }
-        topicHeatDao.saveAll(topicHeatList);
-    }
-
-    @Override
     public Page<TopicHeatResult> getHotList(Integer pageNum, Integer pageSize) {
         Sort sort = Sort.by(Sort.Direction.DESC,"heat");
         Pageable pageable = PageRequest.of(pageNum,pageSize,sort);

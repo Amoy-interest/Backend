@@ -20,7 +20,6 @@ public interface TopicService {
     Page<String> searchTopicsPage(String keyword,Integer pageNum,Integer pageSize);
     TopicDTO addTopic(String topic_name);
     TopicDTO modifyTopic(TopicModifyParam topicModifyParam);
-    void updateTopicHeat();
     Page<TopicHeatResult> getHotList(Integer pageNum,Integer pageSize);
     void updateAllTopicHeat() throws IOException;
 }
