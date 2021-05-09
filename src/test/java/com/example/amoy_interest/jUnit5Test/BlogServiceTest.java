@@ -214,7 +214,7 @@ public class BlogServiceTest {
 
         when(redisService.getVoteCountFromRedis(any())).thenReturn(null);
         blogService.incrVoteCount(1);
-
+      
         when(voteService.getByBlogIdAndUserId(any(), any())).thenReturn(null);
         when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);
         blogService.incrVoteCount(1);
@@ -245,7 +245,7 @@ public class BlogServiceTest {
         when(redisService.getVoteCountFromRedis(any())).thenReturn(null);
         when(blogCountDao.findBlogCountByBlog_id(any())).thenReturn(testBlogCount);
         blogService.decrVoteCount(1);
-
+      
         when(voteService.getByBlogIdAndUserId(any(), any())).thenReturn(null);
         when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);
         blogService.decrVoteCount(1);
@@ -265,6 +265,7 @@ public class BlogServiceTest {
 
         when(redisService.getVoteCountFromRedis(any())).thenReturn(null);
         blogService.decrVoteCount(1);
+
     }
 
     @Test
@@ -280,6 +281,7 @@ public class BlogServiceTest {
         when(blogCommentDao.saveBlogComment(any())).thenReturn(testBlogComment);
         CommentPostDTO commentPostDTO = new CommentPostDTO(1, 1, 1, 1, "111");
         blogService.addBlogComment(commentPostDTO);
+
 
         when(redisService.getBlogCommentCountFromRedis(any())).thenReturn(1);
         blogService.addBlogComment(commentPostDTO);
@@ -383,9 +385,11 @@ public class BlogServiceTest {
         when(blogCommentDao.findOneByRoot_comment_id(any())).thenReturn(null);
         blogService.getLevel1CommentPage(1, 0, 5);
 
+
         BlogComment bm = new BlogComment(1, 1, 1, 1, 1, "jdioaf", new Date(), 1, true, 1);
         when(blogCommentDao.findOneByRoot_comment_id(any())).thenReturn(bm);
         blogService.getLevel1CommentPage(1, 0, 5);
+
     }
 
     @Test
