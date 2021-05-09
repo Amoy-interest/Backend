@@ -16,12 +16,12 @@ public class UserReportDTO {
     private Integer user_id;
     @ApiModelProperty(value = "被举报用户的昵称",required = true)
     private String nickname;
-    @ApiModelProperty(value = "被举报用户的信任值",required = true)
-    private Integer credits;
+    @ApiModelProperty(value = "被举报用户的被举报数",required = true)
+    private Integer report_count;
     //是否需要举报原因？
-    public UserReportDTO(User user) {
+    public UserReportDTO(User user,Integer report_count) {
         this.user_id = user.getUser_id();
         this.nickname = user.getNickname();
-        this.credits = user.getCredits();
+        this.report_count = report_count;
     }
 }

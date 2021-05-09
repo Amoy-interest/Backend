@@ -25,23 +25,6 @@ public interface VoteService {
      */
     List<BlogVote> saveAll(List<BlogVote> list);
 
-
-    /**
-     * 根据博文的id查询点赞列表（即查询都谁给这个博文点赞过）
-     * @param blog_id
-     * @param pageable
-     * @return
-     */
-    Page<BlogVote> getVoteListByBlogId(Integer blog_id, Pageable pageable);
-
-    /**
-     * 根据点赞人的id查询点赞列表（即查询这个人都给哪些博文点赞过）
-     * @param user_id
-     * @param pageable
-     * @return
-     */
-    Page<BlogVote> getVoteListByUserId(Integer user_id, Pageable pageable);
-
     /**
      * 通过被博文和点赞人id查询是否存在点赞记录
      * @param blog_id

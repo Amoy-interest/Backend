@@ -34,7 +34,7 @@ import java.util.List;
 @RequestMapping("/admins")
 @Api(tags = "管理员模块")
 @RestController
-public class  AdminController {
+public class AdminController {
     @Autowired
     BlogService blogService;
     @Autowired
@@ -62,7 +62,7 @@ public class  AdminController {
                                                         @Length(max = 40, message = "关键词不能大于40位") String keyword,
                                                         @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                         @RequestParam(required = false, defaultValue = "5") Integer pageSize,
-                                                        @RequestParam(required = false, defaultValue = "1") Integer orderType) {
+                                                        @RequestParam(required = false, defaultValue = "0") Integer orderType) {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.GET_REPORTED_BLOG_SUCCESS_MSG, CommonPage.restPage(blogService.searchReportedBlogsPage(keyword, pageNum, pageSize, orderType)));
     }
 
@@ -139,7 +139,7 @@ public class  AdminController {
     @RequiresRoles(logical = Logical.AND, value = {"admin"})
     @ApiOperation(value = "用户解禁", notes = "对用户解除禁言")
     @RequestMapping(value = "/users/unban", method = RequestMethod.PUT)
-    public Msg Unban(@RequestBody
+    public Msg Unban(@RequestParam(required = true)
                      @NotNull(message = "用户id不能为空")
                      @Min(value = 1, message = "用户id不能小于1") Integer user_id) {
         userService.unban(user_id);
@@ -157,7 +157,7 @@ public class  AdminController {
     @RequiresRoles(logical = Logical.AND, value = {"admin"})
     @ApiOperation(value = "用户解封", notes = "对用户解除封号")
     @RequestMapping(value = "/users/permit", method = RequestMethod.PUT)
-    public Msg Permit(@RequestBody
+    public Msg Permit(@RequestParam(required = true)
                       @NotNull(message = "用户id不能为空")
                       @Min(value = 1, message = "用户id不能小于1") Integer user_id) {
         userService.permit(user_id);
@@ -196,11 +196,11 @@ public class  AdminController {
     @ApiOperation(value = "分页搜索被封号用户", notes = "搜索被封号用户")
     @RequestMapping(value = "/users/forbid/search", method = RequestMethod.GET)
     public Msg<CommonPage<UserForbiddenResult>> SearchForbid(@RequestParam(required = true)
-                                                    @NotNull(message = "关键词不能为空")
-                                                    @NotEmpty(message = "关键词不能为空字符串")
-                                                    @Length(max = 40, message = "关键词不能大于40位") String keyword,
-                                                    @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                                    @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+                                                             @NotNull(message = "关键词不能为空")
+                                                             @NotEmpty(message = "关键词不能为空字符串")
+                                                             @Length(max = 40, message = "关键词不能大于40位") String keyword,
+                                                             @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                                             @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(userService.searchUserForbidPage(keyword, pageNum, pageSize)));
     }
 

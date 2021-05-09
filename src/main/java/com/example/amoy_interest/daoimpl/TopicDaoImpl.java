@@ -22,7 +22,7 @@ public class TopicDaoImpl implements TopicDao {
     private TopicRepository topicRepository;
 
     @Override
-    public Topic getTopicById(int topic_id) {
+    public Topic getTopicById(Integer topic_id) {
         return topicRepository.getOne(topic_id);
     }
 
@@ -59,6 +59,11 @@ public class TopicDaoImpl implements TopicDao {
     @Override
     public Page<Topic> searchReportedTopicPage(String keyword, Pageable pageable) {
         return topicRepository.searchReportedTopicPage(keyword, pageable);
+    }
+
+    @Override
+    public Page<String> searchTopicsPage(String keyword, Pageable pageable) {
+        return topicRepository.searchTopicsPage(keyword, pageable);
     }
 
     @Override

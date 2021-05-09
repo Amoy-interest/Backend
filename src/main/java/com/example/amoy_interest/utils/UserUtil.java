@@ -43,6 +43,9 @@ public class UserUtil {
      */
     public Integer getUserId() {
         //不去数据库拿，减少访问数据库次数
+        if(SecurityUtils.getSubject().getPrincipal() == null) {
+            return null;
+        }
         String token = SecurityUtils.getSubject().getPrincipal().toString();
         // 解密获得username
         return Integer.parseInt(JwtUtil.getClaim(token, Constant.USER_ID));

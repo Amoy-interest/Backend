@@ -75,6 +75,8 @@ public interface BlogService {
 
     Page<BlogDTO> getHotBlogPageByTopic_id(Integer topic_id, Integer pageNum, Integer pageSize);
 
+    Page<BlogDTO> getBlogPageByGroupName(String groupName, Integer pageNum, Integer pageSize);
+
     Page<BlogDTO> getHotBlogPageByUser_id(Integer user_id, Integer pageNum, Integer pageSize);
 
     /**
@@ -94,4 +96,13 @@ public interface BlogService {
     Page<BlogDTO> getBlogPageByUser_idOrderByTime(Integer user_id, Integer pageNum, Integer pageSize);
 
     int insertToES();
+
+    List<BlogDTO> convertToBlogDTOList(List<Blog> blogList);
+
+    List<BlogDTO> convertToReportBlogDTOList(List<Blog> blogList);
+
+    BlogCount getBlogCount(Integer blog_id);
+
+    BlogCount getReportBlogCount(Integer blog_id);
+
 }

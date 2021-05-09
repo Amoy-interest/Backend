@@ -9,9 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface TopicRepository extends JpaRepository<Topic,Integer> {
+public interface TopicRepository extends JpaRepository<Topic, Integer> {
     @Query(value = "from Topic where topic_name = :topic_name")
     Topic getTopicByName(String topic_name);
+
     @Query(value = "from Topic where topic_name in :list")
     List<Topic> getTopicListByName(List<String> list);
 
@@ -26,8 +27,12 @@ public interface TopicRepository extends JpaRepository<Topic,Integer> {
     @Query(value = "SELECT * FROM topic WHERE report_count >= 10 and check_status = 0 and topic_name like %?1%",
             countQuery = "SELECT count(*) FROM topic WHERE report_count >= 10 and check_status = 0 and topic_name like %?1%",
             nativeQuery = true)
-    Page<Topic> searchReportedTopicPage(String keyword,Pageable pageable);
+    Page<Topic> searchReportedTopicPage(String keyword, Pageable pageable);
 
-    @Query(value = "SELECT t.topic_id,sum(vote_count),sum(forward_count),sum(comment_count),topic_time from topic t join blog b join blog_count bc where t.topic_id = b.topic_id and b.blog_id = bc.blog_id group by t.topic_id",nativeQuery = true)
+    @Query(value = "SELECT t.topic_id,sum(vote_count),sum(forward_count),sum(comment_count),topic_time from topic t join blog b join blog_count bc where t.topic_id = b.topic_id and b.blog_id = bc.blog_id group by t.topic_id", nativeQuery = true)
     List<Object[]> getAllTopicCount();
+
+    @Query(value = "select t.topic_name from Topic t where t.topic_name like %?1%",
+            countQuery = "select count(t.topic_id) from Topic t where t.topic_name like %?1%")
+    Page<String> searchTopicsPage(String keyword, Pageable pageable);
 }

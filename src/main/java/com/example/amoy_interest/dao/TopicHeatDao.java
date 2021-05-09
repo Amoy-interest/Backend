@@ -9,4 +9,5 @@ import java.util.List;
 public interface TopicHeatDao {
     void saveAll(List<TopicHeat> topicHeatList);
     Page<TopicHeat> findByPage(Pageable pageable);
+    void deleteAll();
 }

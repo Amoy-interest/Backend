@@ -38,7 +38,7 @@ public interface UserService {
 
     boolean permit(Integer user_id);
 
-    List<UserReportDTO> getReportedUsers();
+//    List<UserReportDTO> getReportedUsers();
 
     Page<UserReportDTO> getReportedUsersPage(Integer pageNum, Integer pageSize, Integer orderType);
 
