@@ -1,0 +1,574 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BlogServiceTest</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.example.amoy_interest.jUnit5Test</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BlogServiceTest (com.example.amoy_interest.jUnit5Test)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BlogServiceTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (36/ 36)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (249/ 249)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.example.amoy_interest.jUnit5Test;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.alibaba.fastjson.JSONObject;
+<i>4</i>&nbsp;import com.example.amoy_interest.dao.*;
+<i>5</i>&nbsp;import com.example.amoy_interest.daoimpl.*;
+<i>6</i>&nbsp;import com.example.amoy_interest.dto.*;
+<i>7</i>&nbsp;import com.example.amoy_interest.entity.*;
+<i>8</i>&nbsp;import com.example.amoy_interest.msgutils.Msg;
+<i>9</i>&nbsp;import com.example.amoy_interest.msgutils.MsgUtil;
+<i>10</i>&nbsp;import com.example.amoy_interest.repository.ESBlogRepository;
+<i>11</i>&nbsp;import com.example.amoy_interest.service.BlogService;
+<i>12</i>&nbsp;import com.example.amoy_interest.service.TopicService;
+<i>13</i>&nbsp;import com.example.amoy_interest.serviceimpl.*;
+<i>14</i>&nbsp;import com.example.amoy_interest.utils.UserUtil;
+<i>15</i>&nbsp;import com.fasterxml.jackson.core.type.TypeReference;
+<i>16</i>&nbsp;import com.fasterxml.jackson.databind.ObjectMapper;
+<i>17</i>&nbsp;import org.elasticsearch.action.search.SearchResponse;
+<i>18</i>&nbsp;import org.elasticsearch.client.RestHighLevelClient;
+<i>19</i>&nbsp;import org.junit.Before;
+<i>20</i>&nbsp;import org.junit.jupiter.api.BeforeEach;
+<i>21</i>&nbsp;import org.junit.jupiter.api.Test;
+<i>22</i>&nbsp;import org.mockito.InjectMocks;
+<i>23</i>&nbsp;import org.mockito.Mock;
+<i>24</i>&nbsp;import org.mockito.Mockito;
+<i>25</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i>26</i>&nbsp;import org.springframework.boot.test.context.SpringBootTest;
+<i>27</i>&nbsp;import org.springframework.boot.test.mock.mockito.MockBean;
+<i>28</i>&nbsp;import org.springframework.data.domain.Page;
+<i>29</i>&nbsp;import org.springframework.data.domain.PageImpl;
+<i>30</i>&nbsp;import org.springframework.data.domain.PageRequest;
+<i>31</i>&nbsp;import org.springframework.data.domain.Pageable;
+<i>32</i>&nbsp;import org.springframework.data.redis.core.ConvertingCursor;
+<i>33</i>&nbsp;import org.springframework.data.redis.core.Cursor;
+<i>34</i>&nbsp;import org.springframework.http.MediaType;
+<i>35</i>&nbsp;import org.springframework.test.web.servlet.MockMvc;
+<i>36</i>&nbsp;import org.springframework.test.web.servlet.MvcResult;
+<i>37</i>&nbsp;import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+<i>38</i>&nbsp;import org.springframework.web.context.WebApplicationContext;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;import java.util.*;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;import static org.junit.jupiter.api.Assertions.assertEquals;
+<i>43</i>&nbsp;import static org.junit.jupiter.api.Assertions.assertNull;
+<i>44</i>&nbsp;import static org.mockito.Mockito.*;
+<i>45</i>&nbsp;import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+<i>46</i>&nbsp;import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;@SpringBootTest
+<b class="fc"><i>49</i>&nbsp;public class BlogServiceTest {</b>
+<i>50</i>&nbsp;    @InjectMocks
+<i>51</i>&nbsp;    private BlogServiceImpl blogService;
+<i>52</i>&nbsp;
+<b class="fc"><i>53</i>&nbsp;    private static BlogComment testBlogComment = new BlogComment(1, 1, 1, 1, 1, &quot;1&quot;, new Date(), 0, false, 1);</b>
+<b class="fc"><i>54</i>&nbsp;    private static Page&lt;Blog&gt; blogPage = new PageImpl&lt;&gt;(new ArrayList&lt;&gt;(), PageRequest.of(0, 5), 0);</b>
+<i>55</i>&nbsp;
+<b class="fc"><i>56</i>&nbsp;    private static Topic testTopic = new Topic(1, &quot;你好&quot;, new Date(), 0, 0, 0, null, null, null, new TopicHeat(1, 10));</b>
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    private static List&lt;TopicBlog&gt; testTopicBlogList;
+<i>59</i>&nbsp;
+<b class="fc"><i>60</i>&nbsp;    private static User testUser = new User(1, &quot;鲁迅&quot;, &quot;123@163.com&quot;, 0, &quot;广东&quot;, 0, &quot;无&quot;, null);</b>
+<i>61</i>&nbsp;
+<b class="fc"><i>62</i>&nbsp;    private static UserCount testUserCount = new UserCount(1, 0, 0, 0, 0);</b>
+<i>63</i>&nbsp;
+<b class="fc"><i>64</i>&nbsp;    private static BlogCount testBlogCount = new BlogCount(1, 0, 0, 0, 0);</b>
+<i>65</i>&nbsp;
+<b class="fc"><i>66</i>&nbsp;    private static Blog testBlog = new Blog(1, 1, 0, new Date(), &quot;nihao&quot;, false, 0, 0);</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    @Mock
+<i>69</i>&nbsp;    private BlogDaoImpl blogDao;
+<i>70</i>&nbsp;    @Mock
+<i>71</i>&nbsp;    private BlogCountDaoImpl blogCountDao;
+<i>72</i>&nbsp;    @Mock
+<i>73</i>&nbsp;    private BlogImageDaoImpl blogImageDao;
+<i>74</i>&nbsp;    @Mock
+<i>75</i>&nbsp;    private BlogCommentDaoImpl blogCommentDao;
+<i>76</i>&nbsp;    @Mock
+<i>77</i>&nbsp;    private UserDaoImpl userDao;
+<i>78</i>&nbsp;    @Mock
+<i>79</i>&nbsp;    private TopicDaoImpl topicDao;
+<i>80</i>&nbsp;    @Mock
+<i>81</i>&nbsp;    private UserUtil userUtil;
+<i>82</i>&nbsp;    @Mock
+<i>83</i>&nbsp;    private BlogHeatDaoImpl blogHeatDao;
+<i>84</i>&nbsp;    @Mock
+<i>85</i>&nbsp;    private BlogReportDaoImpl blogReportDao;
+<i>86</i>&nbsp;    @Mock
+<i>87</i>&nbsp;    private UserCountDaoImpl userCountDao;
+<i>88</i>&nbsp;    @Mock
+<i>89</i>&nbsp;    private RedisServiceImpl redisService;
+<i>90</i>&nbsp;    @Mock
+<i>91</i>&nbsp;    private BlogVoteDaoImpl blogVoteDao;
+<i>92</i>&nbsp;    @Mock
+<i>93</i>&nbsp;    private ESBlogRepository esBlogRepository;
+<i>94</i>&nbsp;    //    @Mock
+<i>95</i>&nbsp;//    private RestHighLevelClient client;
+<i>96</i>&nbsp;    @Mock
+<i>97</i>&nbsp;    private TopicBlogDaoImpl topicBlogDao;
+<i>98</i>&nbsp;    @Mock
+<i>99</i>&nbsp;    private VoteServiceImpl voteService;
+<i>100</i>&nbsp;//    @Mock
+<i>101</i>&nbsp;//    private Blog
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    @BeforeEach
+<i>104</i>&nbsp;    public void init() {
+<b class="fc"><i>105</i>&nbsp;        when(userDao.getById(any())).thenReturn(testUser);</b>
+<b class="fc"><i>106</i>&nbsp;        testBlog = new Blog(1, 1, 0, new Date(), &quot;nihao&quot;, false, 0, 0);</b>
+<b class="fc"><i>107</i>&nbsp;        when(userUtil.getUserId()).thenReturn(1);</b>
+<b class="fc"><i>108</i>&nbsp;        testTopicBlogList = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>109</i>&nbsp;        testTopicBlogList.add(new TopicBlog(1, 1, &quot;NIHAO&quot;));</b>
+<b class="fc"><i>110</i>&nbsp;        testBlog.setTopics(new ArrayList&lt;&gt;());</b>
+<b class="fc"><i>111</i>&nbsp;        testBlog.setUser(testUser);</b>
+<b class="fc"><i>112</i>&nbsp;        testBlog.setBlogImages(new ArrayList&lt;&gt;());</b>
+<b class="fc"><i>113</i>&nbsp;        when(redisService.getBlogForwardCountFromRedis(any())).thenReturn(1);</b>
+<b class="fc"><i>114</i>&nbsp;        when(redisService.getBlogCommentCountFromRedis(any())).thenReturn(1);</b>
+<b class="fc"><i>115</i>&nbsp;        when(redisService.getVoteCountFromRedis(any())).thenReturn(1);</b>
+<b class="fc"><i>116</i>&nbsp;    }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    @Test
+<i>120</i>&nbsp;    public void testAddBlog() {
+<b class="fc"><i>121</i>&nbsp;        Blog blog = new Blog(1, 1, 0, new Date(), &quot;nihao&quot;, false, 0, 0);</b>
+<b class="fc"><i>122</i>&nbsp;        List&lt;String&gt; images = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>123</i>&nbsp;        images.add(&quot;nini&quot;);</b>
+<b class="fc"><i>124</i>&nbsp;        BlogAddDTO blogAddDTO = new BlogAddDTO(&quot;你好&quot;, images, images, 1);</b>
+<b class="fc"><i>125</i>&nbsp;        List&lt;Topic&gt; topicList = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>126</i>&nbsp;        topicList.add(testTopic);</b>
+<b class="fc"><i>127</i>&nbsp;        when(topicDao.getTopicListByName(any())).thenReturn(topicList);</b>
+<b class="fc"><i>128</i>&nbsp;        when(blogDao.saveBlog(any())).thenReturn(blog);</b>
+<b class="fc"><i>129</i>&nbsp;        when(topicBlogDao.saveAll(any())).thenReturn(new ArrayList&lt;&gt;());</b>
+<b class="fc"><i>130</i>&nbsp;        when(blogCountDao.saveBlogCount(any())).thenReturn(null);</b>
+<b class="fc"><i>131</i>&nbsp;        when(blogImageDao.saveAll(any())).thenReturn(null);</b>
+<b class="fc"><i>132</i>&nbsp;        when(userDao.getById(any())).thenReturn(testUser);</b>
+<b class="fc"><i>133</i>&nbsp;        when(redisService.getUserBlogCountFromRedis(any())).thenReturn(10);</b>
+<i>134</i>&nbsp;
+<b class="fc"><i>135</i>&nbsp;        blogService.addBlog(blogAddDTO);</b>
+<b class="fc"><i>136</i>&nbsp;        verify(blogDao, times(1)).saveBlog(any());</b>
+<b class="fc"><i>137</i>&nbsp;    }</b>
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    @Test
+<i>140</i>&nbsp;    public void testForwardBlog() {
+<b class="fc"><i>141</i>&nbsp;        Blog blog = new Blog(1, 1, 0, new Date(), &quot;nihao&quot;, false, 0, 0);</b>
+<i>142</i>&nbsp;
+<b class="fc"><i>143</i>&nbsp;        blog.setTopics(testTopicBlogList);</b>
+<b class="fc"><i>144</i>&nbsp;        BlogForwardDTO blogForwardDTO = new BlogForwardDTO(1, &quot;Nihao1&quot;, 2);</b>
+<b class="fc"><i>145</i>&nbsp;        when(blogDao.findBlogByBlog_id(anyInt())).thenReturn(blog);</b>
+<b class="fc"><i>146</i>&nbsp;        when(blogDao.saveBlog(any())).thenReturn(blog);</b>
+<b class="fc"><i>147</i>&nbsp;        when(userDao.getById(any())).thenReturn(testUser);</b>
+<b class="fc"><i>148</i>&nbsp;        when(redisService.getUserBlogCountFromRedis(any())).thenReturn(1);</b>
+<b class="fc"><i>149</i>&nbsp;        when(redisService.getBlogForwardCountFromRedis(any())).thenReturn(1);</b>
+<b class="fc"><i>150</i>&nbsp;        blogService.forwardBlog(blogForwardDTO);</b>
+<i>151</i>&nbsp;        //进if
+<b class="fc"><i>152</i>&nbsp;        when(redisService.getUserBlogCountFromRedis(any())).thenReturn(null);</b>
+<b class="fc"><i>153</i>&nbsp;        when(userCountDao.getByUserID(any())).thenReturn(testUserCount);</b>
+<b class="fc"><i>154</i>&nbsp;        when(redisService.getBlogForwardCountFromRedis(any())).thenReturn(null);</b>
+<b class="fc"><i>155</i>&nbsp;        when(blogCountDao.findBlogCountByBlog_id(any())).thenReturn(testBlogCount);</b>
+<b class="fc"><i>156</i>&nbsp;        blogService.forwardBlog(blogForwardDTO);</b>
+<b class="fc"><i>157</i>&nbsp;    }</b>
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    @Test
+<i>160</i>&nbsp;    public void testInsertToES() {
+<b class="fc"><i>161</i>&nbsp;        Blog blog = new Blog(1, 1, 0, new Date(), &quot;nihao&quot;, false, 0, 0);</b>
+<b class="fc"><i>162</i>&nbsp;        blog.setTopics(new ArrayList&lt;&gt;());</b>
+<b class="fc"><i>163</i>&nbsp;        List&lt;Blog&gt; blogList = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>164</i>&nbsp;        blogList.add(blog);</b>
+<b class="fc"><i>165</i>&nbsp;        when(blogDao.getAllBlogs()).thenReturn(blogList);</b>
+<b class="fc"><i>166</i>&nbsp;    }</b>
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    @Test
+<i>169</i>&nbsp;    public void testUpdateBlog() {
+<b class="fc"><i>170</i>&nbsp;        when(blogDao.findBlogByBlog_id(any())).thenReturn(testBlog);</b>
+<b class="fc"><i>171</i>&nbsp;        when(blogDao.saveBlog(any())).thenReturn(testBlog);</b>
+<b class="fc"><i>172</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(1);</b>
+<b class="fc"><i>173</i>&nbsp;        blogService.updateBlog(new BlogPutDTO(1, &quot;你好啊&quot;, new ArrayList&lt;&gt;()));</b>
+<i>174</i>&nbsp;
+<b class="fc"><i>175</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(0);</b>
+<b class="fc"><i>176</i>&nbsp;        blogService.updateBlog(new BlogPutDTO(1, &quot;你好啊&quot;, null));</b>
+<i>177</i>&nbsp;
+<b class="fc"><i>178</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);</b>
+<b class="fc"><i>179</i>&nbsp;        when(blogVoteDao.getByBlogIdAndUserId(any(), any())).thenReturn(new BlogVote(1, 1, 1));</b>
+<b class="fc"><i>180</i>&nbsp;        blogService.updateBlog(new BlogPutDTO(1, &quot;你好啊&quot;, null));</b>
+<i>181</i>&nbsp;
+<b class="fc"><i>182</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);</b>
+<b class="fc"><i>183</i>&nbsp;        when(blogVoteDao.getByBlogIdAndUserId(any(), any())).thenReturn(null);</b>
+<b class="fc"><i>184</i>&nbsp;        blogService.updateBlog(new BlogPutDTO(1, &quot;你好啊&quot;, null));</b>
+<b class="fc"><i>185</i>&nbsp;    }</b>
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    @Test
+<i>188</i>&nbsp;    public void testFindBlogByBlog_id() {
+<b class="fc"><i>189</i>&nbsp;        when(blogDao.findBlogByBlog_id(any())).thenReturn(null);</b>
+<b class="fc"><i>190</i>&nbsp;        blogService.findBlogByBlog_id(1);</b>
+<b class="fc"><i>191</i>&nbsp;    }</b>
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;    @Test
+<i>194</i>&nbsp;    public void testDeleteByBlog_id() {
+<b class="fc"><i>195</i>&nbsp;        when(blogDao.findBlogByBlog_id(any())).thenReturn(testBlog);</b>
+<b class="fc"><i>196</i>&nbsp;        when(blogDao.saveBlog(any())).thenReturn(testBlog);</b>
+<b class="fc"><i>197</i>&nbsp;        when(redisService.getUserBlogCountFromRedis(any())).thenReturn(null);</b>
+<b class="fc"><i>198</i>&nbsp;        when(userCountDao.getByUserID(any())).thenReturn(testUserCount);</b>
+<b class="fc"><i>199</i>&nbsp;        blogService.deleteByBlog_id(1);</b>
+<i>200</i>&nbsp;
+<b class="fc"><i>201</i>&nbsp;        when(redisService.getUserBlogCountFromRedis(any())).thenReturn(1);</b>
+<b class="fc"><i>202</i>&nbsp;        blogService.deleteByBlog_id(1);</b>
+<b class="fc"><i>203</i>&nbsp;    }</b>
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    @Test
+<i>206</i>&nbsp;    public void testIncrVoteCount() {
+<b class="fc"><i>207</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(0);</b>
+<b class="fc"><i>208</i>&nbsp;        when(redisService.getVoteCountFromRedis(any())).thenReturn(null);</b>
+<b class="fc"><i>209</i>&nbsp;        when(blogCountDao.findBlogCountByBlog_id(any())).thenReturn(testBlogCount);</b>
+<b class="fc"><i>210</i>&nbsp;        blogService.incrVoteCount(1);</b>
+<b class="fc"><i>211</i>&nbsp;        when(voteService.getByBlogIdAndUserId(any(), any())).thenReturn(null);</b>
+<b class="fc"><i>212</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);</b>
+<b class="fc"><i>213</i>&nbsp;        blogService.incrVoteCount(1);</b>
+<i>214</i>&nbsp;
+<b class="fc"><i>215</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(1);</b>
+<b class="fc"><i>216</i>&nbsp;        blogService.incrVoteCount(1);</b>
+<i>217</i>&nbsp;
+<b class="fc"><i>218</i>&nbsp;    }</b>
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;    @Test
+<i>221</i>&nbsp;    public void testIncrCommentVoteCount() {
+<b class="fc"><i>222</i>&nbsp;        blogService.incrCommentVoteCount(1);</b>
+<b class="fc"><i>223</i>&nbsp;    }</b>
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    @Test
+<i>226</i>&nbsp;    public void testDecrVoteCount() {
+<b class="fc"><i>227</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(0);</b>
+<b class="fc"><i>228</i>&nbsp;        when(redisService.getVoteCountFromRedis(any())).thenReturn(null);</b>
+<b class="fc"><i>229</i>&nbsp;        when(blogCountDao.findBlogCountByBlog_id(any())).thenReturn(testBlogCount);</b>
+<b class="fc"><i>230</i>&nbsp;        blogService.decrVoteCount(1);</b>
+<b class="fc"><i>231</i>&nbsp;        when(voteService.getByBlogIdAndUserId(any(), any())).thenReturn(null);</b>
+<b class="fc"><i>232</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);</b>
+<b class="fc"><i>233</i>&nbsp;        blogService.decrVoteCount(1);</b>
+<i>234</i>&nbsp;
+<b class="fc"><i>235</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(1);</b>
+<b class="fc"><i>236</i>&nbsp;        blogService.decrVoteCount(1);</b>
+<b class="fc"><i>237</i>&nbsp;    }</b>
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    @Test
+<i>240</i>&nbsp;    public void testDecrCommentVoteCount() {
+<b class="fc"><i>241</i>&nbsp;        blogService.decrCommentVoteCount(1);</b>
+<b class="fc"><i>242</i>&nbsp;    }</b>
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;    @Test
+<i>245</i>&nbsp;    public void testAddBlogComment() {
+<b class="fc"><i>246</i>&nbsp;        when(userDao.getById(any())).thenReturn(testUser);</b>
+<b class="fc"><i>247</i>&nbsp;        when(redisService.getBlogCommentCountFromRedis(any())).thenReturn(null);</b>
+<b class="fc"><i>248</i>&nbsp;        when(blogCountDao.findBlogCountByBlog_id(any())).thenReturn(testBlogCount);</b>
+<b class="fc"><i>249</i>&nbsp;        when(blogCommentDao.saveBlogComment(any())).thenReturn(testBlogComment);</b>
+<b class="fc"><i>250</i>&nbsp;        CommentPostDTO commentPostDTO = new CommentPostDTO(1, 1, 1, 1, &quot;111&quot;);</b>
+<b class="fc"><i>251</i>&nbsp;        blogService.addBlogComment(commentPostDTO);</b>
+<b class="fc"><i>252</i>&nbsp;        commentPostDTO.setRoot_comment_id(0);</b>
+<b class="fc"><i>253</i>&nbsp;        commentPostDTO.setReply_user_id(0);</b>
+<b class="fc"><i>254</i>&nbsp;        blogService.addBlogComment(commentPostDTO);</b>
+<b class="fc"><i>255</i>&nbsp;    }</b>
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;    @Test
+<i>258</i>&nbsp;    public void testDeleteCommentByComment_id() {
+<b class="fc"><i>259</i>&nbsp;        when(blogCommentDao.findCommentByComment_id(any())).thenReturn(testBlogComment);</b>
+<b class="fc"><i>260</i>&nbsp;        blogService.deleteCommentByComment_id(1);</b>
+<b class="fc"><i>261</i>&nbsp;        when(blogCommentDao.findCommentByComment_id(any())).thenReturn(null);</b>
+<b class="fc"><i>262</i>&nbsp;        blogService.deleteCommentByComment_id(1);</b>
+<b class="fc"><i>263</i>&nbsp;    }</b>
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;    @Test
+<i>266</i>&nbsp;    public void testGetAllBlogDetail() {
+<b class="fc"><i>267</i>&nbsp;        when(blogDao.findBlogByBlog_id(any())).thenReturn(testBlog);</b>
+<b class="fc"><i>268</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(1);</b>
+<b class="fc"><i>269</i>&nbsp;        blogService.getAllBlogDetail(1);</b>
+<b class="fc"><i>270</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(0);</b>
+<b class="fc"><i>271</i>&nbsp;        blogService.getAllBlogDetail(1);</b>
+<i>272</i>&nbsp;
+<b class="fc"><i>273</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);</b>
+<b class="fc"><i>274</i>&nbsp;        when(blogVoteDao.getByBlogIdAndUserId(any(), any())).thenReturn(new BlogVote(1, 1, 1));</b>
+<b class="fc"><i>275</i>&nbsp;        blogService.getAllBlogDetail(1);</b>
+<i>276</i>&nbsp;
+<b class="fc"><i>277</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);</b>
+<b class="fc"><i>278</i>&nbsp;        when(blogVoteDao.getByBlogIdAndUserId(any(), any())).thenReturn(null);</b>
+<b class="fc"><i>279</i>&nbsp;        blogService.getAllBlogDetail(1);</b>
+<b class="fc"><i>280</i>&nbsp;    }</b>
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;    @Test
+<i>283</i>&nbsp;    public void testCheckReportedBlog() {
+<b class="fc"><i>284</i>&nbsp;        when(blogDao.findBlogByBlog_id(any())).thenReturn(testBlog);</b>
+<b class="fc"><i>285</i>&nbsp;    }</b>
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;    @Test
+<i>288</i>&nbsp;    public void testReportBlog() {
+<b class="fc"><i>289</i>&nbsp;        BlogReportDTO blogReportDTO = new BlogReportDTO(1, &quot;notgood&quot;);</b>
+<b class="fc"><i>290</i>&nbsp;        when(redisService.blogIsReported(any(), any())).thenReturn(true);</b>
+<b class="fc"><i>291</i>&nbsp;        blogService.reportBlog(blogReportDTO);</b>
+<i>292</i>&nbsp;
+<b class="fc"><i>293</i>&nbsp;        when(redisService.blogIsReported(any(), any())).thenReturn(false);</b>
+<b class="fc"><i>294</i>&nbsp;        when(blogReportDao.getByBlogIdAndUserId(any(), any())).thenReturn(new BlogReport(1, 1, &quot;d&quot;));</b>
+<b class="fc"><i>295</i>&nbsp;        blogService.reportBlog(blogReportDTO);</b>
+<i>296</i>&nbsp;
+<b class="fc"><i>297</i>&nbsp;        when(redisService.blogIsReported(any(), any())).thenReturn(false);</b>
+<b class="fc"><i>298</i>&nbsp;        when(blogReportDao.getByBlogIdAndUserId(any(), any())).thenReturn(null);</b>
+<b class="fc"><i>299</i>&nbsp;        blogService.reportBlog(blogReportDTO);</b>
+<b class="fc"><i>300</i>&nbsp;    }</b>
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;//    @Test
+<i>303</i>&nbsp;//    public void testGetSearchListByBlog_test() {
+<i>304</i>&nbsp;//        when(blogImageDao.findBlogImageByBlog_id(any())).thenReturn(new ArrayList&lt;&gt;());
+<i>305</i>&nbsp;//        when(blogDao.findBlogByBlog_id(any())).thenReturn(testBlog);
+<i>306</i>&nbsp;//
+<i>307</i>&nbsp;//        when(redisService.findStatusFromRedis(any(), any())).thenReturn(1);
+<i>308</i>&nbsp;//        blogService.getSearchListByBlog_text(&quot;寒星&quot;, 0, 5);
+<i>309</i>&nbsp;//
+<i>310</i>&nbsp;//        when(redisService.findStatusFromRedis(any(), any())).thenReturn(0);
+<i>311</i>&nbsp;//        blogService.getSearchListByBlog_text(&quot;寒星&quot;, 0, 5);
+<i>312</i>&nbsp;//
+<i>313</i>&nbsp;//        when(blogVoteDao.getByBlogIdAndUserId(any(), any())).thenReturn(new BlogVote(1, 1, 1));
+<i>314</i>&nbsp;//        when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);
+<i>315</i>&nbsp;//        blogService.getSearchListByBlog_text(&quot;寒星&quot;, 0, 5);
+<i>316</i>&nbsp;//
+<i>317</i>&nbsp;//        when(blogVoteDao.getByBlogIdAndUserId(any(), any())).thenReturn(null);
+<i>318</i>&nbsp;//        when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);
+<i>319</i>&nbsp;//        blogService.getSearchListByBlog_text(&quot;寒星&quot;, 0, 5);
+<i>320</i>&nbsp;//    }
+<i>321</i>&nbsp;
+<i>322</i>&nbsp;    @Test
+<i>323</i>&nbsp;    public void testGetListByUser_id() {
+<b class="fc"><i>324</i>&nbsp;        Page&lt;Blog&gt; blogPage = new PageImpl&lt;&gt;(new ArrayList&lt;&gt;(), PageRequest.of(0, 5), 0);</b>
+<b class="fc"><i>325</i>&nbsp;        when(blogDao.findBlogListByUser_id(any(), any())).thenReturn(blogPage);</b>
+<b class="fc"><i>326</i>&nbsp;        blogService.getListByUser_id(1, 0, 5);</b>
+<b class="fc"><i>327</i>&nbsp;    }</b>
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;    @Test
+<i>330</i>&nbsp;    public void testGetListByTopic_id() {
+<b class="fc"><i>331</i>&nbsp;        Page&lt;Blog&gt; blogPage = new PageImpl&lt;&gt;(new ArrayList&lt;&gt;(), PageRequest.of(0, 5), 0);</b>
+<b class="fc"><i>332</i>&nbsp;        when(blogDao.findBlogListByTopic_id(any(), any())).thenReturn(blogPage);</b>
+<b class="fc"><i>333</i>&nbsp;        blogService.getListByTopic_id(1, 0, 5);</b>
+<b class="fc"><i>334</i>&nbsp;    }</b>
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;    @Test
+<i>337</i>&nbsp;    public void testGetBlogPageByGroupName() {
+<b class="fc"><i>338</i>&nbsp;        when(blogDao.getBlogPageByGroupName(any(), any())).thenReturn(blogPage);</b>
+<b class="fc"><i>339</i>&nbsp;        blogService.getBlogPageByGroupName(&quot;你好&quot;, 0, 5);</b>
+<b class="fc"><i>340</i>&nbsp;    }</b>
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;    @Test
+<i>343</i>&nbsp;    public void testGetLevel1CommentPage() {
+<b class="fc"><i>344</i>&nbsp;        List&lt;BlogComment&gt; list = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>345</i>&nbsp;        list.add(testBlogComment);</b>
+<b class="fc"><i>346</i>&nbsp;        Page&lt;BlogComment&gt; blogCommentPage = new PageImpl&lt;&gt;(list, PageRequest.of(0, 5), 1);</b>
+<b class="fc"><i>347</i>&nbsp;        when(blogCommentDao.findLevel1CommentListByBlog_id(any(), any())).thenReturn(blogCommentPage);</b>
+<b class="fc"><i>348</i>&nbsp;        when(blogCommentDao.findOneByRoot_comment_id(any())).thenReturn(null);</b>
+<b class="fc"><i>349</i>&nbsp;        blogService.getLevel1CommentPage(1, 0, 5);</b>
+<b class="fc"><i>350</i>&nbsp;    }</b>
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;    @Test
+<i>353</i>&nbsp;    public void testGetMultiLevelCommentPage() {
+<b class="fc"><i>354</i>&nbsp;        when(userDao.getById(any())).thenReturn(testUser);</b>
+<b class="fc"><i>355</i>&nbsp;        List&lt;BlogComment&gt; list = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>356</i>&nbsp;        list.add(testBlogComment);</b>
+<b class="fc"><i>357</i>&nbsp;        when(blogCommentDao.findOneByRoot_comment_id(any())).thenReturn(null);</b>
+<b class="fc"><i>358</i>&nbsp;        Page&lt;BlogComment&gt; blogCommentPage = new PageImpl&lt;&gt;(list, PageRequest.of(0, 5), 1);</b>
+<b class="fc"><i>359</i>&nbsp;        when(blogCommentDao.findMultiLevelCommentListByComment_id(any(), any())).thenReturn(blogCommentPage);</b>
+<b class="fc"><i>360</i>&nbsp;        blogService.getMultiLevelCommentPage(1, 0, 5);</b>
+<b class="fc"><i>361</i>&nbsp;    }</b>
+<i>362</i>&nbsp;
+<i>363</i>&nbsp;    @Test
+<i>364</i>&nbsp;    public void testGetReportedBlogsPAGE() {
+<b class="fc"><i>365</i>&nbsp;        when(blogDao.findReportedBlogsPage(any())).thenReturn(blogPage);</b>
+<b class="fc"><i>366</i>&nbsp;        blogService.getReportedBlogsPage(0, 5, 0);</b>
+<b class="fc"><i>367</i>&nbsp;    }</b>
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;    @Test
+<i>370</i>&nbsp;    public void testGetAllBlogPageOrderByTime() {
+<b class="fc"><i>371</i>&nbsp;        List&lt;Blog&gt; list = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>372</i>&nbsp;        list.add(testBlog);</b>
+<b class="fc"><i>373</i>&nbsp;        Page&lt;Blog&gt; blogPage = new PageImpl&lt;&gt;(list, PageRequest.of(0, 5), 1);</b>
+<b class="fc"><i>374</i>&nbsp;        when(blogDao.getAllBlogPage(any())).thenReturn(blogPage);</b>
+<b class="fc"><i>375</i>&nbsp;        blogService.getAllBlogPageOrderByTime(0, 5);</b>
+<b class="fc"><i>376</i>&nbsp;    }</b>
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;    @Test
+<i>379</i>&nbsp;    public void testGetFollowBlogPageByUser_idOrderByTime() {
+<b class="fc"><i>380</i>&nbsp;        when(blogDao.getFollowBlogPageByUser_id(any(), any())).thenReturn(blogPage);</b>
+<b class="fc"><i>381</i>&nbsp;        blogService.getFollowBlogPageByUser_idOrderByTime(1, 0, 5);</b>
+<b class="fc"><i>382</i>&nbsp;    }</b>
+<i>383</i>&nbsp;
+<i>384</i>&nbsp;    @Test
+<i>385</i>&nbsp;    public void testGetBlogPageByUser_idOrderByTime() {
+<b class="fc"><i>386</i>&nbsp;        when(blogDao.getBlogPageByUser_id(any(), any())).thenReturn(blogPage);</b>
+<b class="fc"><i>387</i>&nbsp;        blogService.getBlogPageByUser_idOrderByTime(1, 0, 5);</b>
+<b class="fc"><i>388</i>&nbsp;    }</b>
+<i>389</i>&nbsp;
+<i>390</i>&nbsp;    @Test
+<i>391</i>&nbsp;    public void testSearchReportedBlogsPage() {
+<b class="fc"><i>392</i>&nbsp;        when(blogDao.searchReportedBlogsPage(any(), any())).thenReturn(blogPage);</b>
+<b class="fc"><i>393</i>&nbsp;        blogService.searchReportedBlogsPage(&quot;nihao&quot;, 0, 5, 0);</b>
+<b class="fc"><i>394</i>&nbsp;    }</b>
+<i>395</i>&nbsp;
+<i>396</i>&nbsp;    @Test
+<i>397</i>&nbsp;    public void testgetHotBlogPageByTopic_id() {
+<b class="fc"><i>398</i>&nbsp;        when(blogHeatDao.getHotBlogByTopic_id(any(), any())).thenReturn(blogPage);</b>
+<b class="fc"><i>399</i>&nbsp;        blogService.getHotBlogPageByTopic_id(1, 0, 5);</b>
+<b class="fc"><i>400</i>&nbsp;    }</b>
+<i>401</i>&nbsp;
+<i>402</i>&nbsp;    @Test
+<i>403</i>&nbsp;    public void testGetHotBlogPageByUser_id() {
+<b class="fc"><i>404</i>&nbsp;        when(blogHeatDao.getHotBlogByUser_id(any(), any())).thenReturn(blogPage);</b>
+<b class="fc"><i>405</i>&nbsp;        blogService.getHotBlogPageByUser_id(1, 0, 5);</b>
+<b class="fc"><i>406</i>&nbsp;    }</b>
+<i>407</i>&nbsp;
+<i>408</i>&nbsp;    @Test
+<i>409</i>&nbsp;    public void testGetBlogPageOrderByHot() {
+<b class="fc"><i>410</i>&nbsp;        when(blogHeatDao.getHotBlog(any())).thenReturn(blogPage);</b>
+<b class="fc"><i>411</i>&nbsp;        blogService.getBlogPageOrderByHot(0, 5);</b>
+<b class="fc"><i>412</i>&nbsp;    }</b>
+<i>413</i>&nbsp;
+<i>414</i>&nbsp;    @Test
+<i>415</i>&nbsp;    public void testupdateAllBlogHeatAfterTime() {
+<b class="fc"><i>416</i>&nbsp;        List&lt;BlogHeatParam&gt; list = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>417</i>&nbsp;        list.add(new BlogHeatParam(1, 1, 1, 1, new Date()));</b>
+<b class="fc"><i>418</i>&nbsp;        when(blogCountDao.getAllBlogHeatParam()).thenReturn(list);</b>
+<b class="fc"><i>419</i>&nbsp;        when(blogCountDao.getBlogHeatParamAfterTime(any())).thenReturn(list);</b>
+<b class="fc"><i>420</i>&nbsp;        blogService.updateAllBlogHeatAfterTime(null);</b>
+<b class="fc"><i>421</i>&nbsp;        blogService.updateAllBlogHeatAfterTime(new Date());</b>
+<b class="fc"><i>422</i>&nbsp;    }</b>
+<i>423</i>&nbsp;
+<i>424</i>&nbsp;    @Test
+<i>425</i>&nbsp;    public void testConvert() {
+<b class="fc"><i>426</i>&nbsp;        List&lt;Blog&gt; blogList = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>427</i>&nbsp;        blogList.add(testBlog);</b>
+<b class="fc"><i>428</i>&nbsp;        when(userUtil.getUserId()).thenReturn(null);</b>
+<b class="fc"><i>429</i>&nbsp;        blogService.convertToBlogDTOList(blogList);</b>
+<i>430</i>&nbsp;
+<b class="fc"><i>431</i>&nbsp;        when(userUtil.getUserId()).thenReturn(1);</b>
+<i>432</i>&nbsp;
+<b class="fc"><i>433</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(1);</b>
+<b class="fc"><i>434</i>&nbsp;        blogService.convertToBlogDTOList(blogList);</b>
+<i>435</i>&nbsp;
+<b class="fc"><i>436</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(0);</b>
+<b class="fc"><i>437</i>&nbsp;        blogService.convertToBlogDTOList(blogList);</b>
+<i>438</i>&nbsp;
+<b class="fc"><i>439</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);</b>
+<b class="fc"><i>440</i>&nbsp;        when(blogVoteDao.getByBlogIdAndUserId(any(), any())).thenReturn(new BlogVote(1, 1, 1));</b>
+<b class="fc"><i>441</i>&nbsp;        blogService.convertToBlogDTOList(blogList);</b>
+<i>442</i>&nbsp;
+<b class="fc"><i>443</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);</b>
+<b class="fc"><i>444</i>&nbsp;        when(blogVoteDao.getByBlogIdAndUserId(any(), any())).thenReturn(null);</b>
+<b class="fc"><i>445</i>&nbsp;        blogService.convertToBlogDTOList(blogList);</b>
+<i>446</i>&nbsp;
+<b class="fc"><i>447</i>&nbsp;    }</b>
+<i>448</i>&nbsp;
+<i>449</i>&nbsp;    @Test
+<i>450</i>&nbsp;    public void testConvert2() {
+<b class="fc"><i>451</i>&nbsp;        List&lt;Blog&gt; blogList = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>452</i>&nbsp;        blogList.add(testBlog);</b>
+<b class="fc"><i>453</i>&nbsp;        when(userUtil.getUserId()).thenReturn(null);</b>
+<b class="fc"><i>454</i>&nbsp;        when(blogCountDao.findBlogCountByBlog_id(any())).thenReturn(testBlogCount);</b>
+<b class="fc"><i>455</i>&nbsp;        blogService.convertToReportBlogDTOList(blogList);</b>
+<i>456</i>&nbsp;
+<b class="fc"><i>457</i>&nbsp;        when(userUtil.getUserId()).thenReturn(1);</b>
+<i>458</i>&nbsp;
+<b class="fc"><i>459</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(1);</b>
+<b class="fc"><i>460</i>&nbsp;        blogService.convertToReportBlogDTOList(blogList);</b>
+<i>461</i>&nbsp;
+<b class="fc"><i>462</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(0);</b>
+<b class="fc"><i>463</i>&nbsp;        blogService.convertToReportBlogDTOList(blogList);</b>
+<i>464</i>&nbsp;
+<b class="fc"><i>465</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);</b>
+<b class="fc"><i>466</i>&nbsp;        when(blogVoteDao.getByBlogIdAndUserId(any(), any())).thenReturn(new BlogVote(1, 1, 1));</b>
+<b class="fc"><i>467</i>&nbsp;        blogService.convertToReportBlogDTOList(blogList);</b>
+<i>468</i>&nbsp;
+<b class="fc"><i>469</i>&nbsp;        when(redisService.findStatusFromRedis(any(), any())).thenReturn(-1);</b>
+<b class="fc"><i>470</i>&nbsp;        when(blogVoteDao.getByBlogIdAndUserId(any(), any())).thenReturn(null);</b>
+<b class="fc"><i>471</i>&nbsp;        blogService.convertToReportBlogDTOList(blogList);</b>
+<b class="fc"><i>472</i>&nbsp;    }</b>
+<i>473</i>&nbsp;
+<i>474</i>&nbsp;    @Test
+<i>475</i>&nbsp;    public void testGetBlogCount() {
+<b class="fc"><i>476</i>&nbsp;        when(redisService.getBlogForwardCountFromRedis(any())).thenReturn(null);</b>
+<b class="fc"><i>477</i>&nbsp;        when(redisService.getBlogCommentCountFromRedis(any())).thenReturn(null);</b>
+<b class="fc"><i>478</i>&nbsp;        when(redisService.getVoteCountFromRedis(any())).thenReturn(null);</b>
+<b class="fc"><i>479</i>&nbsp;        when(blogCountDao.findBlogCountByBlog_id(any())).thenReturn(testBlogCount);</b>
+<b class="fc"><i>480</i>&nbsp;        blogService.getBlogCount(1);</b>
+<b class="fc"><i>481</i>&nbsp;    }</b>
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;    @Test
+<i>484</i>&nbsp;    public void testGetBlogCount2() {
+<b class="fc"><i>485</i>&nbsp;        when(redisService.getBlogForwardCountFromRedis(any())).thenReturn(null);</b>
+<b class="fc"><i>486</i>&nbsp;        when(redisService.getBlogCommentCountFromRedis(any())).thenReturn(null);</b>
+<b class="fc"><i>487</i>&nbsp;        when(redisService.getVoteCountFromRedis(any())).thenReturn(null);</b>
+<b class="fc"><i>488</i>&nbsp;        when(blogCountDao.findBlogCountByBlog_id(any())).thenReturn(testBlogCount);</b>
+<b class="fc"><i>489</i>&nbsp;        blogService.getReportBlogCount(1);</b>
+<b class="fc"><i>490</i>&nbsp;    }</b>
+<i>491</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-05-08 22:42</div>
+</div>
+</body>
+</html>
