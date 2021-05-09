@@ -71,7 +71,7 @@ public class AdminController {
     @ApiOperation(value = "审核blog")
     @PutMapping(value = "/blogs/reported")
     public Msg CheckReportedBlog(@RequestBody @Valid BlogCheckDTO blogCheckDTO) {
-        blogService.checkReportedBlog(blogCheckDTO);
+//        blogService.checkReportedBlog(blogCheckDTO);
         return new Msg(MsgCode.SUCCESS, MsgUtil.CHECK_BLOG_SUCCESS_MSG);
     }
 

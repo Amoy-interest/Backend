@@ -330,16 +330,16 @@ public class BlogControllerTest {
     }
 
 
-    @Test
-    public void testSearch() throws Exception {
-        List<BlogDTO> blogList = new ArrayList<>();
-        Pageable pageable = PageRequest.of(0, 5);
-        Page<BlogDTO> page = new PageImpl<>(blogList, pageable, 0);
-        Mockito.when(blogService.getSearchListByBlog_text("abbc", 0, 5)).thenReturn(page);
-        mockMvc.perform(get("/blogs/search?keyword=abbc"))
-                .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).getSearchListByBlog_text("abbc", 0, 5);
-    }
+//    @Test
+//    public void testSearch() throws Exception {
+//        List<BlogDTO> blogList = new ArrayList<>();
+//        Pageable pageable = PageRequest.of(0, 5);
+//        Page<BlogDTO> page = new PageImpl<>(blogList, pageable, 0);
+//        Mockito.when(blogService.getSearchListByBlog_text("abbc", 0, 5)).thenReturn(page);
+//        mockMvc.perform(get("/blogs/search?keyword=abbc"))
+//                .andExpect(status().isOk()).andReturn();
+//        verify(blogService, times(1)).getSearchListByBlog_text("abbc", 0, 5);
+//    }
 
     @Test
     public void testGetSimBlog() throws Exception{

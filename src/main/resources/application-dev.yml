@@ -61,13 +61,15 @@ spring:
     elasticsearch:
       repositories:
         enabled: true
-
   elasticsearch:
     rest:
       uris: http://localhost:9200
       username:
       password:
-
+  jpa:
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
 
 management:
   endpoint:
@@ -79,7 +81,6 @@ management:
     web:
       exposure:
         include: '*'
-
 es:
-  host: 127.0.0.0
+  host: localhost
   port: 9200

@@ -48,9 +48,9 @@ public interface BlogService {
 
     boolean reportBlog(BlogReportDTO blogReportDTO);
 
-    boolean checkReportedBlog(BlogCheckDTO blogCheckDTO);
+//    boolean checkReportedBlog(BlogCheckDTO blogCheckDTO);
 
-    Page<BlogDTO> getSearchListByBlog_text(String keyword, Integer pageNum, Integer pageSize);
+//    Page<BlogDTO> getSearchListByBlog_text(String keyword, Integer pageNum, Integer pageSize);
 
     Page<BlogDTO> getListByUser_id(Integer user_id, Integer pageNum, Integer pageSize);
 
@@ -95,7 +95,7 @@ public interface BlogService {
      */
     Page<BlogDTO> getBlogPageByUser_idOrderByTime(Integer user_id, Integer pageNum, Integer pageSize);
 
-    int insertToES();
+//    int insertToES();
 
     List<BlogDTO> convertToBlogDTOList(List<Blog> blogList);
 

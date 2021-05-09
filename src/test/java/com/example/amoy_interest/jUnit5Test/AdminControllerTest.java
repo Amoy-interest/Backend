@@ -130,18 +130,18 @@ public class AdminControllerTest {
         verify(blogService, times(1)).searchReportedBlogsPage("你好吗", 1, 5, 1);
     }
 
-    @Test
-    public void testCheckReportedBlog() throws Exception {
-        when(blogService.checkReportedBlog(any())).thenReturn(true);
-        BlogCheckDTO blogCheckDTO = new BlogCheckDTO(1, 1);
-        String requestJson = JSONObject.toJSONString(blogCheckDTO);
-        mockMvc.perform(put("/admins/blogs/reported")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
-                .andExpect(status().isOk()).andReturn();
-        verify(blogService, times(1)).checkReportedBlog(any());
-//        verify(blogService, times(1)).updateBlog(Mockito.any());
-    }
+//    @Test
+//    public void testCheckReportedBlog() throws Exception {
+//        when(blogService.checkReportedBlog(any())).thenReturn(true);
+//        BlogCheckDTO blogCheckDTO = new BlogCheckDTO(1, 1);
+//        String requestJson = JSONObject.toJSONString(blogCheckDTO);
+//        mockMvc.perform(put("/admins/blogs/reported")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(requestJson))
+//                .andExpect(status().isOk()).andReturn();
+//        verify(blogService, times(1)).checkReportedBlog(any());
+////        verify(blogService, times(1)).updateBlog(Mockito.any());
+//    }
 
     @Test
     public void testGetReportedTopics() throws Exception {
