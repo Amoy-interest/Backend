@@ -1,0 +1,234 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TopicServiceTest</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.example.amoy_interest.jUnit5Test</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TopicServiceTest (com.example.amoy_interest.jUnit5Test)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TopicServiceTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    95%
+  </span>
+  <span class="absValue">
+    (57/ 60)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.example.amoy_interest.jUnit5Test;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.example.amoy_interest.dao.TopicDao;
+<i>4</i>&nbsp;import com.example.amoy_interest.daoimpl.TopicDaoImpl;
+<i>5</i>&nbsp;import com.example.amoy_interest.daoimpl.TopicHeatDaoImpl;
+<i>6</i>&nbsp;import com.example.amoy_interest.dto.TopicCheckDTO;
+<i>7</i>&nbsp;import com.example.amoy_interest.dto.TopicDTO;
+<i>8</i>&nbsp;import com.example.amoy_interest.dto.TopicModifyParam;
+<i>9</i>&nbsp;import com.example.amoy_interest.dto.TopicReportDTO;
+<i>10</i>&nbsp;import com.example.amoy_interest.entity.*;
+<i>11</i>&nbsp;import com.example.amoy_interest.service.TopicService;
+<i>12</i>&nbsp;import com.example.amoy_interest.serviceimpl.TopicServiceImpl;
+<i>13</i>&nbsp;import org.elasticsearch.client.RestHighLevelClient;
+<i>14</i>&nbsp;import org.junit.jupiter.api.BeforeEach;
+<i>15</i>&nbsp;import org.junit.jupiter.api.Test;
+<i>16</i>&nbsp;import org.mockito.InjectMocks;
+<i>17</i>&nbsp;import org.mockito.Mock;
+<i>18</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i>19</i>&nbsp;import org.springframework.boot.test.context.SpringBootTest;
+<i>20</i>&nbsp;import org.springframework.data.domain.Page;
+<i>21</i>&nbsp;import org.springframework.data.domain.PageImpl;
+<i>22</i>&nbsp;import org.springframework.data.domain.PageRequest;
+<i>23</i>&nbsp;import org.springframework.data.domain.Pageable;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;import java.util.ArrayList;
+<i>26</i>&nbsp;import java.util.Collections;
+<i>27</i>&nbsp;import java.util.Date;
+<i>28</i>&nbsp;import java.util.List;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;import static net.sf.ezmorph.test.ArrayAssertions.assertEquals;
+<i>31</i>&nbsp;import static org.mockito.ArgumentMatchers.any;
+<i>32</i>&nbsp;import static org.mockito.Mockito.when;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;@SpringBootTest
+<b class="fc"><i>35</i>&nbsp;public class TopicServiceTest {</b>
+<i>36</i>&nbsp;
+<b class="fc"><i>37</i>&nbsp;    private static Topic topic = new Topic(&quot;测试&quot;, new Date(), 0, 0, 0, null, null);</b>
+<i>38</i>&nbsp;
+<b class="fc"><i>39</i>&nbsp;    private static List&lt;Topic&gt; topicList = new ArrayList&lt;&gt;(Collections.singletonList(topic));</b>
+<i>40</i>&nbsp;
+<b class="fc"><i>41</i>&nbsp;    private static TopicCheckDTO topicCheckDTO = new TopicCheckDTO(&quot;测试&quot;, 0);</b>
+<i>42</i>&nbsp;
+<b class="fc"><i>43</i>&nbsp;    private static Pageable pageable = PageRequest.of(0, 1);</b>
+<i>44</i>&nbsp;
+<b class="fc"><i>45</i>&nbsp;    private static Page&lt;Topic&gt; topicPage = new PageImpl&lt;&gt;(topicList, pageable, topicList.size());</b>
+<i>46</i>&nbsp;
+<b class="fc"><i>47</i>&nbsp;    private static String str = &quot;测试&quot;;</b>
+<i>48</i>&nbsp;
+<b class="fc"><i>49</i>&nbsp;    private static List&lt;String&gt; strList = new ArrayList&lt;&gt;(Collections.singletonList(str));</b>
+<i>50</i>&nbsp;
+<b class="fc"><i>51</i>&nbsp;    private static Page&lt;String&gt; strPage = new PageImpl&lt;&gt;(strList, pageable, strList.size());</b>
+<i>52</i>&nbsp;
+<b class="fc"><i>53</i>&nbsp;    private static TopicModifyParam topicModifyParam = new TopicModifyParam(&quot;测试&quot;, &quot;简介&quot;, &quot;1.jpg&quot;);</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    @InjectMocks
+<i>56</i>&nbsp;    private TopicServiceImpl topicService;
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    @Mock
+<i>59</i>&nbsp;    private TopicDaoImpl topicDao;
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    @Mock
+<i>62</i>&nbsp;    private TopicHeatDaoImpl topicHeatDao;
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    @Mock
+<i>65</i>&nbsp;    private RestHighLevelClient client;
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    @Test
+<i>68</i>&nbsp;    public void testGetTopic_idByName(){
+<b class="fc"><i>69</i>&nbsp;        when(topicDao.getTopicByName(any())).thenReturn(topic);</b>
+<b class="fc"><i>70</i>&nbsp;        topicService.getTopic_idByName(&quot;测试&quot;);</b>
+<i>71</i>&nbsp;
+<b class="fc"><i>72</i>&nbsp;        when(topicDao.getTopicByName(any())).thenReturn(null);</b>
+<b class="fc"><i>73</i>&nbsp;        topicService.getTopic_idByName(&quot;测试&quot;);</b>
+<b class="fc"><i>74</i>&nbsp;    }</b>
+<i>75</i>&nbsp;    @Test
+<i>76</i>&nbsp;    public void testGetTopicDTOByName(){
+<b class="fc"><i>77</i>&nbsp;        when(topicDao.getTopicByName(any())).thenReturn(topic);</b>
+<b class="fc"><i>78</i>&nbsp;        topicService.getTopicDTOByName(&quot;测试&quot;);</b>
+<i>79</i>&nbsp;
+<b class="fc"><i>80</i>&nbsp;        when(topicDao.getTopicByName(any())).thenReturn(null);</b>
+<b class="fc"><i>81</i>&nbsp;        topicService.getTopicDTOByName(&quot;测试&quot;);</b>
+<b class="fc"><i>82</i>&nbsp;    }</b>
+<i>83</i>&nbsp;    @Test
+<i>84</i>&nbsp;    public void testGetTopicByName() {
+<b class="fc"><i>85</i>&nbsp;        when(topicDao.getTopicByName(any())).thenReturn(topic);</b>
+<b class="fc"><i>86</i>&nbsp;        topicService.getTopicByName(&quot;测试&quot;);</b>
+<b class="fc"><i>87</i>&nbsp;    }</b>
+<i>88</i>&nbsp;    @Test
+<i>89</i>&nbsp;    public void testGetReportedTopics(){
+<b class="fc"><i>90</i>&nbsp;        when(topicDao.getReportedTopic()).thenReturn(topicList);</b>
+<b class="fc"><i>91</i>&nbsp;        topicService.getReportedTopics();</b>
+<b class="fc"><i>92</i>&nbsp;    }</b>
+<i>93</i>&nbsp;    @Test
+<i>94</i>&nbsp;    public void testCheckReportedTopic(){
+<b class="fc"><i>95</i>&nbsp;        when(topicDao.getTopicByName(any())).thenReturn(topic);</b>
+<b class="fc"><i>96</i>&nbsp;        topicService.checkReportedTopic(topicCheckDTO);</b>
+<b class="fc"><i>97</i>&nbsp;    }</b>
+<i>98</i>&nbsp;    @Test
+<i>99</i>&nbsp;    public void testReportTopicByName(){
+<b class="fc"><i>100</i>&nbsp;        when(topicDao.getTopicByName(any())).thenReturn(topic);</b>
+<b class="fc"><i>101</i>&nbsp;        topicService.reportTopicByName(&quot;测试&quot;);</b>
+<b class="fc"><i>102</i>&nbsp;    }</b>
+<i>103</i>&nbsp;    @Test
+<i>104</i>&nbsp;    public void testGetReportedTopicsPage(){
+<b class="fc"><i>105</i>&nbsp;        when(topicDao.getReportedTopicPage(any())).thenReturn(topicPage);</b>
+<b class="fc"><i>106</i>&nbsp;        topicService.getReportedTopicsPage(0, 1, 0);</b>
+<b class="fc"><i>107</i>&nbsp;    }</b>
+<i>108</i>&nbsp;    @Test
+<i>109</i>&nbsp;    public void testSearchReportedTopicsPage(){
+<b class="fc"><i>110</i>&nbsp;        when(topicDao.searchReportedTopicPage(any(), any())).thenReturn(topicPage);</b>
+<b class="fc"><i>111</i>&nbsp;        topicService.searchReportedTopicsPage(&quot;测试&quot;, 0, 1, 0);</b>
+<b class="fc"><i>112</i>&nbsp;    }</b>
+<i>113</i>&nbsp;    @Test
+<i>114</i>&nbsp;    public void testSearchTopicsPage(){
+<b class="fc"><i>115</i>&nbsp;        when(topicDao.searchTopicsPage(any(), any())).thenReturn(strPage);</b>
+<b class="fc"><i>116</i>&nbsp;        topicService.searchTopicsPage(&quot;测试&quot;, 0, 1);</b>
+<b class="fc"><i>117</i>&nbsp;    }</b>
+<i>118</i>&nbsp;    @Test
+<i>119</i>&nbsp;    public void testModifyTopic(){
+<b class="fc"><i>120</i>&nbsp;        when(topicDao.getTopicByName(any())).thenReturn(topic);</b>
+<b class="fc"><i>121</i>&nbsp;        topicService.modifyTopic(topicModifyParam);</b>
+<i>122</i>&nbsp;
+<b class="fc"><i>123</i>&nbsp;        when(topicDao.getTopicByName(any())).thenReturn(null);</b>
+<b class="fc"><i>124</i>&nbsp;        topicService.modifyTopic(topicModifyParam);</b>
+<b class="fc"><i>125</i>&nbsp;    }</b>
+<i>126</i>&nbsp;    @Test
+<i>127</i>&nbsp;    public void testGetHotList(){
+<i>128</i>&nbsp;
+<b class="fc"><i>129</i>&nbsp;        TopicHeat topicHeat = new TopicHeat(1, 100);</b>
+<i>130</i>&nbsp;
+<b class="fc"><i>131</i>&nbsp;        List&lt;TopicHeat&gt; heatList = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>132</i>&nbsp;        heatList.add(topicHeat);</b>
+<i>133</i>&nbsp;
+<b class="fc"><i>134</i>&nbsp;        Page&lt;TopicHeat&gt; heatPage = new PageImpl&lt;&gt;(heatList, PageRequest.of(0, 5), 1);</b>
+<i>135</i>&nbsp;
+<b class="fc"><i>136</i>&nbsp;        when(topicHeatDao.findByPage(any())).thenReturn(heatPage);</b>
+<i>137</i>&nbsp;
+<b class="fc"><i>138</i>&nbsp;        Topic topic1 = new Topic(&quot;测试&quot;, new Date(), 0, 0, 0, null, null);</b>
+<b class="fc"><i>139</i>&nbsp;        when(topicDao.getTopicById(any())).thenReturn(topic1);</b>
+<b class="fc"><i>140</i>&nbsp;        topicService.getHotList(0, 1);</b>
+<b class="fc"><i>141</i>&nbsp;    }</b>
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    @Test
+<i>144</i>&nbsp;    public void testAddTopic() {
+<b class="fc"><i>145</i>&nbsp;        when(topicDao.getTopicByName(any())).thenReturn(null);</b>
+<b class="fc"><i>146</i>&nbsp;        topicService.addTopic(&quot;测试&quot;);</b>
+<i>147</i>&nbsp;
+<b class="nc"><i>148</i>&nbsp;        when(topicDao.getTopicByName(any())).thenReturn(topic);</b>
+<b class="nc"><i>149</i>&nbsp;        topicService.addTopic(&quot;测试&quot;);</b>
+<b class="nc"><i>150</i>&nbsp;    }</b>
+<i>151</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-05-08 22:42</div>
+</div>
+</body>
+</html>

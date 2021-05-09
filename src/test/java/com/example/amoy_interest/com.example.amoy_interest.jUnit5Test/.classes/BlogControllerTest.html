@@ -1,0 +1,615 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BlogControllerTest</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.example.amoy_interest.jUnit5Test</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BlogControllerTest (com.example.amoy_interest.jUnit5Test)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BlogControllerTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (22/ 22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (237/ 237)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">BlogControllerTest$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">BlogControllerTest$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">BlogControllerTest$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">BlogControllerTest$4</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">BlogControllerTest$5</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">BlogControllerTest$6</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">BlogControllerTest$7</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (29/ 29)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (244/ 244)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.example.amoy_interest.jUnit5Test;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.alibaba.fastjson.JSONObject;
+<i>4</i>&nbsp;import com.example.amoy_interest.config.shiro.jwt.JwtToken;
+<i>5</i>&nbsp;import com.example.amoy_interest.dto.*;
+<i>6</i>&nbsp;import com.example.amoy_interest.entity.*;
+<i>7</i>&nbsp;import com.example.amoy_interest.msgutils.Msg;
+<i>8</i>&nbsp;import com.example.amoy_interest.msgutils.MsgCode;
+<i>9</i>&nbsp;import com.example.amoy_interest.msgutils.MsgUtil;
+<i>10</i>&nbsp;import com.example.amoy_interest.service.BlogService;
+<i>11</i>&nbsp;import com.example.amoy_interest.service.RecommendService;
+<i>12</i>&nbsp;import com.example.amoy_interest.service.TopicService;
+<i>13</i>&nbsp;import com.example.amoy_interest.serviceimpl.BlogServiceImpl;
+<i>14</i>&nbsp;import com.example.amoy_interest.serviceimpl.TopicServiceImpl;
+<i>15</i>&nbsp;import com.example.amoy_interest.serviceimpl.UserServiceImpl;
+<i>16</i>&nbsp;import com.example.amoy_interest.utils.CommonPage;
+<i>17</i>&nbsp;import com.example.amoy_interest.utils.UserUtil;
+<i>18</i>&nbsp;import com.example.amoy_interest.utils.sensitivefilter2.Finder;
+<i>19</i>&nbsp;import com.example.amoy_interest.utils.sensitivefilter2.FinderUtil;
+<i>20</i>&nbsp;import com.fasterxml.jackson.core.type.TypeReference;
+<i>21</i>&nbsp;import com.fasterxml.jackson.databind.ObjectMapper;
+<i>22</i>&nbsp;import org.apache.shiro.SecurityUtils;
+<i>23</i>&nbsp;import org.apache.shiro.mgt.SecurityManager;
+<i>24</i>&nbsp;import org.apache.shiro.subject.Subject;
+<i>25</i>&nbsp;import org.apache.shiro.util.ThreadContext;
+<i>26</i>&nbsp;import org.apache.shiro.web.subject.WebSubject;
+<i>27</i>&nbsp;import org.junit.Before;
+<i>28</i>&nbsp;import org.junit.jupiter.api.BeforeAll;
+<i>29</i>&nbsp;import org.junit.jupiter.api.BeforeEach;
+<i>30</i>&nbsp;import org.junit.jupiter.api.Test;
+<i>31</i>&nbsp;import org.mockito.Mock;
+<i>32</i>&nbsp;import org.mockito.Mockito;
+<i>33</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i>34</i>&nbsp;import org.springframework.boot.test.context.SpringBootTest;
+<i>35</i>&nbsp;import org.springframework.boot.test.mock.mockito.MockBean;
+<i>36</i>&nbsp;import org.springframework.data.domain.Page;
+<i>37</i>&nbsp;import org.springframework.data.domain.PageImpl;
+<i>38</i>&nbsp;import org.springframework.data.domain.PageRequest;
+<i>39</i>&nbsp;import org.springframework.data.domain.Pageable;
+<i>40</i>&nbsp;import org.springframework.http.MediaType;
+<i>41</i>&nbsp;import org.springframework.mock.web.MockHttpServletRequest;
+<i>42</i>&nbsp;import org.springframework.mock.web.MockHttpServletResponse;
+<i>43</i>&nbsp;import org.springframework.mock.web.MockHttpSession;
+<i>44</i>&nbsp;import org.springframework.test.web.servlet.MockMvc;
+<i>45</i>&nbsp;import org.springframework.test.web.servlet.MvcResult;
+<i>46</i>&nbsp;import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+<i>47</i>&nbsp;import org.springframework.web.context.WebApplicationContext;
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;import java.util.*;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;import static com.example.amoy_interest.constant.Constant.TEST_TOKEN;
+<i>52</i>&nbsp;import static org.junit.jupiter.api.Assertions.assertEquals;
+<i>53</i>&nbsp;import static org.mockito.Mockito.*;
+<i>54</i>&nbsp;import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+<i>55</i>&nbsp;import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+<b class="fc"><i>59</i>&nbsp;public class BlogControllerTest {</b>
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    private MockMvc mockMvc;
+<i>62</i>&nbsp;
+<b class="fc"><i>63</i>&nbsp;    private static UserAuth testAuth = new UserAuth(1, &quot;鲁迅&quot;, &quot;123456&quot;, 1, 0, 0);</b>
+<b class="fc"><i>64</i>&nbsp;    private static UserAuth testAuth2 = new UserAuth(1, &quot;鲁迅&quot;, &quot;123456&quot;, 1, 1, 1);</b>
+<b class="fc"><i>65</i>&nbsp;    private static User testUser = new User(1, &quot;鲁迅&quot;, &quot;123@163.com&quot;, 0, &quot;广东&quot;, 0, &quot;无&quot;, null);</b>
+<b class="fc"><i>66</i>&nbsp;    private static Blog testBlog = new Blog(1, 1, 0, new Date(), &quot;今天天气好&quot;, false, 0, 0);</b>
+<b class="fc"><i>67</i>&nbsp;    private static BlogCount testBlogCount = new BlogCount(1, 0, 0, 0, 0);</b>
+<b class="fc"><i>68</i>&nbsp;    private static BlogDTO testBlogDTO = null;</b>
+<i>69</i>&nbsp;    @Autowired
+<i>70</i>&nbsp;    private WebApplicationContext context;
+<i>71</i>&nbsp;    @Autowired
+<i>72</i>&nbsp;    private SecurityManager securityManager;
+<i>73</i>&nbsp;
+<b class="fc"><i>74</i>&nbsp;    private ObjectMapper om = new ObjectMapper();</b>
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    //
+<i>77</i>&nbsp;    @BeforeAll
+<i>78</i>&nbsp;    public static void init() {
+<b class="fc"><i>79</i>&nbsp;        testBlog.setUser(testUser);</b>
+<b class="fc"><i>80</i>&nbsp;        testBlog.setTopics(new ArrayList&lt;&gt;());</b>
+<b class="fc"><i>81</i>&nbsp;        testBlogDTO = new BlogDTO(testBlog, testBlogCount, false);</b>
+<b class="fc"><i>82</i>&nbsp;        Date date = new Date();</b>
+<b class="fc"><i>83</i>&nbsp;        Calendar calendar = new GregorianCalendar();</b>
+<b class="fc"><i>84</i>&nbsp;        calendar.setTime(date);</b>
+<b class="fc"><i>85</i>&nbsp;        calendar.add(calendar.DATE, 1); //把日期往后增加一天,整数  往后推,负数往前移动</b>
+<b class="fc"><i>86</i>&nbsp;        date = calendar.getTime();</b>
+<b class="fc"><i>87</i>&nbsp;        testAuth2.setUserBan(new UserBan(1, date, date));</b>
+<b class="fc"><i>88</i>&nbsp;    }</b>
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    @MockBean
+<i>91</i>&nbsp;    private UserUtil userUtil;
+<i>92</i>&nbsp;    @MockBean
+<i>93</i>&nbsp;    private BlogService blogService;
+<i>94</i>&nbsp;    @MockBean
+<i>95</i>&nbsp;    private RecommendService recommendService;
+<i>96</i>&nbsp;    @BeforeEach
+<i>97</i>&nbsp;    public void setup() {
+<b class="fc"><i>98</i>&nbsp;        Finder.clearSensitiveWords();</b>
+<b class="fc"><i>99</i>&nbsp;        Finder.addSensitiveWords(&quot;去他的&quot;);</b>
+<b class="fc"><i>100</i>&nbsp;        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();</b>
+<b class="fc"><i>101</i>&nbsp;        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest(context.getServletContext());</b>
+<b class="fc"><i>102</i>&nbsp;        MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();</b>
+<b class="fc"><i>103</i>&nbsp;        MockHttpSession mockHttpSession = new MockHttpSession(context.getServletContext());</b>
+<b class="fc"><i>104</i>&nbsp;        mockHttpServletRequest.setSession(mockHttpSession);</b>
+<b class="fc"><i>105</i>&nbsp;        SecurityUtils.setSecurityManager(securityManager);</b>
+<b class="fc"><i>106</i>&nbsp;        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();</b>
+<b class="fc"><i>107</i>&nbsp;        Subject subject = new WebSubject</b>
+<i>108</i>&nbsp;                .Builder(mockHttpServletRequest, mockHttpServletResponse)
+<b class="fc"><i>109</i>&nbsp;                .buildWebSubject();</b>
+<b class="fc"><i>110</i>&nbsp;        JwtToken token = new JwtToken(TEST_TOKEN);</b>
+<b class="fc"><i>111</i>&nbsp;        subject.login(token);</b>
+<b class="fc"><i>112</i>&nbsp;        ThreadContext.bind(subject);</b>
+<b class="fc"><i>113</i>&nbsp;    }</b>
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    @Test
+<i>117</i>&nbsp;    public void testAddBlog() throws Exception {
+<b class="fc"><i>118</i>&nbsp;        Mockito.when(userUtil.getUser()).thenReturn(testAuth);</b>
+<b class="fc"><i>119</i>&nbsp;        Mockito.when(blogService.addBlog(Mockito.any())).thenReturn(null);</b>
+<b class="fc"><i>120</i>&nbsp;        Set&lt;String&gt; set = new LinkedHashSet&lt;String&gt;();</b>
+<b class="fc"><i>121</i>&nbsp;        BlogAddDTO blogAddDTO = new BlogAddDTO(&quot;你好&quot;, null, null, 1);</b>
+<b class="fc"><i>122</i>&nbsp;        String requestJson = JSONObject.toJSONString(blogAddDTO);</b>
+<b class="fc"><i>123</i>&nbsp;        mockMvc.perform(post(&quot;/blogs&quot;)</b>
+<b class="fc"><i>124</i>&nbsp;                .contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>125</i>&nbsp;                .content(requestJson))</b>
+<b class="fc"><i>126</i>&nbsp;                .andExpect(status().isOk());</b>
+<b class="fc"><i>127</i>&nbsp;        verify(blogService, times(1)).addBlog(Mockito.any());</b>
+<i>128</i>&nbsp;
+<b class="fc"><i>129</i>&nbsp;        Mockito.when(userUtil.getUser()).thenReturn(testAuth2);</b>
+<b class="fc"><i>130</i>&nbsp;        MvcResult result = mockMvc.perform(post(&quot;/blogs&quot;).contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>131</i>&nbsp;                .content(requestJson)).andReturn();</b>
+<b class="fc"><i>132</i>&nbsp;        result.getResponse().setCharacterEncoding(&quot;UTF-8&quot;); //解决中文乱码</b>
+<b class="fc"><i>133</i>&nbsp;        String resultContent = result.getResponse().getContentAsString();</b>
+<b class="fc"><i>134</i>&nbsp;        Msg msg = om.readValue(resultContent, new TypeReference&lt;Msg&gt;() {</b>
+<i>135</i>&nbsp;        });
+<b class="fc"><i>136</i>&nbsp;        assertEquals(402, msg.getStatus());</b>
+<b class="fc"><i>137</i>&nbsp;        assertEquals(MsgUtil.USER_BAN_MSG, msg.getMsg());</b>
+<b class="fc"><i>138</i>&nbsp;        Mockito.when(userUtil.getUser()).thenReturn(testAuth);</b>
+<b class="fc"><i>139</i>&nbsp;        blogAddDTO.setText(&quot;去他的&quot;);</b>
+<b class="fc"><i>140</i>&nbsp;        requestJson = JSONObject.toJSONString(blogAddDTO);</b>
+<b class="fc"><i>141</i>&nbsp;        MvcResult result2 = mockMvc.perform(post(&quot;/blogs&quot;)</b>
+<b class="fc"><i>142</i>&nbsp;                .contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>143</i>&nbsp;                .content(requestJson))</b>
+<b class="fc"><i>144</i>&nbsp;                .andReturn();</b>
+<b class="fc"><i>145</i>&nbsp;        result2.getResponse().setCharacterEncoding(&quot;UTF-8&quot;); //解决中文乱码</b>
+<b class="fc"><i>146</i>&nbsp;        String resultContent2 = result2.getResponse().getContentAsString();</b>
+<b class="fc"><i>147</i>&nbsp;        Msg msg2 = om.readValue(resultContent2, new TypeReference&lt;Msg&gt;() {</b>
+<i>148</i>&nbsp;        });
+<b class="fc"><i>149</i>&nbsp;        assertEquals(402, msg2.getStatus());</b>
+<b class="fc"><i>150</i>&nbsp;        assertEquals(&quot;内容含有敏感词&quot;, msg2.getMsg());</b>
+<b class="fc"><i>151</i>&nbsp;    }</b>
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    @Test
+<i>154</i>&nbsp;    public void testGetBlog() throws Exception {
+<b class="fc"><i>155</i>&nbsp;        Mockito.when(blogService.getAllBlogDetail(1)).thenReturn(testBlogDTO);</b>
+<b class="fc"><i>156</i>&nbsp;        mockMvc.perform(get(&quot;/blogs?blog_id=1&quot;))//.header(&quot;token&quot;, &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX3R5cGUiOjAsInVzZXJfaWQiOjEsImlzcyI6ImF1dGgwIiwiZXhwIjoxNTk1NjQ2OTQyfQ.8Ycii-oG6JtxOO1DGTqdAJV1FOUWpvEJyYOTCBc06Us&quot;))</b>
+<b class="fc"><i>157</i>&nbsp;                .andExpect(status().isOk()).andReturn();</b>
+<b class="fc"><i>158</i>&nbsp;        verify(blogService,times(1)).getAllBlogDetail(1);</b>
+<b class="fc"><i>159</i>&nbsp;    }</b>
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    @Test
+<i>162</i>&nbsp;    public void testPutBlog() throws Exception {
+<b class="fc"><i>163</i>&nbsp;        Mockito.when(blogService.findBlogByBlog_id(1)).thenReturn(testBlog);</b>
+<b class="fc"><i>164</i>&nbsp;        Mockito.when(blogService.updateBlog(Mockito.any())).thenReturn(null);</b>
+<b class="fc"><i>165</i>&nbsp;        Mockito.when(userUtil.getUser()).thenReturn(testAuth2);</b>
+<b class="fc"><i>166</i>&nbsp;        BlogPutDTO blogPutDTO = new BlogPutDTO(1, &quot;dest&quot;, null);</b>
+<b class="fc"><i>167</i>&nbsp;        String requestJson = JSONObject.toJSONString(blogPutDTO);</b>
+<b class="fc"><i>168</i>&nbsp;        MvcResult result = mockMvc.perform(put(&quot;/blogs&quot;)</b>
+<b class="fc"><i>169</i>&nbsp;                .contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>170</i>&nbsp;                .content(requestJson))</b>
+<b class="fc"><i>171</i>&nbsp;                .andExpect(status().isOk()).andReturn();</b>
+<b class="fc"><i>172</i>&nbsp;        result.getResponse().setCharacterEncoding(&quot;UTF-8&quot;); //解决中文乱码</b>
+<b class="fc"><i>173</i>&nbsp;        String resultContent = result.getResponse().getContentAsString();</b>
+<b class="fc"><i>174</i>&nbsp;        Msg msg = om.readValue(resultContent, new TypeReference&lt;Msg&gt;() {</b>
+<i>175</i>&nbsp;        });
+<b class="fc"><i>176</i>&nbsp;        assertEquals(402, msg.getStatus());</b>
+<b class="fc"><i>177</i>&nbsp;        assertEquals(MsgUtil.USER_BAN_MSG, msg.getMsg());</b>
+<i>178</i>&nbsp;
+<b class="fc"><i>179</i>&nbsp;        Mockito.when(userUtil.getUser()).thenReturn(testAuth);</b>
+<b class="fc"><i>180</i>&nbsp;        mockMvc.perform(put(&quot;/blogs&quot;)</b>
+<b class="fc"><i>181</i>&nbsp;                .contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>182</i>&nbsp;                .content(requestJson))</b>
+<b class="fc"><i>183</i>&nbsp;                .andExpect(status().isOk()).andReturn();</b>
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;
+<b class="fc"><i>186</i>&nbsp;        blogPutDTO.setText(&quot;去他的&quot;);</b>
+<b class="fc"><i>187</i>&nbsp;        requestJson = JSONObject.toJSONString(blogPutDTO);</b>
+<b class="fc"><i>188</i>&nbsp;        result = mockMvc.perform(put(&quot;/blogs&quot;)</b>
+<b class="fc"><i>189</i>&nbsp;                .contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>190</i>&nbsp;                .content(requestJson))</b>
+<b class="fc"><i>191</i>&nbsp;                .andReturn();</b>
+<b class="fc"><i>192</i>&nbsp;        result.getResponse().setCharacterEncoding(&quot;UTF-8&quot;); //解决中文乱码</b>
+<b class="fc"><i>193</i>&nbsp;        resultContent = result.getResponse().getContentAsString();</b>
+<b class="fc"><i>194</i>&nbsp;        msg = om.readValue(resultContent, new TypeReference&lt;Msg&gt;() {</b>
+<i>195</i>&nbsp;        });
+<b class="fc"><i>196</i>&nbsp;        assertEquals(402, msg.getStatus());</b>
+<b class="fc"><i>197</i>&nbsp;        assertEquals(&quot;内容含有敏感词&quot;, msg.getMsg());</b>
+<i>198</i>&nbsp;
+<b class="fc"><i>199</i>&nbsp;        verify(blogService, times(1)).updateBlog(Mockito.any());</b>
+<b class="fc"><i>200</i>&nbsp;    }</b>
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    @Test
+<i>203</i>&nbsp;    public void testForwardBlog() throws Exception {
+<b class="fc"><i>204</i>&nbsp;        Mockito.when(userUtil.getUser()).thenReturn(testAuth2);</b>
+<b class="fc"><i>205</i>&nbsp;        BlogForwardDTO blogForwardDTO = new BlogForwardDTO(1,&quot;DEST&quot;,1);</b>
+<b class="fc"><i>206</i>&nbsp;        String requestJson = JSONObject.toJSONString(blogForwardDTO);</b>
+<b class="fc"><i>207</i>&nbsp;        MvcResult result = mockMvc.perform(post(&quot;/blogs/forward&quot;)</b>
+<b class="fc"><i>208</i>&nbsp;                .contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>209</i>&nbsp;                .content(requestJson))</b>
+<b class="fc"><i>210</i>&nbsp;                .andExpect(status().isOk())</b>
+<b class="fc"><i>211</i>&nbsp;                .andReturn();</b>
+<b class="fc"><i>212</i>&nbsp;        result.getResponse().setCharacterEncoding(&quot;UTF-8&quot;); //解决中文乱码</b>
+<i>213</i>&nbsp;
+<b class="fc"><i>214</i>&nbsp;        String resultContent = result.getResponse().getContentAsString();</b>
+<b class="fc"><i>215</i>&nbsp;        Msg msg = om.readValue(resultContent, new TypeReference&lt;Msg&gt;() {</b>
+<i>216</i>&nbsp;        });
+<b class="fc"><i>217</i>&nbsp;        assertEquals(402, msg.getStatus());</b>
+<b class="fc"><i>218</i>&nbsp;        assertEquals(MsgUtil.USER_BAN_MSG, msg.getMsg());</b>
+<i>219</i>&nbsp;
+<b class="fc"><i>220</i>&nbsp;        Mockito.when(userUtil.getUser()).thenReturn(testAuth);</b>
+<b class="fc"><i>221</i>&nbsp;        mockMvc.perform(post(&quot;/blogs/forward&quot;)</b>
+<b class="fc"><i>222</i>&nbsp;                .contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>223</i>&nbsp;                .content(requestJson))</b>
+<b class="fc"><i>224</i>&nbsp;                .andExpect(status().isOk()).andReturn();</b>
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;
+<b class="fc"><i>227</i>&nbsp;        blogForwardDTO.setText(&quot;去他的&quot;);</b>
+<b class="fc"><i>228</i>&nbsp;        requestJson = JSONObject.toJSONString(blogForwardDTO);</b>
+<b class="fc"><i>229</i>&nbsp;        result = mockMvc.perform(post(&quot;/blogs/forward&quot;)</b>
+<b class="fc"><i>230</i>&nbsp;                .contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>231</i>&nbsp;                .content(requestJson))</b>
+<b class="fc"><i>232</i>&nbsp;                .andReturn();</b>
+<b class="fc"><i>233</i>&nbsp;        result.getResponse().setCharacterEncoding(&quot;UTF-8&quot;); //解决中文乱码</b>
+<b class="fc"><i>234</i>&nbsp;        resultContent = result.getResponse().getContentAsString();</b>
+<b class="fc"><i>235</i>&nbsp;        msg = om.readValue(resultContent, new TypeReference&lt;Msg&gt;() {</b>
+<i>236</i>&nbsp;        });
+<b class="fc"><i>237</i>&nbsp;        assertEquals(402, msg.getStatus());</b>
+<b class="fc"><i>238</i>&nbsp;        assertEquals(&quot;内容含有敏感词&quot;, msg.getMsg());</b>
+<b class="fc"><i>239</i>&nbsp;        verify(blogService, times(1)).forwardBlog(Mockito.any());</b>
+<b class="fc"><i>240</i>&nbsp;    }</b>
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    @Test
+<i>243</i>&nbsp;    public void testDeleteBlog() throws Exception {
+<b class="fc"><i>244</i>&nbsp;        when(blogService.deleteByBlog_id(Mockito.any())).thenReturn(0);</b>
+<b class="fc"><i>245</i>&nbsp;        MvcResult result = mockMvc.perform(delete(&quot;/blogs?blog_id=1&quot;))</b>
+<b class="fc"><i>246</i>&nbsp;                .andExpect(status().isOk()).andReturn();</b>
+<b class="fc"><i>247</i>&nbsp;        result.getResponse().setCharacterEncoding(&quot;UTF-8&quot;); //解决中文乱码</b>
+<b class="fc"><i>248</i>&nbsp;        String resultContent = result.getResponse().getContentAsString();</b>
+<b class="fc"><i>249</i>&nbsp;        Msg msg = om.readValue(resultContent, new TypeReference&lt;Msg&gt;() {</b>
+<i>250</i>&nbsp;        });
+<b class="fc"><i>251</i>&nbsp;        assertEquals(-1, msg.getStatus());</b>
+<b class="fc"><i>252</i>&nbsp;        assertEquals(&quot;你无权删除&quot;, msg.getMsg());</b>
+<b class="fc"><i>253</i>&nbsp;        when(blogService.deleteByBlog_id(Mockito.any())).thenReturn(1);</b>
+<b class="fc"><i>254</i>&nbsp;        mockMvc.perform(delete(&quot;/blogs?blog_id=1&quot;))</b>
+<b class="fc"><i>255</i>&nbsp;                .andExpect(status().isOk()).andReturn();</b>
+<b class="fc"><i>256</i>&nbsp;        verify(blogService, times(2)).deleteByBlog_id(1);</b>
+<b class="fc"><i>257</i>&nbsp;    }</b>
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    @Test
+<i>260</i>&nbsp;    public void testComment() throws Exception {
+<b class="fc"><i>261</i>&nbsp;        when(userUtil.getUserId()).thenReturn(1);</b>
+<b class="fc"><i>262</i>&nbsp;        when(blogService.addBlogComment(Mockito.any())).thenReturn(null);</b>
+<b class="fc"><i>263</i>&nbsp;        CommentPostDTO commentPostDTO = new CommentPostDTO(1, 1, 1, 1, &quot;test&quot;);</b>
+<b class="fc"><i>264</i>&nbsp;        String requestJson = JSONObject.toJSONString(commentPostDTO);</b>
+<b class="fc"><i>265</i>&nbsp;        mockMvc.perform(post(&quot;/blogs/comments&quot;)</b>
+<b class="fc"><i>266</i>&nbsp;                .contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>267</i>&nbsp;                .content(requestJson)).andExpect(status().isOk()).andReturn();</b>
+<b class="fc"><i>268</i>&nbsp;        verify(blogService, times(1)).addBlogComment(Mockito.any());</b>
+<b class="fc"><i>269</i>&nbsp;    }</b>
+<i>270</i>&nbsp;
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;    @Test
+<i>273</i>&nbsp;    public void testDeleteComment() throws Exception {
+<b class="fc"><i>274</i>&nbsp;        when(blogService.deleteCommentByComment_id(any())).thenReturn(true);</b>
+<b class="fc"><i>275</i>&nbsp;        mockMvc.perform(delete(&quot;/blogs/comments?comment_id=1&quot;))</b>
+<b class="fc"><i>276</i>&nbsp;                .andExpect(status().isOk()).andReturn();</b>
+<b class="fc"><i>277</i>&nbsp;        verify(blogService, times(1)).deleteCommentByComment_id(any());</b>
+<b class="fc"><i>278</i>&nbsp;    }</b>
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    @Test
+<i>281</i>&nbsp;    public void testGetLevel1Comments() throws Exception {
+<b class="fc"><i>282</i>&nbsp;        when(blogService.getLevel1CommentPage(1,0,5)).thenReturn(new PageImpl&lt;&gt;(new ArrayList&lt;&gt;(),PageRequest.of(0,5),0));</b>
+<b class="fc"><i>283</i>&nbsp;        mockMvc.perform(get(&quot;/blogs/comments/level1?blog_id=1&quot;)).andExpect(status().isOk());</b>
+<b class="fc"><i>284</i>&nbsp;    }</b>
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    @Test
+<i>287</i>&nbsp;    public void testGetMultiComments() throws Exception {
+<b class="fc"><i>288</i>&nbsp;        when(blogService.getMultiLevelCommentPage(1,0,5)).thenReturn(new PageImpl&lt;&gt;(new ArrayList&lt;&gt;(),PageRequest.of(0,5),0));</b>
+<b class="fc"><i>289</i>&nbsp;        mockMvc.perform(get(&quot;/blogs/comments/multilevel?root_comment_id=1&quot;)).andExpect(status().isOk());</b>
+<b class="fc"><i>290</i>&nbsp;    }</b>
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    @Test
+<i>293</i>&nbsp;    public void testVote() throws Exception {
+<b class="fc"><i>294</i>&nbsp;        doNothing().when(blogService).incrVoteCount(Mockito.any());</b>
+<b class="fc"><i>295</i>&nbsp;        doNothing().when(blogService).incrCommentVoteCount(Mockito.any());</b>
+<b class="fc"><i>296</i>&nbsp;        VoteDTO voteDTO = new VoteDTO(1, 0);</b>
+<b class="fc"><i>297</i>&nbsp;        String requestJson = JSONObject.toJSONString(voteDTO);</b>
+<b class="fc"><i>298</i>&nbsp;        mockMvc.perform(post(&quot;/blogs/vote&quot;)</b>
+<b class="fc"><i>299</i>&nbsp;                .contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>300</i>&nbsp;                .content(requestJson))</b>
+<b class="fc"><i>301</i>&nbsp;                .andExpect(status().isOk()).andReturn();</b>
+<b class="fc"><i>302</i>&nbsp;        verify(blogService, times(1)).incrVoteCount(Mockito.any());</b>
+<b class="fc"><i>303</i>&nbsp;        VoteDTO voteDTO1 = new VoteDTO(2, 1);</b>
+<b class="fc"><i>304</i>&nbsp;        String requestJson1 = JSONObject.toJSONString(voteDTO1);</b>
+<b class="fc"><i>305</i>&nbsp;        mockMvc.perform(post(&quot;/blogs/vote&quot;)</b>
+<b class="fc"><i>306</i>&nbsp;                .contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>307</i>&nbsp;                .content(requestJson1))</b>
+<b class="fc"><i>308</i>&nbsp;                .andExpect(status().isOk()).andReturn();</b>
+<b class="fc"><i>309</i>&nbsp;        verify(blogService, times(1)).incrCommentVoteCount(Mockito.any());</b>
+<b class="fc"><i>310</i>&nbsp;    }</b>
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;    @Test
+<i>313</i>&nbsp;    public void testCancelVote() throws Exception {
+<b class="fc"><i>314</i>&nbsp;        doNothing().when(blogService).decrVoteCount(Mockito.any());</b>
+<b class="fc"><i>315</i>&nbsp;        doNothing().when(blogService).decrCommentVoteCount(Mockito.any());</b>
+<b class="fc"><i>316</i>&nbsp;        VoteDTO voteDTO = new VoteDTO(1, 0);</b>
+<b class="fc"><i>317</i>&nbsp;        String requestJson = JSONObject.toJSONString(voteDTO);</b>
+<b class="fc"><i>318</i>&nbsp;        mockMvc.perform(delete(&quot;/blogs/vote&quot;)</b>
+<b class="fc"><i>319</i>&nbsp;                .contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>320</i>&nbsp;                .content(requestJson))</b>
+<b class="fc"><i>321</i>&nbsp;                .andExpect(status().isOk()).andReturn();</b>
+<b class="fc"><i>322</i>&nbsp;        verify(blogService, times(1)).decrVoteCount(Mockito.any());</b>
+<b class="fc"><i>323</i>&nbsp;        VoteDTO voteDTO1 = new VoteDTO(2, 1);</b>
+<b class="fc"><i>324</i>&nbsp;        String requestJson1 = JSONObject.toJSONString(voteDTO1);</b>
+<b class="fc"><i>325</i>&nbsp;        mockMvc.perform(delete(&quot;/blogs/vote&quot;)</b>
+<b class="fc"><i>326</i>&nbsp;                .contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>327</i>&nbsp;                .content(requestJson1))</b>
+<b class="fc"><i>328</i>&nbsp;                .andExpect(status().isOk()).andReturn();</b>
+<b class="fc"><i>329</i>&nbsp;        verify(blogService, times(1)).decrCommentVoteCount(Mockito.any());</b>
+<b class="fc"><i>330</i>&nbsp;    }</b>
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;    @Test
+<i>334</i>&nbsp;    public void testSearch() throws Exception {
+<b class="fc"><i>335</i>&nbsp;        List&lt;BlogDTO&gt; blogList = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>336</i>&nbsp;        Pageable pageable = PageRequest.of(0, 5);</b>
+<b class="fc"><i>337</i>&nbsp;        Page&lt;BlogDTO&gt; page = new PageImpl&lt;&gt;(blogList, pageable, 0);</b>
+<b class="fc"><i>338</i>&nbsp;        Mockito.when(blogService.getSearchListByBlog_text(&quot;abbc&quot;, 0, 5)).thenReturn(page);</b>
+<b class="fc"><i>339</i>&nbsp;        mockMvc.perform(get(&quot;/blogs/search?keyword=abbc&quot;))</b>
+<b class="fc"><i>340</i>&nbsp;                .andExpect(status().isOk()).andReturn();</b>
+<b class="fc"><i>341</i>&nbsp;        verify(blogService, times(1)).getSearchListByBlog_text(&quot;abbc&quot;, 0, 5);</b>
+<b class="fc"><i>342</i>&nbsp;    }</b>
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    @Test
+<i>345</i>&nbsp;    public void testGetSimBlog() throws Exception{
+<b class="fc"><i>346</i>&nbsp;        Page&lt;BlogDTO&gt; page = new PageImpl&lt;&gt;(new ArrayList&lt;&gt;(),PageRequest.of(0,5),0);</b>
+<b class="fc"><i>347</i>&nbsp;        when(recommendService.getSimBlogUsingBlog_id(any(),any())).thenReturn(page);</b>
+<b class="fc"><i>348</i>&nbsp;        mockMvc.perform(get(&quot;/blogs/sim?blog_id=1&quot;)).andExpect(status().isOk());</b>
+<b class="fc"><i>349</i>&nbsp;    }</b>
+<i>350</i>&nbsp;    @Test
+<i>351</i>&nbsp;    public void testGetRecommendBlog() throws Exception {
+<b class="fc"><i>352</i>&nbsp;        Page&lt;BlogDTO&gt; page = new PageImpl&lt;&gt;(new ArrayList&lt;&gt;(),PageRequest.of(0,5),0);</b>
+<b class="fc"><i>353</i>&nbsp;        when(userUtil.getUserId()).thenReturn(1);</b>
+<b class="fc"><i>354</i>&nbsp;        when(recommendService.takeRecommendBlogsUsingUser_id(any(),any(),any())).thenReturn(page);</b>
+<b class="fc"><i>355</i>&nbsp;        mockMvc.perform(get(&quot;/blogs/recommend&quot;)).andExpect(status().isOk());</b>
+<b class="fc"><i>356</i>&nbsp;    }</b>
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    @Test
+<i>359</i>&nbsp;    public void testGetFollowBlogs() throws Exception {
+<b class="fc"><i>360</i>&nbsp;        Page&lt;BlogDTO&gt; page = new PageImpl&lt;&gt;(new ArrayList&lt;&gt;(),PageRequest.of(0,5),0);</b>
+<b class="fc"><i>361</i>&nbsp;        when(userUtil.getUserId()).thenReturn(1);</b>
+<b class="fc"><i>362</i>&nbsp;        when(blogService.getFollowBlogPageByUser_idOrderByTime(any(),any(),any())).thenReturn(page);</b>
+<b class="fc"><i>363</i>&nbsp;        mockMvc.perform(get(&quot;/blogs/follow&quot;)).andExpect(status().isOk());</b>
+<b class="fc"><i>364</i>&nbsp;    }</b>
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;    @Test
+<i>367</i>&nbsp;    public void testGetUserBlogs() throws Exception {
+<b class="fc"><i>368</i>&nbsp;        Page&lt;BlogDTO&gt; page = new PageImpl&lt;&gt;(new ArrayList&lt;&gt;(),PageRequest.of(0,5),0);</b>
+<b class="fc"><i>369</i>&nbsp;        when(blogService.getBlogPageByUser_idOrderByTime(any(),any(),any())).thenReturn(page);</b>
+<b class="fc"><i>370</i>&nbsp;        when(blogService.getHotBlogPageByUser_id(any(),any(),any())).thenReturn(page);</b>
+<b class="fc"><i>371</i>&nbsp;        mockMvc.perform(get(&quot;/blogs/users?user_id=1&amp;orderType=0&quot;)).andExpect(status().isOk());</b>
+<b class="fc"><i>372</i>&nbsp;        mockMvc.perform(get(&quot;/blogs/users?user_id=1&amp;orderType=1&quot;)).andExpect(status().isOk());</b>
+<i>373</i>&nbsp;//        verify(blogService.getBlogPageByUser_idOrderByTime(any(),any(),any()),times(1));
+<i>374</i>&nbsp;//        verify(blogService.getHotBlogPageByUser_id(any(),any(),any()),times(1));
+<b class="fc"><i>375</i>&nbsp;    }</b>
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;    @Test
+<i>378</i>&nbsp;    public void testGetBeforeLoginBlogs() throws Exception {
+<b class="fc"><i>379</i>&nbsp;        Page&lt;BlogDTO&gt; page = new PageImpl&lt;&gt;(new ArrayList&lt;&gt;(),PageRequest.of(0,5),0);</b>
+<b class="fc"><i>380</i>&nbsp;        when(blogService.getBlogPageOrderByHot(any(),any())).thenReturn(page);</b>
+<b class="fc"><i>381</i>&nbsp;        mockMvc.perform(get(&quot;/blogs/beforeLogin&quot;)).andExpect(status().isOk());</b>
+<b class="fc"><i>382</i>&nbsp;    }</b>
+<i>383</i>&nbsp;
+<i>384</i>&nbsp;    @Test
+<i>385</i>&nbsp;    public void testReportBlog() throws Exception {
+<b class="fc"><i>386</i>&nbsp;        BlogReportDTO blogReportDTO = new BlogReportDTO(1,&quot;bad&quot;);</b>
+<b class="fc"><i>387</i>&nbsp;        when(blogService.reportBlog(any())).thenReturn(true);</b>
+<b class="fc"><i>388</i>&nbsp;        String requestJson = JSONObject.toJSONString(blogReportDTO);</b>
+<b class="fc"><i>389</i>&nbsp;        mockMvc.perform(post(&quot;/blogs/report&quot;).contentType(MediaType.APPLICATION_JSON)</b>
+<b class="fc"><i>390</i>&nbsp;                .content(requestJson)).andExpect(status().isOk());</b>
+<b class="fc"><i>391</i>&nbsp;    }</b>
+<i>392</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-05-08 22:42</div>
+</div>
+</body>
+</html>
