@@ -189,19 +189,19 @@ public class BlogServiceImpl implements BlogService {
         return blogDTO;
     }
 
-    @Override
-    public int insertToES() {
-        List<Blog> blogList = blogDao.getAllBlogs();
-        List<ESBlog> esBlogList = new ArrayList<>();
-        int ret = 0;
-        for (Blog blog : blogList) {
-            ret++;
-            esBlogList.add(new ESBlog(blog));
-        }
-        esBlogRepository.saveAll(esBlogList);
-        return ret;
-//        return 0;
-    }
+//    @Override
+//    public int insertToES() {
+//        List<Blog> blogList = blogDao.getAllBlogs();
+//        List<ESBlog> esBlogList = new ArrayList<>();
+//        int ret = 0;
+//        for (Blog blog : blogList) {
+//            ret++;
+//            esBlogList.add(new ESBlog(blog));
+//        }
+//        esBlogRepository.saveAll(esBlogList);
+//        return ret;
+////        return 0;
+//    }
 
     @Override
     @Transactional( readOnly = false)
@@ -407,15 +407,15 @@ public class BlogServiceImpl implements BlogService {
         return new BlogDTO(blog, getBlogCount(blog_id), flag);
     }
 
-    @Override
-    @Transactional( readOnly = false)
-    public boolean checkReportedBlog(BlogCheckDTO blogCheckDTO) {
-        Blog blog = blogDao.findBlogByBlog_id(blogCheckDTO.getBlog_id());
-        blog.setCheck_status(blogCheckDTO.getCheck_status());
-        blogDao.saveBlog(blog);
-        esBlogRepository.save(new ESBlog(blog));
-        return true;
-    }
+//    @Override
+//    @Transactional( readOnly = false)
+//    public boolean checkReportedBlog(BlogCheckDTO blogCheckDTO) {
+//        Blog blog = blogDao.findBlogByBlog_id(blogCheckDTO.getBlog_id());
+//        blog.setCheck_status(blogCheckDTO.getCheck_status());
+//        blogDao.saveBlog(blog);
+//        esBlogRepository.save(new ESBlog(blog));
+//        return true;
+//    }
 
 
     @Override
@@ -439,89 +439,89 @@ public class BlogServiceImpl implements BlogService {
     }
 
 
-    @Override
-    public Page<BlogDTO> getSearchListByBlog_text(String keyword, Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        SearchRequest searchRequest = new SearchRequest("blog");
-        List<ESBlog> esBlogList = new ArrayList<>();
-        long total = 0;
-        try {
-            List<FunctionScoreQueryBuilder.FilterFunctionBuilder> filterFunctionBuilders = new ArrayList<>();
-            filterFunctionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("blog_text", keyword), ScoreFunctionBuilders.weightFactorFunction(10)));
-            FunctionScoreQueryBuilder.FilterFunctionBuilder[] builders = new FunctionScoreQueryBuilder.FilterFunctionBuilder[filterFunctionBuilders.size()];
-            filterFunctionBuilders.toArray(builders);
-            FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(builders)
-                    .scoreMode(FunctionScoreQuery.ScoreMode.SUM)
-                    .setMinScore(2);//设置最低分数
-            BoolQueryBuilder boolBuilder = new BoolQueryBuilder()
-                    .must(new MatchQueryBuilder("is_deleted", false)).mustNot(new MatchQueryBuilder("check_status", 2));
-            boolBuilder.filter(functionScoreQueryBuilder);
-            SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-            searchSourceBuilder.from((pageNum) * pageSize);
-            searchSourceBuilder.size(pageSize);
-            QueryStringQueryBuilder queryBuilder = new QueryStringQueryBuilder(keyword);
-            queryBuilder.field("blog_text");
-            //构建高亮体
-            HighlightBuilder highlightBuilder = new HighlightBuilder();
-            highlightBuilder.preTags("<span style=\"color:#FF5722;\">");
-            highlightBuilder.postTags("</span>");
-            //高亮字段
-            highlightBuilder.field("blog_text");
-            //搜索体（添加多个搜索参数）
-            searchSourceBuilder.highlighter(highlightBuilder);
-            searchSourceBuilder.query(queryBuilder);
-            searchSourceBuilder.sort(SortBuilders.scoreSort().order(SortOrder.DESC));
-            searchRequest.source(searchSourceBuilder);
-            //执行查询
-            SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
-            //获取搜索的文档结果
-            SearchHits hit = response.getHits();
-            total = hit.getTotalHits().value;
-            SearchHit[] hits = hit.getHits();
-            for (SearchHit searchHit : hits) {
-                //将文档中的每一个对象转换json串值
-                String sourceAsString = searchHit.getSourceAsString();
-                //将json串值转换成对应的实体对象
-                ESBlog esBlog = JSON.parseObject(sourceAsString, ESBlog.class);
-                //获取对应的高亮域
-                Map<String, HighlightField> highlightFields = searchHit.getHighlightFields();
-                //高亮字段
-                HighlightField highlight = highlightFields.get("blog_text");
-                if (highlight != null)
-                    esBlog.setBlog_text(highlight.fragments()[0].toString());
-                esBlogList.add(esBlog);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        List<BlogDTO> blogDTOList = new ArrayList<>();
-//        List<ESBlog> esBlogList = blogPage.getContent();
-        Integer user_id = userUtil.getUserId();
-        for (ESBlog esBlog : esBlogList) {
-            Integer blog_id = esBlog.getId();
-            Integer result = redisService.findStatusFromRedis(blog_id, user_id);
-            //统计博文数据
-            BlogCount blogCount = getBlogCount(blog_id);
-
-            User user = userDao.getById(esBlog.getUser_id());
-            List<BlogImage> blogImageList = blogImageDao.findBlogImageByBlog_id(esBlog.getId());
-            Blog reply = blogDao.findBlogByBlog_id(esBlog.getReply_blog_id());
-            if (result == 1) {
-                blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, true));
-            } else if (result == 0) {
-                blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, false));
-            } else {//redis里没有数据,去数据库拿
-                BlogVote blogVote = blogVoteDao.getByBlogIdAndUserId(blog_id, user_id);
-                if (blogVote == null || blogVote.getStatus() == 0) {
-                    blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, false));
-                } else {
-                    blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, true));
-                }
-            }
-        }
-        return new PageImpl<BlogDTO>(blogDTOList, pageable, total);
-    }
+//    @Override
+//    public Page<BlogDTO> getSearchListByBlog_text(String keyword, Integer pageNum, Integer pageSize) {
+//        Pageable pageable = PageRequest.of(pageNum, pageSize);
+//        SearchRequest searchRequest = new SearchRequest("blog");
+//        List<ESBlog> esBlogList = new ArrayList<>();
+//        long total = 0;
+//        try {
+//            List<FunctionScoreQueryBuilder.FilterFunctionBuilder> filterFunctionBuilders = new ArrayList<>();
+//            filterFunctionBuilders.add(new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("blog_text", keyword), ScoreFunctionBuilders.weightFactorFunction(10)));
+//            FunctionScoreQueryBuilder.FilterFunctionBuilder[] builders = new FunctionScoreQueryBuilder.FilterFunctionBuilder[filterFunctionBuilders.size()];
+//            filterFunctionBuilders.toArray(builders);
+//            FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(builders)
+//                    .scoreMode(FunctionScoreQuery.ScoreMode.SUM)
+//                    .setMinScore(2);//设置最低分数
+//            BoolQueryBuilder boolBuilder = new BoolQueryBuilder()
+//                    .must(new MatchQueryBuilder("is_deleted", false)).mustNot(new MatchQueryBuilder("check_status", 2));
+//            boolBuilder.filter(functionScoreQueryBuilder);
+//            SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+//            searchSourceBuilder.from((pageNum) * pageSize);
+//            searchSourceBuilder.size(pageSize);
+//            QueryStringQueryBuilder queryBuilder = new QueryStringQueryBuilder(keyword);
+//            queryBuilder.field("blog_text");
+//            //构建高亮体
+//            HighlightBuilder highlightBuilder = new HighlightBuilder();
+//            highlightBuilder.preTags("<span style=\"color:#FF5722;\">");
+//            highlightBuilder.postTags("</span>");
+//            //高亮字段
+//            highlightBuilder.field("blog_text");
+//            //搜索体（添加多个搜索参数）
+//            searchSourceBuilder.highlighter(highlightBuilder);
+//            searchSourceBuilder.query(queryBuilder);
+//            searchSourceBuilder.sort(SortBuilders.scoreSort().order(SortOrder.DESC));
+//            searchRequest.source(searchSourceBuilder);
+//            //执行查询
+//            SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
+//            //获取搜索的文档结果
+//            SearchHits hit = response.getHits();
+//            total = hit.getTotalHits().value;
+//            SearchHit[] hits = hit.getHits();
+//            for (SearchHit searchHit : hits) {
+//                //将文档中的每一个对象转换json串值
+//                String sourceAsString = searchHit.getSourceAsString();
+//                //将json串值转换成对应的实体对象
+//                ESBlog esBlog = JSON.parseObject(sourceAsString, ESBlog.class);
+//                //获取对应的高亮域
+//                Map<String, HighlightField> highlightFields = searchHit.getHighlightFields();
+//                //高亮字段
+//                HighlightField highlight = highlightFields.get("blog_text");
+//                if (highlight != null)
+//                    esBlog.setBlog_text(highlight.fragments()[0].toString());
+//                esBlogList.add(esBlog);
+//            }
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        List<BlogDTO> blogDTOList = new ArrayList<>();
+////        List<ESBlog> esBlogList = blogPage.getContent();
+//        Integer user_id = userUtil.getUserId();
+//        for (ESBlog esBlog : esBlogList) {
+//            Integer blog_id = esBlog.getId();
+//            Integer result = redisService.findStatusFromRedis(blog_id, user_id);
+//            //统计博文数据
+//            BlogCount blogCount = getBlogCount(blog_id);
+//
+//            User user = userDao.getById(esBlog.getUser_id());
+//            List<BlogImage> blogImageList = blogImageDao.findBlogImageByBlog_id(esBlog.getId());
+//            Blog reply = blogDao.findBlogByBlog_id(esBlog.getReply_blog_id());
+//            if (result == 1) {
+//                blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, true));
+//            } else if (result == 0) {
+//                blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, false));
+//            } else {//redis里没有数据,去数据库拿
+//                BlogVote blogVote = blogVoteDao.getByBlogIdAndUserId(blog_id, user_id);
+//                if (blogVote == null || blogVote.getStatus() == 0) {
+//                    blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, false));
+//                } else {
+//                    blogDTOList.add(new BlogDTO(esBlog, user, blogImageList, blogCount, reply, true));
+//                }
+//            }
+//        }
+//        return new PageImpl<BlogDTO>(blogDTOList, pageable, total);
+//    }
 
     @Override
     public Page<BlogDTO> getListByUser_id(Integer user_id, Integer pageNum, Integer pageSize) {

@@ -200,7 +200,9 @@ public class BlogController {
                                            @Length(max = 40, message = "关键词不能大于40位") String keyword,
                                            @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                            @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, CommonPage.restPage(blogService.getSearchListByBlog_text(keyword, pageNum, pageSize)));
+//        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, CommonPage.restPage(blogService.getSearchListByBlog_text(keyword, pageNum, pageSize)));
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SEARCH_SUCCESS_MSG, CommonPage.restPage(null));
+
     }
 
     @RequiresAuthentication
