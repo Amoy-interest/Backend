@@ -4,12 +4,14 @@ import com.alibaba.druid.sql.visitor.functions.Now;
 import com.auth0.jwt.JWT;
 import com.example.amoy_interest.constant.Constant;
 import com.example.amoy_interest.dto.*;
+import com.example.amoy_interest.entity.User;
 import com.example.amoy_interest.entity.UserAuth;
 import com.example.amoy_interest.exception.CustomException;
 import com.example.amoy_interest.exception.CustomUnauthorizedException;
 import com.example.amoy_interest.msgutils.Msg;
 import com.example.amoy_interest.msgutils.MsgCode;
 import com.example.amoy_interest.msgutils.MsgUtil;
+import com.example.amoy_interest.service.RecommendService;
 import com.example.amoy_interest.service.UserService;
 import com.example.amoy_interest.utils.*;
 import io.swagger.annotations.Api;
@@ -27,6 +29,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @RequestMapping("/users")
 @Api(tags = "用户模块")
@@ -42,6 +45,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private UserUtil userUtil;
+    @Autowired
+    private RecommendService recommendService;
 
     @ApiOperation(value = "登录", notes = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -81,11 +86,13 @@ public class UserController {
     public Msg Logout() {
         String username = userUtil.getUsername();
         if (JedisUtil.exists(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username)) {
-            if (JedisUtil.delKey(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username) > 0) {
-                return new Msg(HttpStatus.OK.value(), "登出成功(Logout Success)", null);
-            }
+            JedisUtil.delKey(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username);
+//            if (JedisUtil.delKey(Constant.PREFIX_SHIRO_REFRESH_TOKEN + username) > 0) {
+//                return new Msg(HttpStatus.OK.value(), "登出成功(Logout Success)", null);
+//            }
         }
-        throw new CustomException("登出失败，Username不存在(Logout Failed. Username does not exist.)");
+        return new Msg(HttpStatus.OK.value(), "登出成功(Logout Success)", null);
+//        throw new CustomException("登出失败，Username不存在(Logout Failed. Username does not exist.)");
     }
 
     @ApiOperation(value = "注册", notes = "注册")
@@ -183,12 +190,12 @@ public class UserController {
         return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, userService.getUserDTO(userUtil.getUserId(), user_id));
     }
 
-    @ApiOperation(value = "根据账号密码计算出加密的密码（手动存入数据库）")
-    @GetMapping(value = "/cal")
-    public Msg<String> CalculatePassword(@RequestParam(required = true) String username,
-                                         @RequestParam(required = true) String password) {
-        return new Msg(HttpStatus.OK.value(), "计算成功", AesCipherUtil.enCrypto(username + password));
-    }
+//    @ApiOperation(value = "根据账号密码计算出加密的密码（手动存入数据库）")
+//    @GetMapping(value = "/cal")
+//    public Msg<String> CalculatePassword(@RequestParam(required = true) String username,
+//                                         @RequestParam(required = true) String password) {
+//        return new Msg(HttpStatus.OK.value(), "计算成功", AesCipherUtil.enCrypto(username + password));
+//    }
 
     @RequiresAuthentication
     @ApiModelProperty(value = "用户编辑")
@@ -208,5 +215,13 @@ public class UserController {
         userReportParam.setReporter_id(userUtil.getUserId());
         userService.ReportUser(userReportParam);
         return new Msg(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG);
+    }
+
+    @RequiresAuthentication
+    @ApiOperation(value = "获取相似用户")
+    @GetMapping(value = "/sim")
+    public Msg<CommonPage<SimUserDTO>> getSimUser(@RequestParam(required = true) Integer user_id, @RequestParam(required = false, defaultValue = "5") Integer limit_count) {
+        Integer my_user_id = userUtil.getUserId();
+        return new Msg<>(MsgCode.SUCCESS, MsgUtil.SUCCESS_MSG, CommonPage.restPage(recommendService.getSimUserUsingUser_id(my_user_id, user_id, limit_count)));
     }
 }

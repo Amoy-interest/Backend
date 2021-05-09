@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -26,13 +27,14 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public SensitiveWord addSensitiveWord(SensitiveWord sensitiveWord) {
         Finder.addSensitiveWords(sensitiveWord.getKeyword());//可以用消息队列完成
         return sensitiveWordDao.saveSensitiveWord(sensitiveWord);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public SensitiveWord updateSensitiveWord(String oldWord,String newWord) {
         sensitiveWordDao.deleteByKeyword(oldWord);
         SensitiveWord sensitiveWord = new SensitiveWord(newWord);
@@ -42,7 +44,7 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false)
     public void deleteByKeyword(String keyword) {
         Finder.removeSensitiveWords(keyword);
         sensitiveWordDao.deleteByKeyword(keyword);

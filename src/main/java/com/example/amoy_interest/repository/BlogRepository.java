@@ -35,8 +35,8 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
     Page<Blog> findListByUser_id(Integer user_id, Pageable pageable);
 
     //如何写？
-    @Query(value = "select b FROM Blog as b join b.blogCount as bc WHERE b.is_deleted = false and b.check_status = 0 and bc.report_count > 10",
-            countQuery = "select count(b.blog_id) FROM Blog as b join b.blogCount as bc WHERE b.is_deleted = false and b.check_status = 0 and bc.report_count > 10"
+    @Query(value = "select b FROM Blog as b join BlogCount as bc on b.blog_id = bc.blog_id WHERE b.is_deleted = false and b.check_status = 0 and bc.report_count > 10",
+            countQuery = "select count(b.blog_id) FROM Blog as b join BlogCount as bc on b.blog_id = bc.blog_id WHERE b.is_deleted = false and b.check_status = 0 and bc.report_count > 10"
     )
 //    @Query(value = "From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10", countQuery = "SELECT count(b.blog_id) From Blog b where b.check_status = 0 and b.is_deleted = false and b.blogCount.report_count > 10")
     Page<Blog> findReportedBlogsPage(Pageable pageable);
@@ -59,5 +59,8 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
             countQuery = "SELECT count(b.blog_id) FROM Blog b where b.is_deleted = false and b.check_status <> 2")
     Page<Blog> getAllBlogPage(Pageable pageable);
 
+    @Query(value = "select b from Blog b join BlogHeat bh on b.blog_id = bh.blog_id where b.blog_id in (select distinct(tb.blog_id) from Topic t join TopicBlog tb on t.topic_id = tb.topic_id where t.group_name = ?1) order by bh.heat DESC",
+            countQuery = "select count(b.blog_id) from Blog b join BlogHeat bh on b.blog_id = bh.blog_id where b.blog_id in (select distinct(tb.blog_id) from Topic t join TopicBlog tb on t.topic_id = tb.topic_id where t.group_name = ?1) order by bh.heat DESC")
+    Page<Blog> getBlogPageByGroupName(String groupName, Pageable pageable);
 
 }

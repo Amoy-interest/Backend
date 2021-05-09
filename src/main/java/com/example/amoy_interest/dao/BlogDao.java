@@ -16,8 +16,10 @@ public interface BlogDao {
     List<Blog> getBlogsByUser_id(Integer user_id);
     Page<Blog> findBlogListByUser_id(Integer user_id, Pageable pageable);
     Page<Blog> findBlogListByTopic_id(Integer topic_id, Pageable pageable);
+    Page<Blog> getBlogPageByGroupName(String groupName, Pageable pageable);
     Page<Blog> findReportedBlogsPage(Pageable pageable);
     Page<Blog> searchReportedBlogsPage(String keyword,Pageable pageable);
+
     /**
      *
      * @param pageable

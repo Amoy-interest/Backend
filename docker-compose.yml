@@ -75,7 +75,7 @@ services:
     hostname: mycat
     restart: always
     volumes:
-      #- ./mycat/conf/mycat-logs/:/usr/local/mycat/logs/:rw # mycat日志文件
+      - ./mycat/logs:/usr/local/mycat/logs:rw # mycat日志文件
       - ./mycat/conf/log4j.xml:/usr/local/mycat/conf/log4j.xml
       - ./mycat/conf/server.xml:/usr/local/mycat/conf/server.xml
       - ./mycat/conf/schema.xml:/usr/local/mycat/conf/schema.xml
@@ -108,6 +108,8 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     container_name: amoy_dev3
+    volumes:
+      - /workspace/amoy-dev3.1/logs:/logs/
     # build: .
     ports:
       - "8082:8082"
