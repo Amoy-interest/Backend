@@ -6,7 +6,7 @@ spring:
     url: jdbc:mysql://mysql-master:3306/amoy?useSSL=false&useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&useLocalSessionState=true
     #?characterEncoding=utf8&useSSL=false&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true&&serverTimezone=GMT%2B8
     username: root
-    password: amoy123
+    password: PASSWORD
     driver-class-name: com.mysql.cj.jdbc.Driver
     # 使用Druid
     type: com.alibaba.druid.pool.DruidDataSource
